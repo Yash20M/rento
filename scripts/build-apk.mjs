@@ -11,7 +11,9 @@ const args = process.argv.slice(2).filter((a) => a !== '--');
 const at = args.indexOf('--api');
 const api = at === -1 ? undefined : args[at + 1];
 if (!api || !/^https:\/\/[^/\s]+/.test(api)) {
-  console.error('✖ Give the live API address: pnpm mobile:apk -- --api https://your-app.onrender.com');
+  console.error(
+    '✖ Give the live API address: pnpm mobile:apk -- --api https://your-app.onrender.com',
+  );
   process.exit(1);
 }
 const apiBaseUrl = api.replace(/\/+$/, '');
@@ -35,4 +37,6 @@ const built = path.join(root, 'apps/mobile/build/app/outputs/flutter-apk/app-rel
 const target = path.join(root, 'dist/rento-demo.apk');
 mkdirSync(path.dirname(target), { recursive: true });
 copyFileSync(built, target);
-console.log(`\n✔ ${target}  (${(statSync(target).size / 1024 / 1024).toFixed(1)} MB) — talks to ${apiBaseUrl}`);
+console.log(
+  `\n✔ ${target}  (${(statSync(target).size / 1024 / 1024).toFixed(1)} MB) — talks to ${apiBaseUrl}`,
+);

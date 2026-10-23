@@ -5,6 +5,8 @@ services:
     name: rento
     runtime: docker
     plan: free
+    # Same region as the Neon database (AWS ap-southeast-1): every query crosses this link.
+    region: singapore
     dockerfilePath: ./Dockerfile
     healthCheckPath: /healthz
     envVars:
@@ -28,4 +30,4 @@ services:
         value: Rento Demo <no-reply@rento.invalid>
       # Free instances have 512 MB: keep the database pool small.
       - key: DB_POOL_MAX
-        value: "5"
+        value: '5'

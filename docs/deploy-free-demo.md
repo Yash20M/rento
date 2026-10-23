@@ -45,11 +45,12 @@ Run these **on your computer**, pointing at the live address and the Neon databa
 ```powershell
 $env:DATABASE_URL = "<the Neon connection string>"
 $env:JWT_SECRET   = "<any 32+ characters; only the CLI needs it>"
+$env:PUBLIC_WEB_URL = "https://<service>.onrender.com"   # so the printed link already has the live address
 # the first Super Admin — prints a one-time link to set the password
 pnpm --filter api exec node dist/cli/main.js bootstrap-super-admin --email you@example.com --name "Your Name"
 ```
 
-Open the printed link, but replace its host with your live address (`https://<service>.onrender.com/reset-password?token=…`), set a password, sign in at `https://<service>.onrender.com/`.
+Open the printed link (it already points at your live address), set a password, and sign in at `https://<service>.onrender.com/`.
 
 Optional demo catalogue (drawers, products with pictures, a demo customer). It needs a **secret password** you choose; it creates a Super Admin, a front-desk user and a customer with it:
 
@@ -66,6 +67,10 @@ pnpm mobile:apk -- --api https://<service>.onrender.com
 ```
 
 Result: `dist/rento-demo.apk`. Copy it to a phone and open it (allow "install from this source"), or `adb install dist/rento-demo.apk` with a phone attached. It is signed with the debug key — fine for a demo, not for the Play Store (P4-11). The app asks for location to find drawers near you; choose a demo place if you are not in Bengaluru.
+
+## 4b. Tested locally
+
+The image was built and run against a throw-away local database before this guide was written: it applied all 18 migrations, answered `/healthz` and `/readyz`, served the panel and its pages, kept `/v1/...` answering as an API (401 without a token, problem+json 404), and the first-admin CLI worked inside it. What cannot be tested from a laptop: Render's own build, Neon's PostGIS, and the phone reaching the public address.
 
 ## 5. Known limits of the free demo
 
