@@ -1,0 +1,33 @@
+import type { components } from '@rento/contracts';
+
+type S = components['schemas'];
+
+export type AdminMe = S['AdminMeDto'];
+export type Role = S['RoleDto'];
+export type PermissionGroup = S['PermissionGroupDto'];
+export type Admin = S['AdminDto'];
+export type Invitation = S['InvitationDto'];
+export type Category = S['CategoryDto'];
+export type ItemModel = S['ItemModelDto'];
+export type Asset = S['AssetDto'];
+export type AssetPage = S['AssetPageDto'];
+export type Drawer = S['DrawerDto'];
+export type Closure = S['ClosureDto'];
+export type Hours = S['HoursDto'];
+export type AdminBooking = S['AdminBookingDto'];
+export type AdminBookingDetail = S['AdminBookingDetailDto'];
+export type AdminBookingPage = S['AdminBookingPageDto'];
+export type Dashboard = S['DashboardDto'];
+export type AuditEntry = S['AuditEntryDto'];
+export type AuditPage = S['AuditPageDto'];
+export type AuthResponse = S['AuthResponseDto'];
+export type Schedule = S['ScheduleDto'];
+export type ScheduleAsset = S['ScheduleAssetDto'];
+export type ScheduleEntry = S['ScheduleEntryDto'];
+export type Block = S['BlockDto'];
+export type Impact = S['ImpactDto'];
+export type Report = S['ReportDto'];
+export type PaymentLedgerRow = S['PaymentLedgerRowDto'];
+export type PaymentLedgerPage = S['PaymentLedgerPageDto'];
+export type Settings = S['SettingsDto'];
+export type Transfer = S['TransferDto'];

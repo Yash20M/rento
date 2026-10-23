@@ -1,0 +1,11 @@
+targets:
+  $default:
+    builders:
+      json_serializable:
+        options:
+          # Type errors name the offending field instead of throwing a bare cast error.
+          checked: true
+          # Nested models serialise to plain JSON maps (not model objects).
+          explicit_to_json: true
+          # A newer server may add fields; old apps must ignore them (N-1 support, README §11.5).
+          disallow_unrecognized_keys: false

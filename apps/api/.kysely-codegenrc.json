@@ -1,0 +1,9 @@
+{
+  "dialect": "postgres",
+  "outFile": "src/db/generated/database.ts",
+  "excludePattern": "{geography_columns,geometry_columns,spatial_ref_sys,pgmigrations}",
+  "typeMapping": {
+    "tstzrange": "string",
+    "geography": "string"
+  }
+}

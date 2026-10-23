@@ -1,0 +1,39 @@
+name: rento_mobile
+description: "Rento customer app"
+publish_to: 'none'
+version: 0.1.0
+
+environment:
+  sdk: ^3.7.2
+
+dependencies:
+  dio: ^5.11.1
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  flutter_riverpod: ^3.3.2
+  flutter_secure_storage: ^10.3.4
+  freezed_annotation: ^3.1.0
+  geolocator: ^14.0.2
+  go_router: ^17.0.0
+  # Pinned by flutter_localizations in this SDK (3.29); bump together with Flutter.
+  image_picker: ^1.2.1
+  intl: ^0.19.0
+  json_annotation: ^4.9.0
+  timezone: ^0.10.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  integration_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+  mocktail: ^1.0.5
+  build_runner: ^2.5.4
+  freezed: ^3.1.0
+  json_serializable: ^6.9.5
+
+flutter:
+  uses-material-design: true
+  generate: true

@@ -1,0 +1,5 @@
+{
+  "FLAVOR": "staging",
+  "API_BASE_URL": "https://staging-api.rento.example",
+  "SENTRY_DSN": ""
+}

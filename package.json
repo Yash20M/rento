@@ -1,0 +1,42 @@
+{
+  "name": "rento",
+  "private": true,
+  "packageManager": "pnpm@10.24.0",
+  "engines": {
+    "node": ">=22.12"
+  },
+  "scripts": {
+    "lint": "eslint . --max-warnings 0 && prettier --check .",
+    "lint:fix": "eslint . --fix && prettier --write .",
+    "format": "prettier --write .",
+    "typecheck": "pnpm -r --if-present typecheck",
+    "check": "pnpm lint && pnpm typecheck",
+    "verify": "node scripts/verify.mjs",
+    "verify:fast": "node scripts/verify.mjs --fast",
+    "test:live-ui": "node scripts/live-ui.mjs",
+    "test:live-android": "node scripts/live-android.mjs",
+    "verify:parallel": "node scripts/verify.mjs --parallel --jobs 2",
+    "test:scripts": "node --test \"scripts/*.test.mjs\"",
+    "check:migrations": "node scripts/check-migrations-immutable.mjs",
+    "dev:db": "docker compose -f infra/compose.yaml up -d --wait",
+    "demo": "node scripts/demo.mjs",
+    "demo:smoke": "node scripts/demo-smoke/admin-tour.mjs && node scripts/demo-smoke/app-tour.mjs",
+    "dev:down": "docker compose -f infra/compose.yaml down",
+    "check:stack": "node infra/scripts/check-stack.mjs",
+    "contracts:generate": "node packages/contracts/scripts/contracts.mjs generate",
+    "contracts:check": "node packages/contracts/scripts/contracts.mjs check",
+    "mobile:analyze": "cd apps/mobile && flutter analyze",
+    "mobile:test": "cd apps/mobile && flutter test",
+    "mobile:format:check": "cd apps/mobile && dart format --output=none --set-exit-if-changed lib/main.dart lib/app lib/core lib/features test",
+    "mobile:codegen": "cd apps/mobile && dart run build_runner build --delete-conflicting-outputs && flutter gen-l10n",
+    "mobile:codegen:check": "node scripts/check-generated.mjs mobile",
+    "mobile:apk": "node scripts/build-apk.mjs"
+  },
+  "devDependencies": {
+    "@rento/config": "workspace:*",
+    "eslint": "^10.12.0",
+    "prettier": "^3.9.10",
+    "typescript": "^6.0.3",
+    "yaml": "^2.9.1"
+  }
+}

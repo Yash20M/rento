@@ -1,0 +1,35 @@
+# Local development stack. Credentials below are local-dev only — never reuse them elsewhere.
+# Host port 5433 (not 5432) so it does not clash with other local Postgres instances.
+name: rento
+
+services:
+  db:
+    image: postgis/postgis:16-3.4
+    environment:
+      POSTGRES_USER: rento
+      POSTGRES_PASSWORD: rento
+      POSTGRES_DB: rento
+    ports:
+      - '127.0.0.1:5433:5432'
+    volumes:
+      - rento_pgdata:/var/lib/postgresql/data
+      - ./db/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U rento -d rento']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  mailpit:
+    image: axllent/mailpit:v1.27.11
+    ports:
+      - '127.0.0.1:1025:1025' # SMTP
+      - '127.0.0.1:8025:8025' # web UI + API
+    healthcheck:
+      test: ['CMD', '/mailpit', 'readyz']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  rento_pgdata:

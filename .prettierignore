@@ -1,0 +1,7 @@
+*.md
+pnpm-lock.yaml
+apps/mobile
+dist
+node_modules
+**/generated
+packages/contracts/openapi.json

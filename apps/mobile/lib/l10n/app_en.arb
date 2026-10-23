@@ -1,0 +1,1303 @@
+{
+  "@@locale": "en",
+  "appName": "Rento",
+  "@appName": {
+    "description": "Product name shown in the OS app switcher."
+  },
+  "notFoundTitle": "Page not found",
+  "@notFoundTitle": {
+    "description": "Heading shown for an unknown route."
+  },
+  "notFoundAction": "Back to home",
+  "@notFoundAction": {
+    "description": "Button on the not-found screen that returns to the home screen."
+  },
+  "envFlavorLabel": "Environment: {flavor}",
+  "@envFlavorLabel": {
+    "description": "Chip shown on non-production builds so testers know which backend they are on.",
+    "placeholders": {
+      "flavor": {
+        "type": "String",
+        "example": "dev"
+      }
+    }
+  },
+  "envErrorTitle": "Rento cannot start",
+  "@envErrorTitle": {
+    "description": "Heading of the boot-failure screen shown when the build configuration is invalid."
+  },
+  "actionRetry": "Try again",
+  "@actionRetry": {
+    "description": "Button that repeats a failed request."
+  },
+  "actionCancel": "Cancel",
+  "@actionCancel": {
+    "description": "Generic cancel button."
+  },
+  "actionClose": "Close",
+  "@actionClose": {
+    "description": "Closes a dialog or sheet."
+  },
+  "errorNetwork": "Cannot reach Rento. Check your connection and try again.",
+  "@errorNetwork": {
+    "description": "Shown when no response arrived from the server."
+  },
+  "errorGeneric": "Something went wrong. Please try again.",
+  "@errorGeneric": {
+    "description": "Shown for an unexpected failure."
+  },
+  "errorBusy": "Rento is busy right now. Please try again in a moment.",
+  "@errorBusy": {
+    "description": "Shown when the server asks the app to retry shortly."
+  },
+  "errorLoading": "We could not load this.",
+  "@errorLoading": {
+    "description": "Shown when a list or screen failed to load."
+  },
+  "fieldRequired": "Required",
+  "@fieldRequired": {
+    "description": "Validation message for an empty required field."
+  },
+  "loginTitle": "Welcome back",
+  "@loginTitle": {
+    "description": "Heading of the sign-in screen."
+  },
+  "loginSubtitle": "Sign in to book and manage your rentals.",
+  "@loginSubtitle": {
+    "description": "Sub-heading of the sign-in screen."
+  },
+  "registerTitle": "Create your account",
+  "@registerTitle": {
+    "description": "Heading of the registration screen."
+  },
+  "registerSubtitle": "It takes a minute. You can rent right after.",
+  "@registerSubtitle": {
+    "description": "Sub-heading of the registration screen."
+  },
+  "emailLabel": "Email",
+  "@emailLabel": {
+    "description": "Label of the email field."
+  },
+  "passwordLabel": "Password",
+  "@passwordLabel": {
+    "description": "Label of the password field."
+  },
+  "passwordHint": "At least 10 characters",
+  "@passwordHint": {
+    "description": "Hint under the new-password field."
+  },
+  "nameLabel": "Your name",
+  "@nameLabel": {
+    "description": "Label of the name field."
+  },
+  "signInAction": "Sign in",
+  "@signInAction": {
+    "description": "Sign-in button."
+  },
+  "registerAction": "Create account",
+  "@registerAction": {
+    "description": "Registration button."
+  },
+  "goToRegister": "New to Rento? Create an account",
+  "@goToRegister": {
+    "description": "Link from sign-in to registration."
+  },
+  "goToLogin": "Already have an account? Sign in",
+  "@goToLogin": {
+    "description": "Link from registration to sign-in."
+  },
+  "loginFailed": "Incorrect email or password.",
+  "@loginFailed": {
+    "description": "Shown after a failed sign-in (one message for every cause)."
+  },
+  "emailTakenError": "An account with this email already exists. Try signing in.",
+  "@emailTakenError": {
+    "description": "Shown when registering with a taken email."
+  },
+  "signOutAction": "Sign out",
+  "@signOutAction": {
+    "description": "Sign-out button."
+  },
+  "tabExplore": "Explore",
+  "@tabExplore": {
+    "description": "Bottom navigation: find drawers and items."
+  },
+  "tabBookings": "My bookings",
+  "@tabBookings": {
+    "description": "Bottom navigation: the customer's bookings."
+  },
+  "tabAccount": "Account",
+  "@tabAccount": {
+    "description": "Bottom navigation: account and sign-out."
+  },
+  "accountTitle": "Account",
+  "@accountTitle": {
+    "description": "Heading of the account screen."
+  },
+  "signedInAs": "Signed in as {email}",
+  "@signedInAs": {
+    "description": "Shows who is signed in.",
+    "placeholders": {
+      "email": {
+        "type": "String",
+        "example": "asha@example.com"
+      }
+    }
+  },
+  "unknownUser": "your account",
+  "@unknownUser": {
+    "description": "Fallback when the account has no email."
+  },
+  "exploreTitle": "Find a drawer",
+  "@exploreTitle": {
+    "description": "Heading of the home screen."
+  },
+  "searchingNear": "Near {place}",
+  "@searchingNear": {
+    "description": "Shows around which place drawers are searched.",
+    "placeholders": {
+      "place": {
+        "type": "String",
+        "example": "Indiranagar"
+      }
+    }
+  },
+  "placeMyLocation": "your location",
+  "@placeMyLocation": {
+    "description": "Name of the current-position place."
+  },
+  "changeLocation": "Change",
+  "@changeLocation": {
+    "description": "Opens the location chooser."
+  },
+  "chooseLocationTitle": "Where are you?",
+  "@chooseLocationTitle": {
+    "description": "Title of the location chooser."
+  },
+  "useMyLocation": "Use my location",
+  "@useMyLocation": {
+    "description": "Asks for the device position."
+  },
+  "demoLocationsHeading": "Demo locations",
+  "@demoLocationsHeading": {
+    "description": "Heading above preset locations (non-production builds)."
+  },
+  "enterCoordinates": "Or enter coordinates",
+  "@enterCoordinates": {
+    "description": "Heading above the manual latitude/longitude fields."
+  },
+  "latitudeLabel": "Latitude",
+  "@latitudeLabel": {
+    "description": "Label of the latitude field."
+  },
+  "longitudeLabel": "Longitude",
+  "@longitudeLabel": {
+    "description": "Label of the longitude field."
+  },
+  "searchHere": "Search here",
+  "@searchHere": {
+    "description": "Applies the entered coordinates."
+  },
+  "coordinatesInvalid": "Latitude is −90 to 90 and longitude −180 to 180.",
+  "@coordinatesInvalid": {
+    "description": "Validation message for the coordinate fields."
+  },
+  "locationServicesOff": "Location services are turned off on this device.",
+  "@locationServicesOff": {
+    "description": "Location failure."
+  },
+  "locationDenied": "Location permission was not granted. You can choose a place instead.",
+  "@locationDenied": {
+    "description": "Location failure."
+  },
+  "locationDeniedForever": "Location permission is blocked. Enable it in settings or choose a place instead.",
+  "@locationDeniedForever": {
+    "description": "Location failure."
+  },
+  "locationUnavailable": "We could not find your position. Choose a place instead.",
+  "@locationUnavailable": {
+    "description": "Location failure."
+  },
+  "nearbyEmpty": "No drawers are open near here right now.",
+  "@nearbyEmpty": {
+    "description": "Empty nearby list."
+  },
+  "outsideServiceArea": "Rento is not available near this location yet.",
+  "@outsideServiceArea": {
+    "description": "Shown for OUTSIDE_SERVICE_AREA."
+  },
+  "drawerOpenNow": "Open now",
+  "@drawerOpenNow": {
+    "description": "Drawer is open."
+  },
+  "drawerClosedNow": "Closed now",
+  "@drawerClosedNow": {
+    "description": "Drawer is closed."
+  },
+  "distanceAway": "{distance} away",
+  "@distanceAway": {
+    "description": "Distance to a drawer.",
+    "placeholders": {
+      "distance": {
+        "type": "String",
+        "example": "850 m"
+      }
+    }
+  },
+  "unavailableHeading": "Nearby, but not available right now",
+  "@unavailableHeading": {
+    "description": "Heading above drawers that are close but closed or out of stock."
+  },
+  "reasonClosed": "Closed",
+  "@reasonClosed": {
+    "description": "Why a nearby drawer is not offered."
+  },
+  "reasonOutOfStock": "Out of stock",
+  "@reasonOutOfStock": {
+    "description": "Why a nearby drawer is not offered."
+  },
+  "drawerHeading": "Drawer",
+  "@drawerHeading": {
+    "description": "Heading of the drawer screen."
+  },
+  "itemsHeading": "What you can rent here",
+  "@itemsHeading": {
+    "description": "Heading above the items of a drawer."
+  },
+  "itemsEmpty": "Nothing to rent here yet.",
+  "@itemsEmpty": {
+    "description": "Drawer with no items."
+  },
+  "availableNowCount": "{count, plural, =0{None free right now} =1{1 available now} other{{count} available now}}",
+  "@availableNowCount": {
+    "description": "Free units right now.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  },
+  "pricePerSlot": "{price} per {minutes} min",
+  "@pricePerSlot": {
+    "description": "Price of one slot.",
+    "placeholders": {
+      "price": {
+        "type": "String",
+        "example": "₹49"
+      },
+      "minutes": {
+        "type": "int",
+        "example": "30"
+      }
+    }
+  },
+  "pickupInstructions": "Pickup instructions",
+  "@pickupInstructions": {
+    "description": "Heading above where/how to pick up."
+  },
+  "hoursHeading": "Opening hours",
+  "@hoursHeading": {
+    "description": "Heading above the weekly hours."
+  },
+  "hoursClosedDay": "Closed",
+  "@hoursClosedDay": {
+    "description": "A weekday without opening hours."
+  },
+  "weekdayShort1": "Mon",
+  "@weekdayShort1": {
+    "description": "Short weekday name."
+  },
+  "weekdayShort2": "Tue",
+  "@weekdayShort2": {
+    "description": "Short weekday name."
+  },
+  "weekdayShort3": "Wed",
+  "@weekdayShort3": {
+    "description": "Short weekday name."
+  },
+  "weekdayShort4": "Thu",
+  "@weekdayShort4": {
+    "description": "Short weekday name."
+  },
+  "weekdayShort5": "Fri",
+  "@weekdayShort5": {
+    "description": "Short weekday name."
+  },
+  "weekdayShort6": "Sat",
+  "@weekdayShort6": {
+    "description": "Short weekday name."
+  },
+  "weekdayShort7": "Sun",
+  "@weekdayShort7": {
+    "description": "Short weekday name."
+  },
+  "chooseDay": "Choose a day",
+  "@chooseDay": {
+    "description": "Heading above the day chips."
+  },
+  "chooseStart": "Choose a start time",
+  "@chooseStart": {
+    "description": "Heading above the start-time chips."
+  },
+  "chooseDuration": "How long?",
+  "@chooseDuration": {
+    "description": "Heading above the duration chips."
+  },
+  "timesInZone": "Times are in {zone}",
+  "@timesInZone": {
+    "description": "Tells which time zone the slot times are in.",
+    "placeholders": {
+      "zone": {
+        "type": "String",
+        "example": "Asia/Kolkata"
+      }
+    }
+  },
+  "noSlots": "No times are available on this day.",
+  "@noSlots": {
+    "description": "Day without bookable starts."
+  },
+  "closedThisDay": "The drawer is closed on this day.",
+  "@closedThisDay": {
+    "description": "Day without opening hours."
+  },
+  "durationLabel": "{duration}",
+  "@durationLabel": {
+    "description": "Label of a duration chip.",
+    "placeholders": {
+      "duration": {
+        "type": "String",
+        "example": "1 h 30 min"
+      }
+    }
+  },
+  "durationHours": "{hours} h",
+  "@durationHours": {
+    "description": "Whole hours.",
+    "placeholders": {
+      "hours": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "durationMinutes": "{minutes} min",
+  "@durationMinutes": {
+    "description": "Minutes only.",
+    "placeholders": {
+      "minutes": {
+        "type": "int",
+        "example": "30"
+      }
+    }
+  },
+  "durationHoursMinutes": "{hours} h {minutes} min",
+  "@durationHoursMinutes": {
+    "description": "Hours and minutes.",
+    "placeholders": {
+      "hours": {
+        "type": "int",
+        "example": "1"
+      },
+      "minutes": {
+        "type": "int",
+        "example": "30"
+      }
+    }
+  },
+  "summaryRental": "Rental",
+  "@summaryRental": {
+    "description": "Price line."
+  },
+  "summaryDeposit": "Deposit (returned when you bring it back)",
+  "@summaryDeposit": {
+    "description": "Price line."
+  },
+  "summaryTotal": "Total",
+  "@summaryTotal": {
+    "description": "Price line."
+  },
+  "reserveAction": "Reserve & pay",
+  "@reserveAction": {
+    "description": "Creates the hold and goes to payment."
+  },
+  "slotTakenError": "Someone just took that time. Please pick another.",
+  "@slotTakenError": {
+    "description": "Shown for BOOKING_SLOT_TAKEN."
+  },
+  "leadTimeError": "That start is too soon or too far ahead. Please pick another time.",
+  "@leadTimeError": {
+    "description": "Shown for LEAD_TIME_VIOLATION."
+  },
+  "drawerClosedError": "The drawer is closed at that time. Please pick another.",
+  "@drawerClosedError": {
+    "description": "Shown for DRAWER_CLOSED."
+  },
+  "durationInvalidError": "That length is not available. Please pick another.",
+  "@durationInvalidError": {
+    "description": "Shown for DURATION_INVALID."
+  },
+  "snapshotNote": "Availability can change while you decide; we check again when you reserve.",
+  "@snapshotNote": {
+    "description": "Explains that availability is a snapshot."
+  },
+  "checkoutTitle": "Complete your booking",
+  "@checkoutTitle": {
+    "description": "Heading of the payment screen."
+  },
+  "holdCountdown": "We are holding this for you for {time}",
+  "@holdCountdown": {
+    "description": "Countdown of the hold.",
+    "placeholders": {
+      "time": {
+        "type": "String",
+        "example": "09:41"
+      }
+    }
+  },
+  "holdExpiredTitle": "Time ran out",
+  "@holdExpiredTitle": {
+    "description": "Shown when the hold expired."
+  },
+  "holdExpiredBody": "The slot was released. Please choose a time again.",
+  "@holdExpiredBody": {
+    "description": "Shown when the hold expired."
+  },
+  "payAction": "Pay {amount}",
+  "@payAction": {
+    "description": "Pay button.",
+    "placeholders": {
+      "amount": {
+        "type": "String",
+        "example": "₹298"
+      }
+    }
+  },
+  "demoPaymentNote": "Demo payment: no money is charged.",
+  "@demoPaymentNote": {
+    "description": "Shown while the fake payment provider is used."
+  },
+  "paymentFailed": "The payment could not be confirmed. You were not charged. Please try again.",
+  "@paymentFailed": {
+    "description": "Shown for PAYMENT_INVALID."
+  },
+  "cancelHoldAction": "Release this slot",
+  "@cancelHoldAction": {
+    "description": "Cancels an unpaid hold."
+  },
+  "bookingConfirmedTitle": "You are booked!",
+  "@bookingConfirmedTitle": {
+    "description": "Heading after payment."
+  },
+  "bookingConfirmedBody": "Collect it at {drawer} at the time below.",
+  "@bookingConfirmedBody": {
+    "description": "Text after payment.",
+    "placeholders": {
+      "drawer": {
+        "type": "String",
+        "example": "Indiranagar"
+      }
+    }
+  },
+  "viewBookingAction": "View booking",
+  "@viewBookingAction": {
+    "description": "Opens the booking detail."
+  },
+  "backToExplore": "Back to explore",
+  "@backToExplore": {
+    "description": "Returns to the home screen."
+  },
+  "myBookingsTitle": "My bookings",
+  "@myBookingsTitle": {
+    "description": "Heading of the bookings list."
+  },
+  "bookingsUpcoming": "Upcoming",
+  "@bookingsUpcoming": {
+    "description": "Tab of current and future bookings."
+  },
+  "bookingsPast": "Past",
+  "@bookingsPast": {
+    "description": "Tab of finished bookings."
+  },
+  "bookingsEmpty": "You have no bookings here yet.",
+  "@bookingsEmpty": {
+    "description": "Empty bookings list."
+  },
+  "statusHeld": "Awaiting payment",
+  "@statusHeld": {
+    "description": "Booking status."
+  },
+  "statusConfirmed": "Confirmed",
+  "@statusConfirmed": {
+    "description": "Booking status."
+  },
+  "statusActive": "Out on rental",
+  "@statusActive": {
+    "description": "Booking status."
+  },
+  "statusOverdue": "Overdue",
+  "@statusOverdue": {
+    "description": "Booking status."
+  },
+  "statusCompleted": "Completed",
+  "@statusCompleted": {
+    "description": "Booking status."
+  },
+  "statusCancelled": "Cancelled",
+  "@statusCancelled": {
+    "description": "Booking status."
+  },
+  "statusExpired": "Expired",
+  "@statusExpired": {
+    "description": "Booking status."
+  },
+  "statusNoShow": "No-show",
+  "@statusNoShow": {
+    "description": "Booking status."
+  },
+  "bookingDetailTitle": "Booking",
+  "@bookingDetailTitle": {
+    "description": "Heading of the booking detail."
+  },
+  "whenLabel": "When",
+  "@whenLabel": {
+    "description": "Label."
+  },
+  "whereLabel": "Where",
+  "@whereLabel": {
+    "description": "Label."
+  },
+  "unitLabel": "Unit",
+  "@unitLabel": {
+    "description": "Label of the reserved unit code."
+  },
+  "priceLabel": "Price",
+  "@priceLabel": {
+    "description": "Label."
+  },
+  "paymentLabel": "Payment",
+  "@paymentLabel": {
+    "description": "Label."
+  },
+  "refundLabel": "Refund",
+  "@refundLabel": {
+    "description": "Label."
+  },
+  "refundValue": "{amount} ({status})",
+  "@refundValue": {
+    "description": "Refund amount and state.",
+    "placeholders": {
+      "amount": {
+        "type": "String",
+        "example": "₹298"
+      },
+      "status": {
+        "type": "String",
+        "example": "Processed"
+      }
+    }
+  },
+  "refundProcessed": "Processed",
+  "@refundProcessed": {
+    "description": "Refund state."
+  },
+  "refundPending": "On its way",
+  "@refundPending": {
+    "description": "Refund state."
+  },
+  "refundFailed": "Needs attention",
+  "@refundFailed": {
+    "description": "Refund state."
+  },
+  "paymentCaptured": "Paid",
+  "@paymentCaptured": {
+    "description": "Payment state."
+  },
+  "paymentCreated": "Not paid yet",
+  "@paymentCreated": {
+    "description": "Payment state."
+  },
+  "paymentRefunded": "Refunded",
+  "@paymentRefunded": {
+    "description": "Payment state."
+  },
+  "paymentNone": "Not paid",
+  "@paymentNone": {
+    "description": "No payment."
+  },
+  "payNowAction": "Pay now",
+  "@payNowAction": {
+    "description": "Continues to pay for a hold."
+  },
+  "cancelBookingAction": "Cancel booking",
+  "@cancelBookingAction": {
+    "description": "Starts cancelling."
+  },
+  "cancelConfirmTitle": "Cancel this booking?",
+  "@cancelConfirmTitle": {
+    "description": "Dialog title."
+  },
+  "cancelConfirmBody": "You get a refund according to the cancellation policy: the earlier you cancel, the more you get back.",
+  "@cancelConfirmBody": {
+    "description": "Dialog text."
+  },
+  "keepBookingAction": "Keep booking",
+  "@keepBookingAction": {
+    "description": "Dialog button that does not cancel."
+  },
+  "forgotPasswordLink": "Forgot your password?",
+  "@forgotPasswordLink": {
+    "description": "Link from sign-in to the recovery screen."
+  },
+  "forgotTitle": "Reset your password",
+  "@forgotTitle": {
+    "description": "Heading of the recovery screen."
+  },
+  "forgotSubtitle": "Enter your email. If an account exists we send you a code to choose a new password.",
+  "@forgotSubtitle": {
+    "description": "Explains recovery."
+  },
+  "forgotSendAction": "Send reset email",
+  "@forgotSendAction": {
+    "description": "Sends the recovery mail."
+  },
+  "forgotSent": "If an account exists for that email, a message is on its way.",
+  "@forgotSent": {
+    "description": "Always shown after sending (never reveals whether the account exists)."
+  },
+  "haveCodeAction": "I have a code",
+  "@haveCodeAction": {
+    "description": "Goes to the screen where the emailed code is entered."
+  },
+  "resetTitle": "Choose a new password",
+  "@resetTitle": {
+    "description": "Heading of the reset screen."
+  },
+  "resetCodeLabel": "Code from the email",
+  "@resetCodeLabel": {
+    "description": "Label of the token field."
+  },
+  "resetAction": "Save new password",
+  "@resetAction": {
+    "description": "Saves the password."
+  },
+  "resetDone": "Password changed. Sign in with your new password.",
+  "@resetDone": {
+    "description": "Shown after a successful reset."
+  },
+  "resetCodeInvalid": "That code is not valid any more. Ask for a new email.",
+  "@resetCodeInvalid": {
+    "description": "Shown for a bad or expired reset code."
+  },
+  "extendAction": "Extend rental",
+  "@extendAction": {
+    "description": "Opens the extension chooser."
+  },
+  "extendTitle": "Keep it longer",
+  "@extendTitle": {
+    "description": "Title of the extension sheet."
+  },
+  "extendPlus": "+{duration}",
+  "@extendPlus": {
+    "description": "Option to add this much time.",
+    "placeholders": {
+      "duration": {
+        "type": "String",
+        "example": "30 min"
+      }
+    }
+  },
+  "extendPrice": "Extra {amount} for {duration}",
+  "@extendPrice": {
+    "description": "Price of the extension.",
+    "placeholders": {
+      "amount": {
+        "type": "String",
+        "example": "₹49"
+      },
+      "duration": {
+        "type": "String",
+        "example": "30 min"
+      }
+    }
+  },
+  "extendPayAction": "Pay {amount} and extend",
+  "@extendPayAction": {
+    "description": "Pays the extension.",
+    "placeholders": {
+      "amount": {
+        "type": "String",
+        "example": "₹49"
+      }
+    }
+  },
+  "extendUnavailable": "Someone has booked this unit after you, so it cannot be extended that long. {hint}",
+  "@extendUnavailable": {
+    "description": "Shown for EXTENSION_UNAVAILABLE.",
+    "placeholders": {
+      "hint": {
+        "type": "String",
+        "example": "At most 30 minutes."
+      }
+    }
+  },
+  "extendDone": "Your rental now ends at {time}.",
+  "@extendDone": {
+    "description": "Shown after a successful extension.",
+    "placeholders": {
+      "time": {
+        "type": "String",
+        "example": "6:00 PM"
+      }
+    }
+  },
+  "kycTitle": "Verify your identity",
+  "@kycTitle": {
+    "description": "Heading of the Aadhaar verification screen."
+  },
+  "kycWhy": "To keep everyone's items safe, we need to confirm who you are with your Aadhaar card before your first booking.",
+  "@kycWhy": {
+    "description": "Why verification is needed."
+  },
+  "kycConsent": "Your Aadhaar number is sent securely to our verification partner to confirm your identity. We never store the full number — only the last four digits.",
+  "@kycConsent": {
+    "description": "Consent and privacy text."
+  },
+  "kycNumberLabel": "Aadhaar number",
+  "@kycNumberLabel": {
+    "description": "Label of the number field."
+  },
+  "kycNumberHint": "12 digits, as printed on the card",
+  "@kycNumberHint": {
+    "description": "Hint under the number field."
+  },
+  "kycSendCode": "Send code",
+  "@kycSendCode": {
+    "description": "Sends the one-time code."
+  },
+  "kycCodeSent": "We sent a code to the phone linked to {number}.",
+  "@kycCodeSent": {
+    "description": "After the code was sent.",
+    "placeholders": {
+      "number": {
+        "type": "String",
+        "example": "XXXX XXXX 1234"
+      }
+    }
+  },
+  "kycCodeLabel": "One-time code",
+  "@kycCodeLabel": {
+    "description": "Label of the code field."
+  },
+  "kycVerifyAction": "Verify",
+  "@kycVerifyAction": {
+    "description": "Verifies the code."
+  },
+  "kycChangeNumber": "Use a different number",
+  "@kycChangeNumber": {
+    "description": "Goes back to the number step."
+  },
+  "kycVerifiedTitle": "You are verified",
+  "@kycVerifiedTitle": {
+    "description": "Shown after successful verification."
+  },
+  "kycVerifiedBody": "Aadhaar {number} is verified. You can now book.",
+  "@kycVerifiedBody": {
+    "description": "Shown after successful verification.",
+    "placeholders": {
+      "number": {
+        "type": "String",
+        "example": "XXXX XXXX 1234"
+      }
+    }
+  },
+  "kycContinue": "Continue",
+  "@kycContinue": {
+    "description": "Leaves the verification screen."
+  },
+  "kycInvalidNumber": "That is not a valid Aadhaar number. Check the 12 digits.",
+  "@kycInvalidNumber": {
+    "description": "Validation message."
+  },
+  "kycInUse": "This Aadhaar is already verified on another account.",
+  "@kycInUse": {
+    "description": "Shown for AADHAAR_IN_USE."
+  },
+  "kycDeclined": "Your verification was declined. Please contact support.",
+  "@kycDeclined": {
+    "description": "Shown when staff declined it."
+  },
+  "kycTooMany": "Too many attempts. Please try again later.",
+  "@kycTooMany": {
+    "description": "Shown for RATE_LIMITED."
+  },
+  "kycRequiredError": "Verify your identity with your Aadhaar card before booking.",
+  "@kycRequiredError": {
+    "description": "Shown for KYC_REQUIRED."
+  },
+  "kycVerifyNow": "Verify now",
+  "@kycVerifyNow": {
+    "description": "Opens the verification screen."
+  },
+  "kycStatusNone": "Not verified",
+  "@kycStatusNone": {
+    "description": "Account tile."
+  },
+  "kycStatusPending": "Verification in progress",
+  "@kycStatusPending": {
+    "description": "Account tile."
+  },
+  "kycStatusVerified": "Identity verified",
+  "@kycStatusVerified": {
+    "description": "Account tile."
+  },
+  "kycStatusRejected": "Verification declined",
+  "@kycStatusRejected": {
+    "description": "Account tile."
+  },
+  "cancelNotAllowed": "This booking can no longer be cancelled.",
+  "@cancelNotAllowed": {
+    "description": "Shown for INVALID_STATE on cancel."
+  },
+  "demoCheckoutTitle": "Razorpay checkout (demo)",
+  "@demoCheckoutTitle": {
+    "description": "Title of the demo payment sheet."
+  },
+  "demoCheckoutNote": "No real money moves. Pick a test payment method to see how the booking reacts.",
+  "@demoCheckoutNote": {
+    "description": "Explains the demo payment sheet."
+  },
+  "demoMethodCardOk": "Test card 4111 1111 1111 1111 (succeeds)",
+  "@demoMethodCardOk": {
+    "description": "Demo payment method that succeeds."
+  },
+  "demoMethodUpi": "UPI success@razorpay (succeeds)",
+  "@demoMethodUpi": {
+    "description": "Demo payment method that succeeds."
+  },
+  "demoMethodCardFail": "Test card 4000 0000 0000 0002 (is declined)",
+  "@demoMethodCardFail": {
+    "description": "Demo payment method that fails."
+  },
+  "demoPaymentFailed": "The payment was declined. Your slot is still held, so you can try again.",
+  "@demoPaymentFailed": {
+    "description": "Shown after the demo gateway declines."
+  },
+  "emailVerifyTile": "Verify your email",
+  "@emailVerifyTile": {
+    "description": "Account tile shown while the email is not verified."
+  },
+  "emailVerifiedTile": "Email verified",
+  "@emailVerifiedTile": {
+    "description": "Account tile shown once the email is verified."
+  },
+  "emailVerifyTitle": "Verify your email",
+  "@emailVerifyTitle": {
+    "description": "Title of the email verification screen."
+  },
+  "emailVerifyBody": "We sent a link to {email}. Open it, or paste the code from the link below.",
+  "@emailVerifyBody": {
+    "description": "Explains how to verify.",
+    "placeholders": {
+      "email": {
+        "type": "String",
+        "example": "asha@example.com"
+      }
+    }
+  },
+  "emailVerifyCode": "Code from the link",
+  "@emailVerifyCode": {
+    "description": "Field label."
+  },
+  "emailVerifyAction": "Verify email",
+  "@emailVerifyAction": {
+    "description": "Button."
+  },
+  "emailVerifyResend": "Send a new link",
+  "@emailVerifyResend": {
+    "description": "Button."
+  },
+  "emailVerifyResent": "If a new link was due, it is on its way.",
+  "@emailVerifyResent": {
+    "description": "Confirmation after asking for a new link."
+  },
+  "emailVerifyDone": "Your email is verified.",
+  "@emailVerifyDone": {
+    "description": "Success message."
+  },
+  "emailVerifyInvalid": "That code is not valid or has expired. Ask for a new link.",
+  "@emailVerifyInvalid": {
+    "description": "The code was refused."
+  },
+  "exploreGreeting": "Hi, {name}",
+  "@exploreGreeting": {
+    "description": "Greeting at the top of the explore screen.",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Asha"
+      }
+    }
+  },
+  "exploreTagline": "Rent what you need, by the hour.",
+  "@exploreTagline": {
+    "description": "Line under the greeting."
+  },
+  "nearbyHeading": "Open near you",
+  "@nearbyHeading": {
+    "description": "Heading above the nearby drawers."
+  },
+  "freeUnits": "{count} free",
+  "@freeUnits": {
+    "description": "Number of free units of a product.",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  },
+  "soldOutNow": "None free now",
+  "@soldOutNow": {
+    "description": "Shown on a product card when no unit is free."
+  },
+  "galleryCount": "Photo {index} of {total}",
+  "@galleryCount": {
+    "description": "Accessible label of a gallery page.",
+    "placeholders": {
+      "index": {
+        "type": "int",
+        "example": "1"
+      },
+      "total": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+  "totalToPay": "Total to pay",
+  "@totalToPay": {
+    "description": "Label above the total in the sticky reserve bar."
+  },
+  "pickATimeFirst": "Pick a time and length",
+  "@pickATimeFirst": {
+    "description": "Hint in the reserve bar before a slot is chosen."
+  },
+  "bookingsEmptyUpcoming": "No upcoming bookings",
+  "@bookingsEmptyUpcoming": {
+    "description": "Empty state title on the Upcoming tab."
+  },
+  "bookingsEmptyUpcomingBody": "Find a drawer near you and reserve something.",
+  "@bookingsEmptyUpcomingBody": {
+    "description": "Empty state text."
+  },
+  "bookingsEmptyPast": "Nothing here yet",
+  "@bookingsEmptyPast": {
+    "description": "Empty state title on the Past tab."
+  },
+  "accountVerifiedHint": "Verified accounts can book right away.",
+  "@accountVerifiedHint": {
+    "description": "Hint under the identity tile."
+  },
+  "welcomeBack": "Welcome back",
+  "@welcomeBack": {
+    "description": "Kept for the brand header of the sign-in screen."
+  },
+  "deleteAccountTile": "Delete my account",
+  "@deleteAccountTile": {
+    "description": "Account tile that starts account deletion."
+  },
+  "deleteAccountTitle": "Delete your account?",
+  "@deleteAccountTitle": {
+    "description": "Title of the confirmation dialog."
+  },
+  "deleteAccountBody": "This removes your details and signs you out everywhere. Your booking history stays, without your name. This cannot be undone.",
+  "@deleteAccountBody": {
+    "description": "Explains what deletion does."
+  },
+  "deleteAccountPassword": "Your password",
+  "@deleteAccountPassword": {
+    "description": "Field label: password to confirm deletion."
+  },
+  "deleteAccountConfirm": "Delete account",
+  "@deleteAccountConfirm": {
+    "description": "Destructive confirm button."
+  },
+  "deleteAccountWrongPassword": "That password is not right.",
+  "@deleteAccountWrongPassword": {
+    "description": "Shown when the password is refused."
+  },
+  "deleteAccountBlocked": "Cancel or finish your current bookings first, then delete your account.",
+  "@deleteAccountBlocked": {
+    "description": "Shown when a live booking blocks deletion."
+  },
+  "editProfileTile": "Edit profile",
+  "@editProfileTile": {
+    "description": "Account tile that opens the profile editor."
+  },
+  "editProfileTitle": "Your details",
+  "@editProfileTitle": {
+    "description": "Title of the profile editor."
+  },
+  "editProfileName": "Name",
+  "@editProfileName": {
+    "description": "Field label: display name."
+  },
+  "editProfilePhone": "Mobile number",
+  "@editProfilePhone": {
+    "description": "Field label: phone number."
+  },
+  "editProfilePhoneHint": "With country code, e.g. +919876543210",
+  "@editProfilePhoneHint": {
+    "description": "Hint under the phone field."
+  },
+  "editProfileSave": "Save",
+  "@editProfileSave": {
+    "description": "Save button of the profile editor."
+  },
+  "editProfileSaved": "Details saved",
+  "@editProfileSaved": {
+    "description": "Snackbar after saving."
+  },
+  "editProfileInvalid": "Check the name (1–100 characters) and the number (+ and 7–15 digits).",
+  "@editProfileInvalid": {
+    "description": "Shown when the server rejects the details."
+  },
+  "guidanceConfirmedTitle": "Collect your item",
+  "@guidanceConfirmedTitle": {
+    "description": "Booking screen: heading before pickup."
+  },
+  "guidanceConfirmedBefore": "Starts in {when}. Go to {drawer} when your time begins and show this booking to the staff.",
+  "@guidanceConfirmedBefore": {
+    "description": "Booking screen: before the start.",
+    "placeholders": {
+      "when": {
+        "type": "String",
+        "example": "when"
+      },
+      "drawer": {
+        "type": "String",
+        "example": "drawer"
+      }
+    }
+  },
+  "guidanceConfirmedNow": "Your time has started. Go to {drawer} and show this booking to the staff.",
+  "@guidanceConfirmedNow": {
+    "description": "Booking screen: the start time has passed, not yet handed over.",
+    "placeholders": {
+      "drawer": {
+        "type": "String",
+        "example": "drawer"
+      }
+    }
+  },
+  "guidanceActiveTitle": "In use",
+  "@guidanceActiveTitle": {
+    "description": "Booking screen: heading while the item is with the customer."
+  },
+  "guidanceActiveBody": "Return it to {drawer} by {time}. Time left: {left}.",
+  "@guidanceActiveBody": {
+    "description": "Booking screen: how to return.",
+    "placeholders": {
+      "drawer": {
+        "type": "String",
+        "example": "drawer"
+      },
+      "time": {
+        "type": "String",
+        "example": "time"
+      },
+      "left": {
+        "type": "String",
+        "example": "left"
+      }
+    }
+  },
+  "guidanceActiveSoon": "Almost time: return it to {drawer} by {time}, or extend your booking.",
+  "@guidanceActiveSoon": {
+    "description": "Booking screen: the rental is nearly over.",
+    "placeholders": {
+      "drawer": {
+        "type": "String",
+        "example": "drawer"
+      },
+      "time": {
+        "type": "String",
+        "example": "time"
+      }
+    }
+  },
+  "guidanceOverdueTitle": "Please return it now",
+  "@guidanceOverdueTitle": {
+    "description": "Booking screen: heading when overdue."
+  },
+  "guidanceOverdueBody": "Your time ended at {time}. Return it to {drawer} as soon as you can.",
+  "@guidanceOverdueBody": {
+    "description": "Booking screen: overdue instruction.",
+    "placeholders": {
+      "time": {
+        "type": "String",
+        "example": "time"
+      },
+      "drawer": {
+        "type": "String",
+        "example": "drawer"
+      }
+    }
+  },
+  "guidanceCompletedTitle": "Returned",
+  "@guidanceCompletedTitle": {
+    "description": "Booking screen: heading after the return."
+  },
+  "guidanceCompletedBody": "Thanks for renting with Rento.",
+  "@guidanceCompletedBody": {
+    "description": "Booking screen: closing line."
+  },
+  "guidanceNoShowTitle": "Not collected",
+  "@guidanceNoShowTitle": {
+    "description": "Booking screen: heading for a no-show."
+  },
+  "guidanceNoShowBody": "This booking was not collected during your time.",
+  "@guidanceNoShowBody": {
+    "description": "Booking screen: no-show explanation."
+  },
+  "offlineBanner": "You are offline. Showing what was saved. Booking and payments need a connection.",
+  "@offlineBanner": {
+    "description": "Banner shown while Rento cannot be reached."
+  },
+  "offlineCheckAgain": "Check again",
+  "@offlineCheckAgain": {
+    "description": "Button on the offline banner."
+  },
+  "offlineActionHint": "Connect to the internet to do this.",
+  "@offlineActionHint": {
+    "description": "Shown next to a disabled action while offline."
+  },
+  "trustEmailOk": "Email verified",
+  "@trustEmailOk": {
+    "description": "Trust chip: the email is verified."
+  },
+  "trustEmailNo": "Email not verified",
+  "@trustEmailNo": {
+    "description": "Trust chip: the email is not verified yet."
+  },
+  "trustIdOk": "ID verified",
+  "@trustIdOk": {
+    "description": "Trust chip: Aadhaar verification done."
+  },
+  "trustIdPending": "ID in review",
+  "@trustIdPending": {
+    "description": "Trust chip: identity check pending."
+  },
+  "trustIdNo": "ID not verified",
+  "@trustIdNo": {
+    "description": "Trust chip: identity not verified yet."
+  },
+  "trustIdRejected": "ID not accepted",
+  "@trustIdRejected": {
+    "description": "Trust chip: identity check was refused."
+  },
+  "verifiedBadgeLabel": "Verified",
+  "@verifiedBadgeLabel": {
+    "description": "Spoken label of the verified tick."
+  },
+  "trustHeading": "Your trust level",
+  "@trustHeading": {
+    "description": "Heading above the verification chips."
+  },
+  "photoChange": "Change photo",
+  "@photoChange": {
+    "description": "Account: opens the photo choices."
+  },
+  "photoTake": "Take a photo",
+  "@photoTake": {
+    "description": "Photo choice: use the camera."
+  },
+  "photoChoose": "Choose from gallery",
+  "@photoChoose": {
+    "description": "Photo choice: pick a picture on the phone."
+  },
+  "photoRemove": "Remove photo",
+  "@photoRemove": {
+    "description": "Photo choice: go back to the initial letter."
+  },
+  "photoSaved": "Photo updated",
+  "@photoSaved": {
+    "description": "Snackbar after a new photo was saved."
+  },
+  "photoRemoved": "Photo removed",
+  "@photoRemoved": {
+    "description": "Snackbar after the photo was removed."
+  },
+  "photoFailed": "The photo could not be saved. Use a JPEG, PNG or WebP picture under 2 MB.",
+  "@photoFailed": {
+    "description": "Shown when the server refuses the photo."
+  },
+  "signInMethodsTile": "Sign-in methods",
+  "@signInMethodsTile": {
+    "description": "Account: opens the list of ways to sign in."
+  },
+  "signInMethodsTitle": "Sign-in methods",
+  "@signInMethodsTitle": {
+    "description": "Title of the sign-in methods screen."
+  },
+  "signInMethodsIntro": "These are the ways you can sign in to Rento. You always keep at least one.",
+  "@signInMethodsIntro": {
+    "description": "Explains the sign-in methods screen."
+  },
+  "methodPassword": "Email and password",
+  "@methodPassword": {
+    "description": "Name of the password sign-in method."
+  },
+  "methodGoogle": "Google",
+  "@methodGoogle": {
+    "description": "Name of the Google sign-in method."
+  },
+  "methodFacebook": "Facebook",
+  "@methodFacebook": {
+    "description": "Name of the Facebook sign-in method."
+  },
+  "methodApple": "Apple",
+  "@methodApple": {
+    "description": "Name of the Apple sign-in method."
+  },
+  "methodLinkedOn": "Added {date}",
+  "@methodLinkedOn": {
+    "description": "Subtitle of a sign-in method: when it was added.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "methodRemove": "Remove",
+  "@methodRemove": {
+    "description": "Button: remove a sign-in method."
+  },
+  "methodOnlyOne": "Your only way to sign in",
+  "@methodOnlyOne": {
+    "description": "Shown instead of Remove when it is the last method."
+  },
+  "methodRemoveTitle": "Remove this way to sign in?",
+  "@methodRemoveTitle": {
+    "description": "Dialog title when removing a sign-in method."
+  },
+  "methodRemoveBody": "You will no longer be able to sign in with {method}. Your bookings and details stay as they are.",
+  "@methodRemoveBody": {
+    "description": "Dialog body when removing a sign-in method.",
+    "placeholders": {
+      "method": {
+        "type": "String"
+      }
+    }
+  },
+  "methodRemoved": "Removed",
+  "@methodRemoved": {
+    "description": "Snackbar after a sign-in method was removed."
+  },
+  "methodLastError": "You need at least one way to sign in, so this one cannot be removed.",
+  "@methodLastError": {
+    "description": "Error: last sign-in method."
+  }
+}

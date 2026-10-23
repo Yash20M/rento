@@ -1,0 +1,134 @@
+# Continuous integration (README §16/§17.1, plan P1-11).
+#
+# Every job runs the same commands as `pnpm verify` (scripts/verify-steps.mjs); scripts/ci-config.test.mjs fails
+# if this file and that list drift apart. Nothing here may be skipped, retried or allowed to fail: the single
+# required status check is `ci-success`, which is green only if every other job succeeded.
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  # Cheap, fast checks first: style, types, tooling self-tests, migration immutability.
+  static:
+    name: Static checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # the migration guard compares against the base branch
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+      - run: pnpm typecheck
+      - run: pnpm test:scripts
+      - name: Applied migrations are immutable (pull request)
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_REF: ${{ github.base_ref }}
+        run: pnpm check:migrations --base "origin/$BASE_REF"
+      - name: Applied migrations are immutable (push)
+        if: github.event_name == 'push'
+        env:
+          BASE_SHA: ${{ github.event.before }}
+        run: pnpm check:migrations --base "$BASE_SHA"
+
+  # API suites run against a real PostgreSQL + PostGIS container started by Testcontainers (the runner has Docker).
+  api:
+    name: API (unit, database, HTTP, concurrency, contract)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter api test:unit
+      - run: pnpm --filter api test:db
+      - run: pnpm --filter api test:api
+      - run: pnpm --filter api test:concurrency
+      - run: pnpm contracts:check
+      - run: pnpm --filter @rento/contracts test
+
+  admin:
+    name: Admin (component + end-to-end)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter admin test
+      - run: pnpm --filter admin exec playwright install --with-deps chromium
+      - run: pnpm --filter admin test:e2e
+      - name: Keep the Playwright report when the run fails
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: apps/admin/playwright-report
+          if-no-files-found: ignore
+
+  mobile:
+    name: Mobile (Flutter)
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: 3.29.2 # keep equal to the local SDK (apps/mobile/README.md)
+          cache: true
+      - run: cd apps/mobile && flutter pub get
+      - run: pnpm mobile:codegen:check
+      - run: pnpm mobile:format:check
+      - run: pnpm mobile:analyze
+      - run: pnpm mobile:test
+
+  # The single required status check. `if: always()` so a failed or cancelled job fails the gate instead of
+  # leaving it "skipped" (which branch protection could treat as passing).
+  ci-success:
+    name: ci-success
+    if: always()
+    needs: [static, api, admin, mobile]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Every job must have succeeded
+        env:
+          RESULTS: ${{ join(needs.*.result, ' ') }}
+        run: |
+          echo "job results: $RESULTS"
+          for result in $RESULTS; do
+            if [ "$result" != "success" ]; then
+              echo "::error::a required job did not succeed ($result)"
+              exit 1
+            fi
+          done
