@@ -16,11 +16,12 @@ services:
       # Random signing secret, generated once by Render (>= 32 characters).
       - key: JWT_SECRET
         generateValue: true
-      # The address this service gets, https://<name>.onrender.com — used in e-mail links and the sign-in origin check.
+      # The address Render gave this service — used in e-mail links and the sign-in origin check. Not a secret.
+      # A fork deploying its own copy gets a different address: change both lines to it.
       - key: PUBLIC_WEB_URL
-        sync: false
+        value: https://rento-zc0w.onrender.com
       - key: CORS_ALLOWED_ORIGINS
-        sync: false
+        value: https://rento-zc0w.onrender.com
       # A DEMO: the in-process payment gateway (no real money moves) and no outgoing mail server.
       - key: PAYMENT_PROVIDER
         value: fake
