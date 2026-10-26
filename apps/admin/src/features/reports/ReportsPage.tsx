@@ -62,7 +62,7 @@ export function ReportsPage() {
     : 0;
 
   return (
-    <div className="grid max-w-6xl gap-5">
+    <div className="grid gap-5">
       <PageHeader
         title="Reports"
         description="Bookings paid for in the chosen days. Money is what was taken minus what was (or will be) refunded; it includes refundable deposits, so it is not profit."
@@ -179,7 +179,7 @@ export function ReportsPage() {
                           color: 'var(--chart-4)',
                         },
                         { label: 'No-show', value: data.totals.noShow, color: 'var(--chart-3)' },
-                        { label: 'Upcoming or running', value: other, color: 'var(--chart-1)' },
+                        { label: 'Upcoming or running', value: other, color: 'var(--chart-6)' },
                       ]}
                     />
                   </CardContent>

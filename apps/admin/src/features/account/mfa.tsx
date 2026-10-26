@@ -62,7 +62,7 @@ export function CodeForm({
         </Button>
         <button
           type="button"
-          className="text-sm text-primary underline-offset-2 hover:underline"
+          className="text-sm text-brand-text underline-offset-2 hover:underline"
           onClick={() => {
             setRecovery((value) => !value);
             setText('');

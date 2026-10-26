@@ -9,7 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Field, Select, Textarea, TextField } from '@/components/ui/controls';
 import { Modal } from '@/components/ui/modal';
-import { PhotoGallery } from './PhotoGallery';
+import { PendingPhotos, PhotoGallery, uploadPhoto } from './PhotoGallery';
 import { Table, TBody, Td, Th, THead, Tr } from '@/components/ui/table';
 import { formatDuration, formatPaise, paiseToRupees, rupeesToPaise } from '@/lib/format';
 import { useCategories } from './CategoriesPage';
@@ -126,18 +126,44 @@ function ItemModelForm({ model, onClose }: { model: ItemModel | undefined; onClo
   const [deposit, setDeposit] = useState(model ? paiseToRupees(model.depositPaise) : '0');
   const [status, setStatus] = useState<string>(model?.status ?? 'active');
   const [localErrors, setLocalErrors] = useState<Record<string, string>>({});
+  // Pictures chosen for a NEW product; they are uploaded right after it is saved.
+  const [pending, setPending] = useState<File[]>([]);
+  // Set when the product was created but some pictures failed: the form then carries on as an edit of it.
+  const [created, setCreated] = useState<ItemModel | undefined>(undefined);
+  const [uploadNote, setUploadNote] = useState<string | undefined>(undefined);
+  const current = model ?? created;
 
   const save = useMutation({
     mutationFn: async (body: Record<string, unknown>) =>
-      model
+      current
         ? unwrap(
             await api.PATCH('/v1/admin/item-models/{id}', {
-              params: { path: { id: model.id } },
+              params: { path: { id: current.id } },
               body: { ...body, status: status as 'active' | 'inactive' },
             }),
           )
         : unwrap(await api.POST('/v1/admin/item-models', { body: body as never })),
-    onSuccess: async () => {
+    onSuccess: async (saved) => {
+      // A new product now exists: upload the pictures chosen for it (one failing does not stop the rest).
+      if (!current && pending.length > 0) {
+        const failed: string[] = [];
+        for (const file of pending) {
+          try {
+            await uploadPhoto(api, saved.id, file);
+          } catch {
+            failed.push(file.name);
+          }
+        }
+        await queryClient.invalidateQueries({ queryKey: ['item-models'] });
+        if (failed.length > 0) {
+          setCreated(saved);
+          setPending([]);
+          setUploadNote(
+            `The product was saved, but these pictures could not be uploaded: ${failed.join(', ')}. Add them again below.`,
+          );
+          return;
+        }
+      }
       await queryClient.invalidateQueries({ queryKey: ['item-models'] });
       onClose();
     },
@@ -155,6 +181,8 @@ function ItemModelForm({ model, onClose }: { model: ItemModel | undefined; onClo
     const maxDurationMin = whole(maximum);
     const bufferMin = whole(buffer);
     if (name.trim() === '') errors['name'] = 'Enter a name.';
+    else if (name.trim().length > 120) errors['name'] = 'Use at most 120 characters.';
+    if (description.trim().length > 2000) errors['description'] = 'Use at most 2000 characters.';
     if (categoryId === '') errors['categoryId'] = 'Choose a category.';
     if (pricePaise === undefined)
       errors['pricePerSlotPaise'] = 'Enter an amount such as 49 or 49.50.';
@@ -164,6 +192,22 @@ function ItemModelForm({ model, onClose }: { model: ItemModel | undefined; onClo
     if (minDurationMin === undefined) errors['minDurationMin'] = 'Enter whole minutes.';
     if (maxDurationMin === undefined) errors['maxDurationMin'] = 'Enter whole minutes.';
     if (bufferMin === undefined) errors['bufferMin'] = 'Enter whole minutes (0 for none).';
+    // Rules between the numbers, in words a person can act on (the server checks them too).
+    if (slotMinutes !== undefined && slotMinutes >= 1) {
+      if (minDurationMin !== undefined && minDurationMin < slotMinutes)
+        errors['minDurationMin'] = `At least one slot (${slotMinutes} minutes).`;
+      else if (minDurationMin !== undefined && minDurationMin % slotMinutes !== 0)
+        errors['minDurationMin'] = `Use a multiple of the slot length (${slotMinutes} minutes).`;
+      if (maxDurationMin !== undefined && maxDurationMin % slotMinutes !== 0)
+        errors['maxDurationMin'] = `Use a multiple of the slot length (${slotMinutes} minutes).`;
+    }
+    if (
+      minDurationMin !== undefined &&
+      maxDurationMin !== undefined &&
+      maxDurationMin < minDurationMin &&
+      errors['maxDurationMin'] === undefined
+    )
+      errors['maxDurationMin'] = 'Must not be shorter than the shortest rental.';
     setLocalErrors(errors);
     if (Object.keys(errors).length > 0) return;
 
@@ -284,11 +328,14 @@ function ItemModelForm({ model, onClose }: { model: ItemModel | undefined; onClo
             />
           )}
         </Field>
-        {model ? (
-          <PhotoGallery model={model} />
+        {current ? (
+          <PhotoGallery model={current} />
         ) : (
-          <p className="text-sm text-muted-foreground sm:col-span-2">
-            Save the product first, then open it again to add photos.
+          <PendingPhotos files={pending} onChange={setPending} />
+        )}
+        {uploadNote && (
+          <p role="alert" className="text-sm text-destructive sm:col-span-2">
+            {uploadNote}
           </p>
         )}
         <ErrorNote

@@ -32,7 +32,10 @@ void main() {
       await pumpApp(tester, api, signedIn: true);
 
       expect(find.byType(NavigationBar), findsOneWidget);
-      expect(find.text('Find a drawer'), findsWidgets); // explore tab title
+      expect(
+        find.text('Rent what you need, by the hour.'),
+        findsWidgets,
+      ); // explore tab title
       expect(api.to('POST', '/v1/auth/refresh').single.data, {
         'refreshToken': 'refresh-0',
       });

@@ -107,13 +107,17 @@ const GROUPS: ReadonlyArray<NavGroup> = [
 function Brand() {
   return (
     <div className="flex items-center gap-2.5">
-      <span
+      <img
+        src="/logo-512.png"
+        alt=""
         aria-hidden="true"
-        className="grid size-8 place-items-center rounded-xl bg-gradient-to-br from-primary to-[var(--chart-2)] text-sm font-bold text-primary-foreground shadow-sm"
-      >
-        R
-      </span>
-      <h1 className="text-base font-semibold tracking-tight whitespace-nowrap">Rento Admin</h1>
+        width={32}
+        height={32}
+        className="size-8 rounded-[10px] shadow-sm"
+      />
+      <h1 className="hidden text-base font-semibold tracking-tight whitespace-nowrap min-[420px]:block">
+        Rento Admin
+      </h1>
     </div>
   );
 }
@@ -130,12 +134,12 @@ export function AppLayout() {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <header className="sticky top-0 z-30 flex h-16 items-center justify-between gap-3 border-b bg-background/80 px-4 backdrop-blur sm:px-6">
+      <header className="sticky top-0 z-30 flex h-16 items-center justify-between gap-2 border-b bg-background/80 px-3 backdrop-blur sm:px-6">
         <div className="flex items-center gap-3">
           <Button
             variant="ghost"
             size="sm"
-            className="md:hidden"
+            className="lg:hidden"
             aria-label={menuOpen ? 'Close menu' : 'Open menu'}
             aria-expanded={menuOpen}
             onClick={() => setMenuOpen((open) => !open)}
@@ -175,7 +179,7 @@ export function AppLayout() {
         <nav
           aria-label="Main"
           className={cn(
-            'fixed inset-y-16 left-0 z-20 w-64 shrink-0 overflow-y-auto border-r bg-card p-3 transition-transform md:static md:inset-auto md:translate-x-0',
+            'fixed inset-y-16 left-0 z-20 w-64 shrink-0 overflow-y-auto border-r bg-card p-3 transition-transform lg:static lg:inset-auto lg:translate-x-0',
             menuOpen ? 'translate-x-0 shadow-card' : '-translate-x-full',
           )}
         >
@@ -213,7 +217,7 @@ export function AppLayout() {
           <button
             type="button"
             aria-label="Close menu"
-            className="fixed inset-0 top-16 z-10 bg-black/30 md:hidden"
+            className="fixed inset-0 top-16 z-10 bg-black/30 lg:hidden"
             onClick={() => setMenuOpen(false)}
           />
         )}

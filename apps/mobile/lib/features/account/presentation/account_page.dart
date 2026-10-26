@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../app/providers.dart';
+import '../../../app/theme.dart';
 import '../../../core/auth/auth_controller.dart';
 import '../../../core/ui/product_image.dart';
 import '../../../core/ui/brand.dart';
@@ -12,6 +13,7 @@ import '../../kyc/presentation/kyc_page.dart';
 import 'delete_account_dialog.dart';
 import 'edit_profile_dialog.dart';
 import 'photo_sheet.dart';
+import '../../../core/ui/responsive.dart';
 
 class AccountPage extends ConsumerWidget {
   const AccountPage({super.key});
@@ -51,7 +53,7 @@ class AccountPage extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(title: Text(l10n.accountTitle)),
       body: ListView(
-        padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+        padding: pagePadding(context, top: 8),
         children: [
           BrandHeader(
             child: Row(
@@ -125,7 +127,7 @@ class AccountPage extends ConsumerWidget {
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               style: Theme.of(context).textTheme.titleLarge
-                                  ?.copyWith(color: Colors.white),
+                                  ?.copyWith(color: AppTheme.onBrand),
                             ),
                           ),
                         ],
@@ -135,7 +137,7 @@ class AccountPage extends ConsumerWidget {
                         Text(
                           l10n.signedInAs(email),
                           style: TextStyle(
-                            color: Colors.white.withValues(alpha: 0.88),
+                            color: AppTheme.onBrand.withValues(alpha: 0.85),
                           ),
                         ),
                       ],

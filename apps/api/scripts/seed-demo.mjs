@@ -6,6 +6,7 @@
 // Safe to run twice: everything is looked up by name/code first. Demo credentials are printed at the end.
 // NEVER run against anything but a local development database.
 import { existsSync } from 'node:fs';
+import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import pg from 'pg';
 import { productArt } from './demo-art.mjs';
@@ -222,27 +223,32 @@ async function main() {
     depositPaise: 300000,
   });
 
-  // Photos for the demo products (uploaded through the real endpoint; a product that already has one keeps it unless
-  // SEED_REFRESH_ART=1 asks for the pictures to be replaced).
-  const photoFor = async (m, kind, theme) => {
+  // Photos for the demo products: real photographs (demo-photos/, licences in ATTRIBUTION.md), several per product,
+  // uploaded through the real endpoint. A product that already has this many keeps its photos unless
+  // SEED_REFRESH_ART=1 asks for them to be replaced; older generated art is replaced by the photographs.
+  const photoFor = async (m, prefix) => {
     const refresh = process.env.SEED_REFRESH_ART === '1';
-    if ((m.photos ?? []).length > 0 && !refresh) return;
-    if (refresh) {
-      for (const ref of m.photos ?? []) {
-        const id = ref.split('/').pop();
-        await call('DELETE', `/v1/admin/item-models/${m.id}/photos/${id}`, { token: adminToken });
-      }
+    const files = [1, 2, 3].map(
+      (n) => new URL(`./demo-photos/${prefix}-${n}.jpg`, import.meta.url),
+    );
+    if ((m.photos ?? []).length >= files.length && !refresh) return;
+    for (const ref of m.photos ?? []) {
+      const id = ref.split('/').pop();
+      await call('DELETE', `/v1/admin/item-models/${m.id}/photos/${id}`, { token: adminToken });
     }
-    const response = await fetch(`${API}/v1/admin/item-models/${m.id}/photos`, {
-      method: 'POST',
-      headers: { 'content-type': 'image/png', authorization: `Bearer ${adminToken}` },
-      body: productArt(kind, theme),
-    });
-    if (response.status !== 201) throw new Error(`photo for ${m.name} failed: ${response.status}`);
+    for (const file of files) {
+      const response = await fetch(`${API}/v1/admin/item-models/${m.id}/photos`, {
+        method: 'POST',
+        headers: { 'content-type': 'image/jpeg', authorization: `Bearer ${adminToken}` },
+        body: await readFile(file),
+      });
+      if (response.status !== 201)
+        throw new Error(`photo for ${m.name} failed: ${response.status}`);
+    }
   };
-  await photoFor(ps5, 'console', 'blue');
-  await photoFor(quest, 'headset', 'purple');
-  await photoFor(gopro, 'camera', 'teal');
+  await photoFor(ps5, 'ps5');
+  await photoFor(quest, 'quest3');
+  await photoFor(gopro, 'gopro');
 
   // 4. Places (coordinates are latitude, longitude; the API stores them longitude-first).
   const drawers = await ok('drawers', call('GET', '/v1/admin/drawers', { token: adminToken }));

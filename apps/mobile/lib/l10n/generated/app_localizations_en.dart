@@ -878,4 +878,39 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get methodLastError => 'You need at least one way to sign in, so this one cannot be removed.';
+
+  @override
+  String get rentNearYou => 'Rent near you';
+
+  @override
+  String get drawersNearYou => 'Drawers near you';
+
+  @override
+  String fromDrawer(String drawer) {
+    return 'at $drawer';
+  }
+
+  @override
+  String get locatingNearest => 'Finding the drawers nearest to you…';
+
+  @override
+  String get locationOffNote => 'Turn on location to see what is nearest. Showing every drawer for now.';
+
+  @override
+  String get nothingNearNote => 'Nothing near you yet. Here is everything Rento has.';
+
+  @override
+  String get allDrawersHeading => 'All drawers';
+
+  @override
+  String get rentFromDrawers => 'Popular to rent';
+
+  @override
+  String get notInYourArea => 'Sorry, this drawer is not available in your area. Try a drawer nearer to you.';
+
+  @override
+  String get locationNeededToOrder => 'Allow location access so we can check Rento is available in your area, then try again.';
+
+  @override
+  String get availableLabel => 'Available';
 }

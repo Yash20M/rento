@@ -28,11 +28,12 @@ Future<void> _toExplore(WidgetTester tester, FakeApi api) async {
 
 Future<void> _toSlotPicker(WidgetTester tester, FakeApi api) async {
   await _toExplore(tester, api);
-  await tester.tap(find.byKey(const Key('choose-location')));
-  await tester.pumpAndSettle();
-  await tester.tap(find.byKey(const Key('demo-Bengaluru · Indiranagar')));
+  await chooseDemoPlace(tester);
+  await tester.ensureVisible(find.text('Indiranagar').first);
   await tester.pumpAndSettle();
   await tester.tap(find.text('Indiranagar').first);
+  await tester.pumpAndSettle();
+  await tester.ensureVisible(find.text('PlayStation 5').first);
   await tester.pumpAndSettle();
   await tester.tap(find.text('PlayStation 5').first);
   await tester.pumpAndSettle();
@@ -100,18 +101,19 @@ void main() {
       (tester) async {
         await _toExplore(tester, _api());
         expect(find.text('Hi, Asha'), findsOneWidget);
-        expect(find.text('Find a drawer'), findsOneWidget);
-        await tester.tap(find.byKey(const Key('choose-location')));
-        await tester.pumpAndSettle();
-        await tester.tap(find.byKey(const Key('demo-Bengaluru · Indiranagar')));
-        await tester.pumpAndSettle();
+        expect(find.text('Rent what you need, by the hour.'), findsOneWidget);
+        await chooseDemoPlace(tester);
         expect(find.text('Open near you'), findsOneWidget);
         final card = find.byKey(const Key('drawer-d-1'));
         expect(
           find.descendant(of: card, matching: find.text('Open now')),
           findsOneWidget,
         );
-        expect(find.byKey(const Key('location-label')), findsOneWidget);
+        expect(
+          find.byKey(const Key('location-label')),
+          findsNothing,
+          reason: 'no location bar',
+        );
       },
     );
 
@@ -119,9 +121,8 @@ void main() {
       'D-04 the drawer page shows photo-first product cards with the stock as a pill',
       (tester) async {
         await _toExplore(tester, _api());
-        await tester.tap(find.byKey(const Key('choose-location')));
-        await tester.pumpAndSettle();
-        await tester.tap(find.byKey(const Key('demo-Bengaluru · Indiranagar')));
+        await chooseDemoPlace(tester);
+        await tester.ensureVisible(find.text('Indiranagar').first);
         await tester.pumpAndSettle();
         await tester.tap(find.text('Indiranagar').first);
         await tester.pumpAndSettle();
@@ -131,7 +132,10 @@ void main() {
           find.descendant(of: tile, matching: find.byType(Pill)),
           findsOneWidget,
         );
-        expect(find.text('2 available now'), findsOneWidget);
+        expect(
+          find.text('Available'),
+          findsOneWidget,
+        ); // in the area, units free
       },
     );
   });
@@ -149,7 +153,11 @@ void main() {
               .onPressed,
           isNull,
         );
+        await tester.ensureVisible(find.text('10:00 AM'));
+        await tester.pumpAndSettle();
         await tester.tap(find.text('10:00 AM'));
+        await tester.pumpAndSettle();
+        await tester.ensureVisible(find.byKey(const Key('duration-60')));
         await tester.pumpAndSettle();
         await tester.tap(find.byKey(const Key('duration-60')));
         await tester.pumpAndSettle();
@@ -172,9 +180,13 @@ void main() {
       tester,
     ) async {
       await _toSlotPicker(tester, _api());
+      await tester.ensureVisible(find.text('10:00 AM'));
+      await tester.pumpAndSettle();
       await tester.tap(find.text('10:00 AM'));
       await tester.pumpAndSettle();
       expect(find.byKey(const Key('duration-60')), findsOneWidget);
+      await tester.ensureVisible(find.byKey(const Key('day-2030-01-09')));
+      await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('day-2030-01-09')));
       await tester.pumpAndSettle();
       expect(find.byKey(const Key('duration-60')), findsNothing);

@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../app/providers.dart';
+import '../../../app/theme.dart';
 import '../../../core/api/api_exception.dart';
 import '../../../core/net/connectivity.dart';
 import '../../../core/api/models/models.dart';
@@ -14,6 +15,7 @@ import '../../../core/ui/motion.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../application/booking_providers.dart';
 import 'booking_widgets.dart';
+import '../../../core/ui/responsive.dart';
 
 /// Pay for a held slot. The hold runs out after a few minutes; the booking only becomes `confirmed` when the SERVER has
 /// verified the payment — never because this screen says so.
@@ -162,7 +164,7 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
     final expired = _expired(booking);
 
     return ListView(
-      padding: const EdgeInsets.all(16),
+      padding: pagePadding(context),
       children: [
         // What went wrong comes first, where it cannot be missed.
         if (_declined) ...[
@@ -256,9 +258,15 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
       child: SafeArea(
         top: false,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+          padding: EdgeInsets.fromLTRB(
+            contentInset(context),
+            12,
+            contentInset(context),
+            8,
+          ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               if (held) ...[
                 FilledButton(
@@ -382,7 +390,10 @@ class _CountdownRing extends StatelessWidget {
             ? 0.0
             : (remaining.inSeconds / total.inSeconds).clamp(0.0, 1.0);
     final urgent = remaining.inSeconds <= 60;
-    final color = urgent ? scheme.error : scheme.primary;
+    final color =
+        urgent
+            ? scheme.error
+            : AppTheme.brandText(Theme.of(context).brightness);
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(

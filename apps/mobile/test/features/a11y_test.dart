@@ -52,15 +52,15 @@ FakeApi _api() => FakeApi({
 });
 
 Future<void> _tapText(WidgetTester tester, String text) async {
+  // Big pictures push things below the fold: scroll to the target like a person would.
+  await tester.ensureVisible(find.text(text).first);
+  await tester.pumpAndSettle();
   await tester.tap(find.text(text).first);
   await tester.pumpAndSettle();
 }
 
 Future<void> _chooseDemoPlace(WidgetTester tester) async {
-  await tester.tap(find.byKey(const Key('choose-location')));
-  await tester.pumpAndSettle();
-  await tester.tap(find.byKey(const Key('demo-Bengaluru · Indiranagar')));
-  await tester.pumpAndSettle();
+  await chooseDemoPlace(tester);
 }
 
 Future<void> _guidelines(WidgetTester tester, String step) async {
@@ -85,27 +85,27 @@ void main() {
     handle.dispose();
   });
 
-  testWidgets('A-02 explore, the place sheet, a drawer and its slot picker', (
-    tester,
-  ) async {
-    final handle = tester.ensureSemantics();
-    await pumpApp(tester, _api(), signedIn: true);
-    await _guidelines(tester, 'step 3');
-    await tester.tap(find.byKey(const Key('choose-location')));
-    await tester.pumpAndSettle();
-    await _guidelines(tester, 'step 4');
-    await tester.tap(find.byKey(const Key('demo-Bengaluru · Indiranagar')));
-    await tester.pumpAndSettle();
-    await _guidelines(tester, 'step 5');
-    await _tapText(tester, 'Indiranagar');
-    await _guidelines(tester, 'step 6');
-    await _tapText(tester, 'PlayStation 5');
-    await _guidelines(tester, 'step 7');
-    await tester.tap(find.text('10:00 AM'));
-    await tester.pumpAndSettle();
-    await _guidelines(tester, 'step 8');
-    handle.dispose();
-  });
+  testWidgets(
+    'A-02 explore (all drawers, then nearby), a drawer and its slot picker',
+    (tester) async {
+      final handle = tester.ensureSemantics();
+      await pumpApp(tester, _api(), signedIn: true);
+      await _guidelines(tester, 'step 3');
+      await _guidelines(tester, 'step 4');
+      await chooseDemoPlace(tester);
+      await _guidelines(tester, 'step 5');
+      await _tapText(tester, 'Indiranagar');
+      await _guidelines(tester, 'step 6');
+      await _tapText(tester, 'PlayStation 5');
+      await _guidelines(tester, 'step 7');
+      await tester.ensureVisible(find.text('10:00 AM'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('10:00 AM'));
+      await tester.pumpAndSettle();
+      await _guidelines(tester, 'step 8');
+      handle.dispose();
+    },
+  );
 
   testWidgets(
     'A-03 my bookings, a booking, the account and the profile editor',
@@ -243,6 +243,8 @@ void _moreScreens() {
         await pumpApp(tester, _api(), signedIn: true);
         await _chooseDemoPlace(tester);
         await _tapText(tester, 'Indiranagar');
+        await tester.ensureVisible(find.byKey(const Key('hours-tile')));
+        await tester.pumpAndSettle();
         await tester.tap(find.byKey(const Key('hours-tile')));
         await tester.pumpAndSettle();
         expect(find.byKey(const Key('hours-day-1')), findsOneWidget);

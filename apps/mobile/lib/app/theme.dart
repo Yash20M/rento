@@ -1,19 +1,34 @@
 import 'package:flutter/material.dart';
 
-/// Material 3 themes derived from one brand seed (an indigo that matches the admin panel), light and dark. The brand
-/// colour itself is a design decision (Q-13) — the whole look follows from this one value.
+/// Material 3 themes built from the Rento logo: its orange (`#EF8E30`), warm neutrals and a warm near-black "ink".
+/// White text on that orange is only 2.6:1, so text and icons ON the brand orange are ink (7:1); orange used as TEXT
+/// on a light surface is the deeper [brandText]. The look follows from these few values (Q-13).
 abstract final class AppTheme {
-  static const Color seed = Color(0xFF4F46E5);
+  /// The orange of the logo.
+  static const Color seed = Color(0xFFEF8E30);
+
+  /// Text and icons on the brand orange.
+  static const Color ink = Color(0xFF1F1408);
+
+  /// Brand orange used as text on a light surface (5.5:1 on white); the light orange on dark surfaces.
+  static Color brandText(Brightness b) =>
+      b == Brightness.light ? const Color(0xFFB34700) : const Color(0xFFF7A857);
 
   /// The blue tick of a verified person, and the amber of "in review".
   static const Color verified = Color(0xFF1D7FEA);
   static const Color warning = Color(0xFFB45309);
 
-  /// The brand gradient (white text on it always passes contrast): indigo into violet.
+  /// Green of "open now" / "available".
+  static const Color success = Color(0xFF138A4B);
+
+  /// The brand gradient: logo orange, a touch lighter at the top left. Put [ink] on it.
   static List<Color> brandGradient(bool dark) =>
       dark
-          ? const [Color(0xFF3730A3), Color(0xFF6D28D9)]
-          : const [Color(0xFF4F46E5), Color(0xFF7C3AED)];
+          ? const [Color(0xFFE98425), Color(0xFFD96E12)]
+          : const [Color(0xFFF7A24B), Color(0xFFEF8E30)];
+
+  /// Colour for text and icons placed on [brandGradient].
+  static const Color onBrand = ink;
 
   static ThemeData light() => _build(Brightness.light);
 
@@ -21,21 +36,41 @@ abstract final class AppTheme {
 
   static ThemeData _build(Brightness brightness) {
     final light = brightness == Brightness.light;
-    // The generated tonal palette turns the brand indigo into a dusty lavender; pin the colours that carry the brand.
     final scheme = ColorScheme.fromSeed(
       seedColor: seed,
       brightness: brightness,
     ).copyWith(
-      primary: light ? const Color(0xFF4F46E5) : const Color(0xFFA5B4FC),
-      onPrimary: light ? Colors.white : const Color(0xFF1E1B4B),
+      primary: light ? seed : const Color(0xFFF59A3E),
+      onPrimary: ink,
       primaryContainer:
-          light ? const Color(0xFFE0E7FF) : const Color(0xFF312E81),
+          light ? const Color(0xFFFFE7CF) : const Color(0xFF5A2B05),
       onPrimaryContainer:
-          light ? const Color(0xFF1E1B4B) : const Color(0xFFE0E7FF),
+          light ? const Color(0xFF4A2200) : const Color(0xFFFFDFC0),
+      secondary: light ? const Color(0xFF5E4B3A) : const Color(0xFFE2C9B0),
+      secondaryContainer:
+          light ? const Color(0xFFF7ECDF) : const Color(0xFF3A2D22),
+      onSecondaryContainer:
+          light ? const Color(0xFF2B1D10) : const Color(0xFFF5E3D0),
+      surface: light ? const Color(0xFFFFFAF5) : const Color(0xFF16100A),
+      onSurface: light ? ink : const Color(0xFFF7EDE2),
+      onSurfaceVariant:
+          light ? const Color(0xFF65564A) : const Color(0xFFCDBBAA),
+      surfaceContainerLowest: light ? Colors.white : const Color(0xFF1D1610),
+      surfaceContainerLow:
+          light ? const Color(0xFFFFF4E9) : const Color(0xFF211912),
+      surfaceContainer:
+          light ? const Color(0xFFFBEEDF) : const Color(0xFF281F17),
+      surfaceContainerHigh:
+          light ? const Color(0xFFF6E7D5) : const Color(0xFF31271D),
+      surfaceContainerHighest:
+          light ? const Color(0xFFF0DEC8) : const Color(0xFF3B2F24),
+      outline: light ? const Color(0xFF857463) : const Color(0xFF9C8A78),
+      outlineVariant: light ? const Color(0xFFEBDDCD) : const Color(0xFF45382B),
     );
     final base = ThemeData(
       useMaterial3: true,
       colorScheme: scheme,
+      fontFamily: 'Poppins',
       visualDensity: VisualDensity.adaptivePlatformDensity,
     );
     final text = base.textTheme;
@@ -76,31 +111,45 @@ abstract final class AppTheme {
         elevation: 0,
         margin: const EdgeInsets.only(bottom: 12),
         clipBehavior: Clip.antiAlias,
+        surfaceTintColor: Colors.transparent,
         color: scheme.surfaceContainerLowest,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-          side: BorderSide(color: scheme.outlineVariant.withValues(alpha: 0.7)),
+          borderRadius: BorderRadius.circular(24),
+          side: BorderSide(color: scheme.outlineVariant.withValues(alpha: 0.8)),
         ),
       ),
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
           minimumSize: const Size(64, 52),
           shape: shape16,
-          textStyle: const TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
+          textStyle: const TextStyle(
+            fontFamily: 'Poppins',
+            fontWeight: FontWeight.w600,
+            fontSize: 16,
+          ),
         ),
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
           minimumSize: const Size(64, 52),
           shape: shape16,
-          side: BorderSide(color: scheme.outlineVariant),
-          textStyle: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+          foregroundColor: scheme.onSurface,
+          side: BorderSide(color: scheme.outline.withValues(alpha: 0.55)),
+          textStyle: const TextStyle(
+            fontFamily: 'Poppins',
+            fontWeight: FontWeight.w600,
+            fontSize: 16,
+          ),
         ),
       ),
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
+          foregroundColor: AppTheme.brandText(brightness),
           shape: shape16,
-          textStyle: const TextStyle(fontWeight: FontWeight.w600),
+          textStyle: const TextStyle(
+            fontFamily: 'Poppins',
+            fontWeight: FontWeight.w600,
+          ),
         ),
       ),
       inputDecorationTheme: InputDecorationTheme(
@@ -128,10 +177,12 @@ abstract final class AppTheme {
         side: BorderSide(color: scheme.outlineVariant),
         selectedColor: scheme.primaryContainer,
         labelStyle: TextStyle(
-          fontWeight: FontWeight.w600,
+          fontFamily: 'Poppins',
+          fontWeight: FontWeight.w500,
           color: scheme.onSurface,
         ),
         secondaryLabelStyle: TextStyle(
+          fontFamily: 'Poppins',
           fontWeight: FontWeight.w700,
           color: scheme.onPrimaryContainer,
         ),
@@ -142,8 +193,17 @@ abstract final class AppTheme {
         elevation: 0,
         backgroundColor: scheme.surfaceContainerLowest,
         indicatorColor: scheme.primaryContainer,
+        iconTheme: WidgetStateProperty.resolveWith(
+          (states) => IconThemeData(
+            color:
+                states.contains(WidgetState.selected)
+                    ? scheme.onPrimaryContainer
+                    : scheme.onSurfaceVariant,
+          ),
+        ),
         labelTextStyle: WidgetStateProperty.resolveWith(
           (states) => TextStyle(
+            fontFamily: 'Poppins',
             fontSize: 12,
             fontWeight:
                 states.contains(WidgetState.selected)
@@ -153,9 +213,19 @@ abstract final class AppTheme {
         ),
       ),
       tabBarTheme: TabBarThemeData(
+        labelColor: scheme.onSurface,
+        unselectedLabelColor: scheme.onSurfaceVariant,
+        indicatorColor: scheme.primary,
         dividerColor: scheme.outlineVariant.withValues(alpha: 0.5),
         indicatorSize: TabBarIndicatorSize.tab,
         labelStyle: const TextStyle(fontWeight: FontWeight.w700),
+      ),
+      progressIndicatorTheme: ProgressIndicatorThemeData(
+        color: scheme.primary,
+        linearTrackColor: scheme.primaryContainer,
+      ),
+      iconButtonTheme: IconButtonThemeData(
+        style: IconButton.styleFrom(foregroundColor: scheme.onSurface),
       ),
       listTileTheme: ListTileThemeData(shape: shape16),
       dialogTheme: DialogThemeData(

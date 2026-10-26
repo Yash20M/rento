@@ -28,6 +28,7 @@ Short records of the decisions that shape Rento. The design narrative lives in t
 | [ADR-013](ADR-013-rbac-permission-catalog.md) | RBAC: code-defined catalog, data-defined roles, locked Super Admin | Proposed |
 | [ADR-014](ADR-014-social-login.md) | Social login: server-verified provider tokens, identity key `(provider, subject)` | Proposed |
 | [ADR-015](ADR-015-locked-asset-policy.md) | Booking claim when every free-looking unit is locked: wait instead of a false conflict | Accepted |
+| [ADR-016](ADR-016-remembered-search-place.md) | The app remembers the last search place on the device, rounded to ~1 km, deleted at sign-out (amends README §10.6) | Accepted |
 
 **Pending ADRs** (recorded when decided): locked-asset policy for the booking claim (P2-22, see ADR-003's open
 point).

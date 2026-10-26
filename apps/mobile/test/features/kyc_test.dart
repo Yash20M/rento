@@ -229,15 +229,20 @@ void main() {
         'GET /v1/me/kyc': StubResponse(200, _kyc('none')),
       });
       await pumpApp(tester, api, signedIn: true);
-      await tester.tap(find.byKey(const Key('choose-location')));
-      await tester.pumpAndSettle();
-      await tester.tap(find.byKey(const Key('demo-Bengaluru · Indiranagar')));
+      await chooseDemoPlace(tester);
+      await tester.ensureVisible(find.text('Indiranagar').first);
       await tester.pumpAndSettle();
       await tester.tap(find.text('Indiranagar').first);
       await tester.pumpAndSettle();
+      await tester.ensureVisible(find.text('PlayStation 5').first);
+      await tester.pumpAndSettle();
       await tester.tap(find.text('PlayStation 5').first);
       await tester.pumpAndSettle();
+      await tester.ensureVisible(find.text('10:00 AM'));
+      await tester.pumpAndSettle();
       await tester.tap(find.text('10:00 AM'));
+      await tester.pumpAndSettle();
+      await tester.ensureVisible(find.byKey(const Key('duration-60')));
       await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('duration-60')));
       await tester.pumpAndSettle();

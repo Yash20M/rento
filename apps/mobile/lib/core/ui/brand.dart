@@ -61,9 +61,9 @@ class BrandSurface extends StatelessWidget {
             Padding(
               padding: padding,
               child: DefaultTextStyle.merge(
-                style: const TextStyle(color: Colors.white),
+                style: const TextStyle(color: AppTheme.onBrand),
                 child: IconTheme(
-                  data: const IconThemeData(color: Colors.white),
+                  data: const IconThemeData(color: AppTheme.onBrand),
                   child: child,
                 ),
               ),
@@ -88,6 +88,64 @@ class _Disc extends StatelessWidget {
     decoration: BoxDecoration(
       shape: BoxShape.circle,
       color: Colors.white.withValues(alpha: alpha),
+    ),
+  );
+}
+
+/// The Rento mark: the orange rounded tile with the white "Rento." wordmark of the logo. [size] is the tile's side.
+class RentoLogo extends StatelessWidget {
+  const RentoLogo({super.key, this.size = 56});
+
+  final double size;
+
+  @override
+  Widget build(BuildContext context) => Semantics(
+    label: 'Rento',
+    image: true,
+    child: ExcludeSemantics(
+      child: Container(
+        key: const Key('rento-logo'),
+        width: size,
+        height: size,
+        padding: EdgeInsets.symmetric(horizontal: size * 0.1),
+        decoration: BoxDecoration(
+          color: AppTheme.seed,
+          borderRadius: BorderRadius.circular(size * 0.28),
+          boxShadow: [
+            BoxShadow(
+              color: AppTheme.seed.withValues(alpha: 0.35),
+              blurRadius: size * 0.3,
+              offset: Offset(0, size * 0.1),
+            ),
+          ],
+        ),
+        child: Image.asset(
+          'assets/brand/wordmark_white.png',
+          fit: BoxFit.contain,
+        ),
+      ),
+    ),
+  );
+}
+
+/// Just the wordmark "Rento." in one colour (ink on a light surface, white on a dark one), [height] tall.
+class RentoWordmark extends StatelessWidget {
+  const RentoWordmark({super.key, this.height = 22, this.color});
+
+  final double height;
+  final Color? color;
+
+  @override
+  Widget build(BuildContext context) => Semantics(
+    label: 'Rento',
+    header: true,
+    child: ExcludeSemantics(
+      child: Image.asset(
+        'assets/brand/wordmark_white.png',
+        height: height,
+        color: color ?? Theme.of(context).colorScheme.onSurface,
+        colorBlendMode: BlendMode.srcIn,
+      ),
     ),
   );
 }
@@ -132,7 +190,7 @@ class _LockerPainter extends CustomPainter {
         canvas.drawCircle(
           Offset(rect.right - w * 0.2, rect.center.dy),
           size.width * 0.025,
-          Paint()..color = (lit ? AppTheme.seed : color).withValues(alpha: 0.7),
+          Paint()..color = (lit ? AppTheme.ink : color).withValues(alpha: 0.7),
         );
       }
     }
@@ -189,7 +247,7 @@ class UserAvatar extends StatelessWidget {
       child: Text(
         letter.toUpperCase(),
         style: TextStyle(
-          color: Colors.white,
+          color: AppTheme.onBrand,
           fontSize: radius * 0.9,
           fontWeight: FontWeight.w800,
         ),
@@ -282,16 +340,20 @@ class TrustChip extends StatelessWidget {
             children: [
               Icon(icon, size: 18, color: color),
               const SizedBox(width: 6),
-              ExcludeSemantics(
-                child: Text(
-                  label,
-                  style: TextStyle(
-                    color:
-                        level == TrustLevel.missing
-                            ? scheme.onSurfaceVariant
-                            : Color.lerp(color, scheme.onSurface, 0.35),
-                    fontWeight: FontWeight.w700,
-                    fontSize: 13,
+              Flexible(
+                child: ExcludeSemantics(
+                  child: Text(
+                    label,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color:
+                          level == TrustLevel.missing
+                              ? scheme.onSurfaceVariant
+                              : Color.lerp(color, scheme.onSurface, 0.35),
+                      fontWeight: FontWeight.w700,
+                      fontSize: 13,
+                    ),
                   ),
                 ),
               ),
@@ -323,10 +385,10 @@ class DrawerCover extends ConsumerWidget {
   final Widget? overlay;
 
   static const _hues = [
-    [Color(0xFF4F46E5), Color(0xFF7C3AED)],
-    [Color(0xFF0F766E), Color(0xFF0EA5E9)],
-    [Color(0xFFBE185D), Color(0xFF7C3AED)],
-    [Color(0xFFB45309), Color(0xFFDB2777)],
+    [Color(0xFFF7A24B), Color(0xFFE67A1B)],
+    [Color(0xFF3A2A1C), Color(0xFF8A5A2B)],
+    [Color(0xFFE9612F), Color(0xFFF2A444)],
+    [Color(0xFF0F766E), Color(0xFF5BB5A2)],
   ];
 
   @override
@@ -487,7 +549,11 @@ class IllustrationBadge extends StatelessWidget {
                   ),
                 ],
               ),
-              child: Icon(icon, size: size * 0.28, color: Colors.white),
+              child: Icon(
+                icon,
+                size: size * 0.28,
+                color: error ? Colors.white : AppTheme.onBrand,
+              ),
             ),
           ],
         ),

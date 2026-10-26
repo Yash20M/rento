@@ -133,14 +133,14 @@ class BookingSummary extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
-            height: 150,
+            height: 240,
             child: Stack(
               fit: StackFit.expand,
               children: [
                 ProductImage(
                   photo: booking.itemModel.photoUrl,
                   width: double.infinity,
-                  height: 150,
+                  height: 240,
                   radius: 0,
                 ),
                 DecoratedBox(

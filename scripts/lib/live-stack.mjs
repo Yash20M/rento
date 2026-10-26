@@ -124,6 +124,8 @@ export async function withLiveStack({ admin = false, host = '127.0.0.1' } = {}, 
       CORS_ALLOWED_ORIGINS: adminUrl ?? apiUrl,
       JOBS_INTERVAL_SECONDS: '0',
       RATE_LIMIT_ENABLED: 'false',
+      // The specs sign in with the well-known demo password; a SEED_PASSWORD in the developer's .env must not change it.
+      SEED_PASSWORD: 'Demo-Passw0rd!2026',
       LOG_LEVEL: 'warn',
       API_URL: apiUrl,
       API_PROXY_TARGET: apiUrl,

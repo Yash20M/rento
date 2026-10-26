@@ -27,12 +27,17 @@ FakeApi _api(List<String> photos) => FakeApi({
 
 Future<void> _toDrawer(WidgetTester tester, FakeApi api) async {
   await pumpApp(tester, api, signedIn: true);
-  await tester.tap(find.byKey(const Key('choose-location')));
-  await tester.pumpAndSettle();
-  await tester.tap(find.byKey(const Key('demo-Bengaluru · Indiranagar')));
+  await chooseDemoPlace(tester);
+  await tester.ensureVisible(find.text('Indiranagar').first);
   await tester.pumpAndSettle();
   await tester.tap(find.text('Indiranagar').first);
   await tester.pumpAndSettle();
+  _drainImageErrors(tester);
+}
+
+/// The test network refuses every picture; those load errors are expected, the screens must simply keep working.
+void _drainImageErrors(WidgetTester tester) {
+  while (tester.takeException() != null) {}
 }
 
 List<String> _networkUrls(WidgetTester tester) =>
@@ -75,6 +80,7 @@ void main() {
       expect(_networkUrls(tester), [
         'http://api.test/v1/media/11111111-1111-4111-8111-111111111111',
       ]);
+      _drainImageErrors(tester);
     },
   );
 
@@ -97,6 +103,8 @@ void main() {
           'https://cdn.example/b.jpg',
         ]),
       );
+      await tester.ensureVisible(find.text('PlayStation 5').first);
+      await tester.pumpAndSettle();
       await tester.tap(find.text('PlayStation 5').first);
       await tester.pumpAndSettle();
       expect(find.byKey(const Key('item-gallery')), findsOneWidget);
@@ -110,10 +118,41 @@ void main() {
     },
   );
 
-  testWidgets('Q-05 no gallery for a product without photos', (tester) async {
-    await _toDrawer(tester, _api(const []));
-    await tester.tap(find.text('PlayStation 5').first);
-    await tester.pumpAndSettle();
-    expect(find.byKey(const Key('item-gallery')), findsNothing);
-  });
+  testWidgets(
+    'Q-05 a product without photos still gets the big picture area, with a placeholder',
+    (tester) async {
+      await _toDrawer(tester, _api(const []));
+      await tester.ensureVisible(find.text('PlayStation 5').first);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('PlayStation 5').first);
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('item-gallery')), findsOneWidget);
+      expect(find.byIcon(Icons.image_outlined), findsWidgets);
+    },
+  );
+
+  testWidgets(
+    'Q-06 several pictures: a counter, thumbnails that jump, one picture per thumbnail',
+    (tester) async {
+      await _toDrawer(
+        tester,
+        _api(['/v1/media/a', '/v1/media/b', 'https://cdn.example/c.jpg']),
+      );
+      await tester.ensureVisible(find.text('PlayStation 5').first);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('PlayStation 5').first);
+      await tester.pumpAndSettle();
+      _drainImageErrors(tester);
+
+      expect(find.text('1 / 3'), findsOneWidget);
+      expect(find.byKey(const Key('gallery-thumb-0')), findsOneWidget);
+      expect(find.byKey(const Key('gallery-thumb-2')), findsOneWidget);
+      expect(find.byKey(const Key('gallery-thumb-3')), findsNothing);
+
+      await tester.tap(find.byKey(const Key('gallery-thumb-2')));
+      await tester.pumpAndSettle();
+      _drainImageErrors(tester);
+      expect(find.text('3 / 3'), findsOneWidget);
+    },
+  );
 }

@@ -29,7 +29,7 @@ export function DashboardPage() {
   const greeting = me?.user.displayName ?? me?.user.email ?? 'there';
 
   return (
-    <div className="grid max-w-6xl gap-6">
+    <div className="grid gap-6">
       <PageHeader
         title={`Welcome, ${greeting}`}
         description="How the business is doing right now."
@@ -162,7 +162,7 @@ function Numbers() {
                 size={140}
                 slices={[
                   { label: 'Unpaid', value: d.now.held, color: 'var(--chart-3)' },
-                  { label: 'Booked', value: d.now.confirmed, color: 'var(--chart-1)' },
+                  { label: 'Booked', value: d.now.confirmed, color: 'var(--chart-6)' },
                   { label: 'Out now', value: d.now.active, color: 'var(--chart-5)' },
                   { label: 'Late', value: d.now.overdue, color: 'var(--chart-4)' },
                 ]}
@@ -181,7 +181,7 @@ function Numbers() {
         <h3 id="week-heading" className="text-sm font-medium text-muted-foreground">
           Last {d.windowDays} days
         </h3>
-        <dl className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-6">
+        <dl className="grid grid-cols-2 gap-3 md:grid-cols-3 2xl:grid-cols-6">
           <StatCard
             label="Completed"
             value={d.lastDays.completed}
@@ -217,7 +217,7 @@ function Numbers() {
             Next pickups
           </h3>
           <Link
-            className="text-sm font-medium text-primary underline-offset-4 hover:underline"
+            className="text-sm font-medium text-brand-text underline-offset-4 hover:underline"
             to="/bookings"
           >
             All bookings

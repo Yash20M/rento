@@ -876,6 +876,21 @@ Task format:
   - Build: `/account` page for every signed-in administrator (photo upload/remove, name, phone, verified email, password form with confirmation; after a change everything signs out), header chip with photo links to it. CRUD audit: categories, item models (+photos), assets, drawers (+cover), roles, staff already complete; retire = status, no hard delete (history must stay).
   - Test: component AC-01…AC-09; live UI L-15 (name + photo, header shows both, removable), L-16 (wrong current refused, change, old fails/new works, put back); axe covers `/account`.
   - Evidence: 2026-10-22 (M25) · admin **286** · live UI L-15, L-16 green (L-01…L-16) · `pnpm verify` **16/16** (418 s) · screenshot `My account` looked at in a real browser
+- [~] **P3-49 Android back button behaves like back inside the app** · Mobile · Depends: P3-11 · Refs: owner report 2026-10-23, docs/prompts/M27.md
+  - Build: back on the My bookings / Account tab returns to Explore, on Explore it leaves the app; every signed-in page outside the tabs returns to Explore when nothing is under it (checkout after reserving, the booking after paying, deep links) instead of closing the app; with a page under it back pops as before.
+  - Test: `navigation_test` N-01…N-05 (system back via the platform channel; asserts whether the app asked Android to close).
+  - Evidence:
+- [~] **P3-50 Remember the last search place, rounded (ADR-016)** · Mobile · Depends: P3-14 · Refs: owner decision 2026-10-23, ADR-016, README §10.6
+  - Build: exact choice in memory; a copy rounded to 2 decimals (~1.1 km) + place name in secure storage (`last_place`), restored at start; deleted when the session ends and forgotten in memory at sign-out; malformed copies ignored.
+  - Test: `navigation_test` L-01…L-05; mutation checks on rounding and on the wipe.
+  - Evidence:
+- [~] **P3-51 Rento brand redesign of the customer app (orange identity, big pictures, responsive)** · Mobile · Depends: P3-39 · Refs: owner request 2026-10-25, docs/prompts/M28.md
+  - Build: logo.png colours (#EF8E30, ink-on-orange for contrast), Poppins, wordmark/logo widgets, launcher/web icons, product-first Explore with big pictures, bigger covers and product gallery, responsive shell (rail on wide screens, centred columns, card grids), reserve errors in the sticky bar.
+  - Evidence: 2026-10-25 (M28) · Flutter 280/280 (incl. a11y contrast, new responsive sweep R-01…R-04: 5 sizes x 2 text scales, 0 overflows) · analyze/format/codegen green · real-browser tours at 390/820/1440 px in docs/ui/m28 · OPEN: full `pnpm verify` not run, no device/emulator check
+- [~] **P3-52 Rento brand redesign of the admin panel** · Admin · Depends: P3-38 · Refs: owner request 2026-10-25
+  - Build: orange tokens, logo + favicon, split sign-in, sidebar from 1024 px, table min-width, stat cards, 320 px header.
+  - Evidence: 2026-10-25 (M28) · admin 298/298, lint+typecheck green, live UI 22/22 (the 4 earlier failures were the developer .env SEED_PASSWORD overriding the demo password in the throw-away stack; fixed in scripts/lib/live-stack.mjs) · screenshots 320/390/820/1440 + dark in docs/ui/m28 with no horizontal overflow
+
 - [ ] **P4-01 Payment provider abstraction + Razorpay orders** · Backend · Depends: P2-22, P0-05 · Refs: README §9.5
   - Build: `PaymentProvider` interface, Razorpay adapter (create order, capture, refund, fetch), `payments` table, order creation at hold time, amount always server-computed.
   - Test: unit/api with fake provider; contract tests against Razorpay **test mode** (manual, recorded); amount tampering impossible (client sends no amount).
@@ -908,10 +923,10 @@ Task format:
   - Build: k6 scripts — availability reads at target RPS; hot-asset booking storm; mixed workload.
   - Test: documented p95/p99 and error mix; hot asset ⇒ only 201/409; no pool exhaustion; results stored in `docs/perf/`.
   - Evidence:
-- [ ] **P4-09 Deployment pipeline** · Ops · Depends: P0-06, P1-11 · Refs: README §17
+- [~] **P4-09 Deployment pipeline** · Ops · Depends: P0-06, P1-11 · Refs: README §17
   - Build: container images, staging + production environments, migrations in CD (before rollout), smoke tests, rollback procedure, secrets wiring, HTTPS/domains, worker deployment.
   - Test: deploy to staging from CI; smoke test green; deliberate bad migration blocked/rolled back in a drill.
-  - Evidence:
+  - Evidence: 2026-10-23 · FREE DEMO PACKAGING (not the production pipeline): `Dockerfile` (API + admin panel in one image, migrates on start), `render.yaml`, API serves the panel (`ADMIN_STATIC_DIR`, `TRUST_PROXY`; `admin-static.api.spec` H-1…H-5), `pnpm mobile:apk -- --api <https url>` (release APK built locally in 3 min), seed script refuses a non-local API without `SEED_PASSWORD`, guide `docs/deploy-free-demo.md` · image built and run locally against a throw-away DB: 18 migrations applied, `/healthz` `/readyz` 200, panel pages served, `/v1/...` still an API, first-admin CLI works · FOUND by that run: `node-pg-migrate` was a dev-only dependency (fixed) · NOT DONE: the real paid-tier pipeline, CI deploy, ≥2 instances (needs P0-06 hosting choice); the demo is not deployed yet (needs the owner's Neon/Render/GitHub accounts)
 - [ ] **P4-10 Backups & restore drill** · Ops · Depends: P4-09 · Refs: README §15
   - Build: automated backups + PITR enabled; written restore runbook.
   - Test: restore to a scratch instance, run `pnpm --filter api test:db` invariants against it; record achieved RPO/RTO.
@@ -1055,3 +1070,5 @@ Task format:
 | 2026-10-22 | P3-28 (part) | Performance baseline with 10 000 bookings (all reads ≤ 25 ms p95, limits enforced in the API HTTP gate), admin pages split into lazy downloads; device numbers still to take |
 | 2026-10-22 | P3-22 (part) | Sign-in methods screen in the app (list, remove with confirmation, never the last one) with tests and a mutation check; adding methods, privacy/terms links and version gate still open |
 | 2026-10-22 | P4-05 (M26) | Admin two-step verification: authenticator app + recovery codes, required-switch, panel gate, step-up for roles/staff/refunds, admin reset; mutation-checked, live-tested; verify 16/16 |
+| 2026-10-23 | P4-09 (part) | Free-demo packaging: Docker image (API + admin panel), Render blueprint, APK build script, guide; image smoke-tested locally; deployment itself waits for the owner's accounts |
+

@@ -37,15 +37,15 @@ FakeApi _api(Map<String, Object> routes) => FakeApi({
 });
 
 Future<void> _tapText(WidgetTester tester, String text) async {
+  // Big pictures push things below the fold: scroll to the target like a person would.
+  await tester.ensureVisible(find.text(text).first);
+  await tester.pumpAndSettle();
   await tester.tap(find.text(text).first);
   await tester.pumpAndSettle();
 }
 
 Future<void> _chooseDemoPlace(WidgetTester tester) async {
-  await tester.tap(find.byKey(const Key('choose-location')));
-  await tester.pumpAndSettle();
-  await tester.tap(find.byKey(const Key('demo-Bengaluru · Indiranagar')));
-  await tester.pumpAndSettle();
+  await chooseDemoPlace(tester);
 }
 
 void main() {
@@ -94,6 +94,9 @@ void main() {
       await _chooseDemoPlace(tester);
       await _tapText(tester, 'Indiranagar');
       await _tapText(tester, 'PlayStation 5');
+      // The product picture is big, so the answer about the times is below it: scroll like a person would.
+      await tester.drag(find.byType(ListView).first, const Offset(0, -400));
+      await tester.pumpAndSettle();
       expect(find.text(messages[name]!), findsOneWidget);
       expect(find.text('Try again'), findsOneWidget);
       expect(
@@ -128,21 +131,14 @@ void main() {
     });
 
     testWidgets(
-      'S-04 finding drawers, $name: a sentence and a retry that searches again',
+      'S-04 finding drawers, $name: the list still shows every drawer instead of an error',
       (tester) async {
-        var answer = failure.value;
-        final api = _api({'POST /v1/drawers/nearby': (_) => answer});
+        final api = _api({'POST /v1/drawers/nearby': failure.value});
         await pumpApp(tester, api, signedIn: true);
         await _chooseDemoPlace(tester);
-        expect(find.text(messages[name]!), findsOneWidget);
-
-        answer = StubResponse(200, {
-          'drawers': [nearbyDrawerJson()],
-          'unavailable': <Object>[],
-        });
-        await _tapText(tester, 'Try again');
-        expect(find.text('Indiranagar'), findsWidgets);
-        expect(api.to('POST', '/v1/drawers/nearby').length, 2);
+        expect(find.byKey(const Key('drawer-d-1')), findsOneWidget);
+        expect(find.text(messages[name]!), findsNothing);
+        expect(find.text('Try again'), findsNothing);
       },
     );
   }

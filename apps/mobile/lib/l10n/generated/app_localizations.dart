@@ -1688,6 +1688,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'You need at least one way to sign in, so this one cannot be removed.'**
   String get methodLastError;
+
+  /// Heading above the products that can be rented from the nearest drawers.
+  ///
+  /// In en, this message translates to:
+  /// **'Rent near you'**
+  String get rentNearYou;
+
+  /// Heading above the list of nearby drawers.
+  ///
+  /// In en, this message translates to:
+  /// **'Drawers near you'**
+  String get drawersNearYou;
+
+  /// Under a product card: the drawer it is picked up from.
+  ///
+  /// In en, this message translates to:
+  /// **'at {drawer}'**
+  String fromDrawer(String drawer);
+
+  /// Shown while the phone's position is being found.
+  ///
+  /// In en, this message translates to:
+  /// **'Finding the drawers nearest to you…'**
+  String get locatingNearest;
+
+  /// Banner when the position is unknown and all drawers are shown.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on location to see what is nearest. Showing every drawer for now.'**
+  String get locationOffNote;
+
+  /// Banner when no drawer serves the chosen place and all drawers are shown.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing near you yet. Here is everything Rento has.'**
+  String get nothingNearNote;
+
+  /// Heading above the list of every drawer.
+  ///
+  /// In en, this message translates to:
+  /// **'All drawers'**
+  String get allDrawersHeading;
+
+  /// Heading above products when every drawer is shown.
+  ///
+  /// In en, this message translates to:
+  /// **'Popular to rent'**
+  String get rentFromDrawers;
+
+  /// Shown when someone tries to order from a drawer that does not serve where they are.
+  ///
+  /// In en, this message translates to:
+  /// **'Sorry, this drawer is not available in your area. Try a drawer nearer to you.'**
+  String get notInYourArea;
+
+  /// Shown when ordering needs the position and it could not be found.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow location access so we can check Rento is available in your area, then try again.'**
+  String get locationNeededToOrder;
+
+  /// Badge on a product that can be rented now in the customer's area.
+  ///
+  /// In en, this message translates to:
+  /// **'Available'**
+  String get availableLabel;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

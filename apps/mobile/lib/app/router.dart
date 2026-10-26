@@ -89,43 +89,76 @@ GoRouter buildRouter({
     GoRoute(
       path: '/drawer/:drawerId',
       builder:
-          (context, state) =>
-              DrawerPage(drawerId: state.pathParameters['drawerId']!),
+          (context, state) => _BackToExplore(
+            child: DrawerPage(drawerId: state.pathParameters['drawerId']!),
+          ),
       routes: [
         GoRoute(
           path: 'item/:itemId',
           builder:
-              (context, state) => SlotPickerPage(
-                drawerId: state.pathParameters['drawerId']!,
-                itemModelId: state.pathParameters['itemId']!,
+              (context, state) => _BackToExplore(
+                child: SlotPickerPage(
+                  drawerId: state.pathParameters['drawerId']!,
+                  itemModelId: state.pathParameters['itemId']!,
+                ),
               ),
         ),
       ],
     ),
-    GoRoute(path: '/kyc', builder: (context, state) => const KycPage()),
+    GoRoute(
+      path: '/kyc',
+      builder: (context, state) => const _BackToExplore(child: KycPage()),
+    ),
     GoRoute(
       path: '/sign-in-methods',
-      builder: (context, state) => const SignInMethodsPage(),
+      builder:
+          (context, state) => const _BackToExplore(child: SignInMethodsPage()),
     ),
     GoRoute(
       path: '/verify-email',
-      builder: (context, state) => const VerifyEmailPage(),
+      builder:
+          (context, state) => const _BackToExplore(child: VerifyEmailPage()),
     ),
     GoRoute(
       path: '/checkout/:bookingId',
       builder:
-          (context, state) =>
-              CheckoutPage(bookingId: state.pathParameters['bookingId']!),
+          (context, state) => _BackToExplore(
+            child: CheckoutPage(bookingId: state.pathParameters['bookingId']!),
+          ),
     ),
     GoRoute(
       path: '/booking/:bookingId',
       builder:
-          (context, state) =>
-              BookingDetailPage(bookingId: state.pathParameters['bookingId']!),
+          (context, state) => _BackToExplore(
+            child: BookingDetailPage(
+              bookingId: state.pathParameters['bookingId']!,
+            ),
+          ),
     ),
   ],
   errorBuilder: (context, state) => const NotFoundPage(),
 );
+
+/// A signed-in page outside the tabs. When it was reached by replacing the history (`context.go`: checkout after
+/// reserving, the booking after paying, a deep link) nothing is under it, and the phone's back button would close the
+/// app; instead it returns to Explore. With a page under it, back pops as usual (P3-49).
+class _BackToExplore extends StatelessWidget {
+  const _BackToExplore({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final hasPageBelow = ModalRoute.of(context)?.canPop ?? true;
+    return PopScope(
+      canPop: hasPageBelow,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop) context.go('/');
+      },
+      child: child,
+    );
+  }
+}
 
 class _Splash extends StatelessWidget {
   const _Splash();

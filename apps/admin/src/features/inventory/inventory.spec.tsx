@@ -153,7 +153,7 @@ describe('item models', () => {
     await userEvent.type(dialog.getByLabelText('Slot length (minutes)'), '60');
     await userEvent.clear(dialog.getByLabelText('Shortest rental (minutes)'));
     await userEvent.type(dialog.getByLabelText('Shortest rental (minutes)'), '60');
-    expect(dialog.getByText(/Save the product first/)).toBeInTheDocument(); // photos come after saving
+    expect(dialog.getByText(/uploaded when you save the product/)).toBeInTheDocument(); // pictures can be chosen up front
     await userEvent.click(dialog.getByRole('button', { name: 'Save' }));
     await waitForClosed();
     expect(api.callsTo('POST', '/v1/admin/item-models')[0]?.body).toEqual({
@@ -179,6 +179,37 @@ describe('item models', () => {
     expect(await dialog.findByText('Enter a name.')).toBeInTheDocument();
     expect(dialog.getByText('Choose a category.')).toBeInTheDocument();
     expect(dialog.getByText('Enter an amount such as 49 or 49.50.')).toBeInTheDocument();
+    expect(api.callsTo('POST', '/v1/admin/item-models')).toHaveLength(0);
+  });
+
+  it('I-08b rules between the numbers are explained in plain words before anything is sent', async () => {
+    const api = setup();
+    renderApp('/inventory/models', { me: superAdminMe, api });
+    await userEvent.click(await screen.findByRole('button', { name: /new item model/i }));
+    const dialog = within(await screen.findByRole('dialog'));
+    await userEvent.type(dialog.getByLabelText('Name'), 'a'.repeat(121));
+    await userEvent.selectOptions(dialog.getByLabelText('Category'), 'cat-1');
+    await userEvent.type(dialog.getByLabelText('Price per slot (₹)'), '10');
+    await userEvent.clear(dialog.getByLabelText('Slot length (minutes)'));
+    await userEvent.type(dialog.getByLabelText('Slot length (minutes)'), '30');
+    await userEvent.clear(dialog.getByLabelText('Shortest rental (minutes)'));
+    await userEvent.type(dialog.getByLabelText('Shortest rental (minutes)'), '45');
+    await userEvent.clear(dialog.getByLabelText('Longest rental (minutes)'));
+    await userEvent.type(dialog.getByLabelText('Longest rental (minutes)'), '100');
+    await userEvent.click(dialog.getByRole('button', { name: 'Save' }));
+    expect(await dialog.findByText('Use at most 120 characters.')).toBeInTheDocument();
+    expect(dialog.getAllByText('Use a multiple of the slot length (30 minutes).')).toHaveLength(2); // shortest and longest
+    expect(api.callsTo('POST', '/v1/admin/item-models')).toHaveLength(0);
+
+    // longest shorter than the shortest
+    await userEvent.clear(dialog.getByLabelText('Shortest rental (minutes)'));
+    await userEvent.type(dialog.getByLabelText('Shortest rental (minutes)'), '120');
+    await userEvent.clear(dialog.getByLabelText('Longest rental (minutes)'));
+    await userEvent.type(dialog.getByLabelText('Longest rental (minutes)'), '60');
+    await userEvent.click(dialog.getByRole('button', { name: 'Save' }));
+    expect(
+      await dialog.findByText('Must not be shorter than the shortest rental.'),
+    ).toBeInTheDocument();
     expect(api.callsTo('POST', '/v1/admin/item-models')).toHaveLength(0);
   });
 

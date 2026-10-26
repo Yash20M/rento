@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../app/providers.dart';
+import '../../../app/theme.dart';
 import '../../../core/api/api_exception.dart';
 import '../../../core/api/models/models.dart';
 import '../../../core/ui/brand.dart';
@@ -24,48 +25,70 @@ class _AuthScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Scaffold(
-      body: SafeArea(
-        child: Align(
-          alignment: Alignment.topCenter,
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(24),
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 420),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  BrandSurface(
-                    art: true,
-                    padding: const EdgeInsets.fromLTRB(22, 22, 22, 26),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const _BrandMark(),
-                        const SizedBox(height: 40),
-                        Text(
-                          title,
-                          style: theme.textTheme.headlineMedium?.copyWith(
-                            color: Colors.white,
-                          ),
-                        ),
-                        const SizedBox(height: 6),
-                        Text(
-                          subtitle,
-                          style: theme.textTheme.bodyLarge?.copyWith(
-                            color: Colors.white.withValues(alpha: 0.9),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  child,
-                ],
-              ),
+    Widget hero({required bool tall}) => BrandSurface(
+      art: true,
+      radius: tall ? 0 : 32,
+      padding: EdgeInsets.fromLTRB(24, tall ? 48 : 24, 24, tall ? 48 : 28),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const _BrandMark(),
+          SizedBox(height: tall ? 72 : 44),
+          Text(
+            title,
+            style: (tall
+                    ? theme.textTheme.displaySmall
+                    : theme.textTheme.headlineMedium)
+                ?.copyWith(
+                  color: AppTheme.onBrand,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: -0.8,
+                ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            subtitle,
+            style: theme.textTheme.bodyLarge?.copyWith(
+              color: AppTheme.onBrand.withValues(alpha: 0.85),
             ),
           ),
-        ),
+        ],
+      ),
+    );
+    return Scaffold(
+      body: LayoutBuilder(
+        builder: (context, box) {
+          final wide = box.maxWidth >= 860;
+          final form = SafeArea(
+            child: Align(
+              alignment: wide ? Alignment.center : Alignment.topCenter,
+              child: SingleChildScrollView(
+                padding: EdgeInsets.all(wide ? 40 : 20),
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 440),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      if (!wide) ...[
+                        hero(tall: false),
+                        const SizedBox(height: 24),
+                      ],
+                      child,
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          );
+          if (!wide) return form;
+          return Row(
+            children: [
+              Expanded(flex: 5, child: hero(tall: true)),
+              Expanded(flex: 6, child: form),
+            ],
+          );
+        },
       ),
     );
   }
@@ -285,33 +308,16 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
   }
 }
 
-/// The logo block above the sign-in and register forms.
+/// The logo above the sign-in and register forms: the white "Rento." wordmark, as on the orange of the logo.
 class _BrandMark extends StatelessWidget {
   const _BrandMark();
 
   @override
-  Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment.centerLeft,
-      child: Container(
-        key: const Key('brand-mark'),
-        width: 52,
-        height: 52,
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16),
-          color: Colors.white.withValues(alpha: 0.2),
-          border: Border.all(color: Colors.white.withValues(alpha: 0.5)),
-        ),
-        child: const Text(
-          'R',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 26,
-            fontWeight: FontWeight.w800,
-          ),
-        ),
-      ),
-    );
-  }
+  Widget build(BuildContext context) => const Align(
+    alignment: Alignment.centerLeft,
+    child: SizedBox(
+      key: Key('brand-mark'),
+      child: RentoWordmark(height: 44, color: Colors.white),
+    ),
+  );
 }

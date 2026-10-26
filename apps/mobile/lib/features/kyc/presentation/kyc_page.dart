@@ -8,6 +8,7 @@ import '../../../core/api/api_exception.dart';
 import '../../../core/api/models/models.dart';
 import '../../../core/ui/error_text.dart';
 import '../../../l10n/generated/app_localizations.dart';
+import '../../../core/ui/responsive.dart';
 
 /// The customer's identity-verification state.
 final kycStatusProvider = FutureProvider.autoDispose<KycStatus>(
@@ -128,7 +129,7 @@ class _KycPageState extends ConsumerState<KycPage> {
     return Scaffold(
       appBar: AppBar(title: Text(l10n.kycTitle)),
       body: ListView(
-        padding: const EdgeInsets.all(24),
+        padding: pagePadding(context, maxWidth: 640, top: 24, bottom: 24),
         children: [
           if (_done != null) ...[
             Icon(

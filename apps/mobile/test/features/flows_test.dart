@@ -19,15 +19,15 @@ FakeApi _browseApi([Map<String, Object> extra = const {}]) => FakeApi({
 });
 
 Future<void> _tapText(WidgetTester tester, String text) async {
+  // The pictures are big now: what the person taps may be below the fold, so scroll to it like a person would.
+  await tester.ensureVisible(find.text(text).first);
+  await tester.pumpAndSettle();
   await tester.tap(find.text(text).first);
   await tester.pumpAndSettle();
 }
 
 Future<void> _chooseDemoPlace(WidgetTester tester) async {
-  await tester.tap(find.byKey(const Key('choose-location')));
-  await tester.pumpAndSettle();
-  await tester.tap(find.byKey(const Key('demo-Bengaluru · Indiranagar')));
-  await tester.pumpAndSettle();
+  await chooseDemoPlace(tester);
 }
 
 void main() {
@@ -172,7 +172,11 @@ void main() {
         await pumpApp(tester, api, signedIn: true);
         await _chooseDemoPlace(tester);
 
-        expect(find.text('Near Bengaluru · Indiranagar'), findsOneWidget);
+        expect(
+          find.text('Near Bengaluru · Indiranagar'),
+          findsNothing,
+          reason: 'no location bar',
+        );
         expect(find.text('Indiranagar'), findsOneWidget);
         expect(find.text('850 m away'), findsOneWidget);
         expect(find.text('2.4 km away'), findsOneWidget);
@@ -206,55 +210,25 @@ void main() {
       expect(find.text('Try again'), findsNothing);
     });
 
-    testWidgets('E-03 a failing search offers a retry that asks again', (
-      tester,
-    ) async {
-      var calls = 0;
-      final api = _browseApi({
-        'POST /v1/drawers/nearby': (_) {
-          calls++;
-          return calls == 1
-              ? StubResponse(503, problemJson(503, 'RETRY_LATER'))
-              : StubResponse(200, {
-                'drawers': [nearbyDrawerJson()],
-                'unavailable': <Object>[],
-              });
-        },
-      });
-      await pumpApp(tester, api, signedIn: true);
-      await _chooseDemoPlace(tester);
-      expect(find.textContaining('busy'), findsOneWidget);
-      await _tapText(tester, 'Try again');
-      expect(find.text('Indiranagar'), findsOneWidget);
-    });
-
     testWidgets(
-      'E-04 "Use my location" works, and each refusal is explained with a way forward',
+      'E-03 a failing nearby search never blanks the screen: everything is shown',
       (tester) async {
         final api = _browseApi({
-          'POST /v1/drawers/nearby': StubResponse(200, {
-            'drawers': [nearbyDrawerJson()],
-            'unavailable': <Object>[],
-          }),
+          'POST /v1/drawers/nearby': StubResponse(
+            503,
+            problemJson(503, 'RETRY_LATER'),
+          ),
         });
-        final denied = FakeLocation(failure: LocationFailure.deniedForever);
-        await pumpApp(tester, api, signedIn: true, location: denied);
-        await tester.tap(find.byKey(const Key('choose-location')));
-        await tester.pumpAndSettle();
-        await tester.tap(find.byKey(const Key('use-my-location')));
-        await tester.pumpAndSettle();
-        expect(find.byKey(const Key('location-error')), findsOneWidget);
-        expect(find.textContaining('blocked'), findsOneWidget);
-        expect(
-          find.byKey(const Key('demo-Bengaluru · Indiranagar')),
-          findsOneWidget,
-        ); // still can choose a place
-        expect(api.to('POST', '/v1/drawers/nearby'), isEmpty);
+        await pumpApp(tester, api, signedIn: true);
+        await _chooseDemoPlace(tester);
+        expect(find.byKey(const Key('drawer-d-1')), findsOneWidget);
+        expect(find.textContaining('busy'), findsNothing);
+        expect(find.text('Try again'), findsNothing);
       },
     );
 
     testWidgets(
-      'E-05 the device position is used for the search and labelled "your location"',
+      'E-05 the device position is used for the search, without asking',
       (tester) async {
         final api = _browseApi({
           'POST /v1/drawers/nearby': StubResponse(200, {
@@ -269,49 +243,17 @@ void main() {
           location: FakeLocation(
             point: const GeoPoint(latitude: 28.6, longitude: 77.2),
           ),
+          autoLocate: true,
         );
-        await tester.tap(find.byKey(const Key('choose-location')));
-        await tester.pumpAndSettle();
-        await tester.tap(find.byKey(const Key('use-my-location')));
-        await tester.pumpAndSettle();
-        expect(find.text('Near your location'), findsOneWidget);
+        expect(
+          find.text('Near your location'),
+          findsNothing,
+          reason: 'no location bar',
+        );
         expect(
           (api.to('POST', '/v1/drawers/nearby').single.data as Map)['latitude'],
           28.6,
         );
-      },
-    );
-
-    testWidgets(
-      'E-06 typed coordinates are range-checked; production builds offer no demo places',
-      (tester) async {
-        final api = _browseApi({
-          'POST /v1/drawers/nearby': StubResponse(200, {
-            'drawers': <Object>[],
-            'unavailable': <Object>[],
-          }),
-        });
-        await pumpApp(tester, api, signedIn: true, env: prodEnv);
-        await tester.tap(find.byKey(const Key('choose-location')));
-        await tester.pumpAndSettle();
-        expect(find.text('Demo locations'), findsNothing);
-
-        await tester.enterText(
-          find.byKey(const Key('lat-field')),
-          '151.2',
-        ); // a longitude typed into latitude
-        await tester.enterText(find.byKey(const Key('lng-field')), '-33.8');
-        await tester.ensureVisible(find.byKey(const Key('search-here')));
-        await tester.tap(find.byKey(const Key('search-here')));
-        await tester.pumpAndSettle();
-        expect(find.byKey(const Key('location-error')), findsOneWidget);
-        expect(api.to('POST', '/v1/drawers/nearby'), isEmpty);
-
-        await tester.enterText(find.byKey(const Key('lat-field')), '12.97');
-        await tester.enterText(find.byKey(const Key('lng-field')), '77.59');
-        await tester.tap(find.byKey(const Key('search-here')));
-        await tester.pumpAndSettle();
-        expect(api.to('POST', '/v1/drawers/nearby'), hasLength(1));
       },
     );
   });
@@ -348,7 +290,10 @@ void main() {
         expect(find.text('Ring the bell at the glass door'), findsOneWidget);
         expect(find.byKey(const Key('drawer-open-state')), findsOneWidget);
         expect(find.text('₹49 per 30 min'), findsOneWidget);
-        expect(find.text('2 available now'), findsOneWidget);
+        expect(
+          find.text('Available'),
+          findsOneWidget,
+        ); // in the area, units free
       },
     );
 
@@ -361,6 +306,8 @@ void main() {
         expect(find.text('10:00 AM'), findsOneWidget); // 04:30Z
         expect(find.text('10:30 AM'), findsOneWidget);
         expect(find.text('11:00 AM'), findsNothing); // nobody free
+        await tester.ensureVisible(find.text('10:00 AM'));
+        await tester.pumpAndSettle();
         await tester.tap(find.text('10:00 AM'));
         await tester.pumpAndSettle();
         for (final minutes in [30, 60, 90, 120]) {
@@ -370,6 +317,8 @@ void main() {
           find.byKey(const Key('duration-150')),
           findsNothing,
         ); // only 120 min free from 10:00
+        await tester.ensureVisible(find.byKey(const Key('duration-60')));
+        await tester.pumpAndSettle();
         await tester.tap(find.byKey(const Key('duration-60')));
         await tester.pumpAndSettle();
         expect(
@@ -383,6 +332,8 @@ void main() {
       'B-03 the shorter window of a later start limits the lengths offered',
       (tester) async {
         await toSlotPicker(tester, bookingApi());
+        await tester.ensureVisible(find.text('10:30 AM'));
+        await tester.pumpAndSettle();
         await tester.tap(find.text('10:30 AM'));
         await tester.pumpAndSettle();
         expect(find.byKey(const Key('duration-60')), findsOneWidget);
@@ -413,6 +364,8 @@ void main() {
       (tester) async {
         final api = bookingApi();
         await toSlotPicker(tester, api);
+        await tester.ensureVisible(find.byKey(const Key('day-2030-01-09')));
+        await tester.pumpAndSettle();
         await tester.tap(find.byKey(const Key('day-2030-01-09')));
         await tester.pumpAndSettle();
         final dates = api
@@ -430,7 +383,11 @@ void main() {
           'GET /v1/bookings/b-1': StubResponse(200, bookingJson()),
         });
         await toSlotPicker(tester, api);
+        await tester.ensureVisible(find.text('10:00 AM'));
+        await tester.pumpAndSettle();
         await tester.tap(find.text('10:00 AM'));
+        await tester.pumpAndSettle();
+        await tester.ensureVisible(find.byKey(const Key('duration-60')));
         await tester.pumpAndSettle();
         await tester.tap(find.byKey(const Key('duration-60')));
         await tester.pumpAndSettle();
@@ -474,7 +431,11 @@ void main() {
         });
         await toSlotPicker(tester, api);
         Future<void> attempt() async {
+          await tester.ensureVisible(find.text('10:00 AM'));
+          await tester.pumpAndSettle();
           await tester.tap(find.text('10:00 AM'));
+          await tester.pumpAndSettle();
+          await tester.ensureVisible(find.byKey(const Key('duration-60')));
           await tester.pumpAndSettle();
           await tester.tap(find.byKey(const Key('duration-60')));
           await tester.pumpAndSettle();
@@ -522,7 +483,11 @@ void main() {
           'GET /v1/bookings/b-1': StubResponse(200, bookingJson()),
         });
         await toSlotPicker(tester, api);
+        await tester.ensureVisible(find.text('10:00 AM'));
+        await tester.pumpAndSettle();
         await tester.tap(find.text('10:00 AM'));
+        await tester.pumpAndSettle();
+        await tester.ensureVisible(find.byKey(const Key('duration-60')));
         await tester.pumpAndSettle();
         await tester.tap(find.byKey(const Key('duration-60')));
         await tester.pumpAndSettle();
@@ -564,7 +529,11 @@ void main() {
           'GET /v1/bookings/b-1': StubResponse(200, bookingJson()),
         });
         await toSlotPicker(tester, api);
+        await tester.ensureVisible(find.text('10:00 AM'));
+        await tester.pumpAndSettle();
         await tester.tap(find.text('10:00 AM'));
+        await tester.pumpAndSettle();
+        await tester.ensureVisible(find.byKey(const Key('duration-60')));
         await tester.pumpAndSettle();
         await tester.tap(find.byKey(const Key('duration-60')));
         await tester.pumpAndSettle();
@@ -627,7 +596,15 @@ void main() {
     });
 
     Future<void> reserve(WidgetTester tester) async {
+      await tester.ensureVisible(find.text('10:00 AM'));
+      await tester.pumpAndSettle();
+      await tester.ensureVisible(find.text('10:00 AM'));
+      await tester.pumpAndSettle();
       await tester.tap(find.text('10:00 AM'));
+      await tester.pumpAndSettle();
+      await tester.ensureVisible(find.byKey(const Key('duration-60')));
+      await tester.pumpAndSettle();
+      await tester.ensureVisible(find.byKey(const Key('duration-60')));
       await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('duration-60')));
       await tester.pumpAndSettle();
@@ -668,9 +645,13 @@ void main() {
         });
         await toSlotPicker(tester, api);
         await reserve(tester);
+        await tester.ensureVisible(find.byKey(const Key('pay')));
+        await tester.pumpAndSettle();
         await tester.tap(find.byKey(const Key('pay')));
         await tester.pumpAndSettle();
         await tester.tap(find.byKey(const Key('demo-pay-card-ok')));
+        await tester.pumpAndSettle();
+        await tester.ensureVisible(find.byKey(const Key('view-booking')));
         await tester.pumpAndSettle();
         await tester.tap(find.byKey(const Key('view-booking')));
         await tester.pumpAndSettle();
@@ -685,6 +666,8 @@ void main() {
         final api = payApi();
         await toSlotPicker(tester, api);
         await reserve(tester);
+        await tester.ensureVisible(find.byKey(const Key('pay')));
+        await tester.pumpAndSettle();
         await tester.tap(find.byKey(const Key('pay')));
         await tester.pumpAndSettle();
         await tester.tap(find.byKey(const Key('demo-pay-card-ok')));
@@ -707,6 +690,8 @@ void main() {
         final api = payApi();
         await toSlotPicker(tester, api);
         await reserve(tester);
+        await tester.ensureVisible(find.byKey(const Key('pay')));
+        await tester.pumpAndSettle();
         await tester.tap(find.byKey(const Key('pay')));
         await tester.pumpAndSettle();
         await tester.tap(find.byKey(const Key('demo-pay-card-fail')));
@@ -715,6 +700,10 @@ void main() {
         expect(find.byKey(const Key('payment-declined')), findsOneWidget);
         expect(api.to('POST', '/v1/bookings/b-1/payment/confirm'), isEmpty);
         expect(find.byKey(const Key('pay')), findsOneWidget);
+
+        await tester.ensureVisible(find.byKey(const Key('pay')));
+
+        await tester.pumpAndSettle();
 
         await tester.tap(find.byKey(const Key('pay')));
         await tester.pumpAndSettle();
@@ -732,6 +721,8 @@ void main() {
         );
         await toSlotPicker(tester, api);
         await reserve(tester);
+        await tester.ensureVisible(find.byKey(const Key('pay')));
+        await tester.pumpAndSettle();
         await tester.tap(find.byKey(const Key('pay')));
         await tester.pumpAndSettle();
         await tester.tap(find.byKey(const Key('demo-pay-card-ok')));
@@ -768,6 +759,8 @@ void main() {
         );
         await toSlotPicker(tester, api);
         await reserve(tester);
+        await tester.ensureVisible(find.byKey(const Key('pay')));
+        await tester.pumpAndSettle();
         await tester.tap(find.byKey(const Key('pay')));
         await tester.pumpAndSettle();
         await tester.tap(find.byKey(const Key('demo-pay-card-ok')));
@@ -792,10 +785,12 @@ void main() {
         );
         await toSlotPicker(tester, api);
         await reserve(tester);
+        await tester.ensureVisible(find.byKey(const Key('release')));
+        await tester.pumpAndSettle();
         await tester.tap(find.byKey(const Key('release')));
         await tester.pumpAndSettle();
         expect(api.to('POST', '/v1/bookings/b-1/cancel'), hasLength(1));
-        expect(find.text('Find a drawer'), findsWidgets);
+        expect(find.text('Rent what you need, by the hour.'), findsWidgets);
       },
     );
   });

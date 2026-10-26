@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/providers.dart';
+import '../../../app/theme.dart';
 import '../../../core/api/models/models.dart';
 import '../../../core/format/time.dart';
 import '../../../core/ui/error_text.dart';
@@ -77,7 +78,8 @@ class BookingGuidance extends ConsumerWidget {
 
     final (icon, title, body, alert) = content;
     final scheme = Theme.of(context).colorScheme;
-    final color = alert ? scheme.error : scheme.primary;
+    final color =
+        alert ? scheme.error : AppTheme.brandText(Theme.of(context).brightness);
     return Card(
       key: Key('guidance-${booking.status}'),
       color: alert ? scheme.errorContainer : scheme.primaryContainer,

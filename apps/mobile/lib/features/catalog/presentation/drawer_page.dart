@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../app/providers.dart';
+import '../../../app/theme.dart';
 import '../../../core/api/models/models.dart';
 import '../../../core/format/money.dart';
 import '../../../core/ui/error_text.dart';
@@ -10,6 +11,7 @@ import '../../../core/format/time.dart';
 import '../../../core/ui/brand.dart';
 import '../../../core/ui/kit.dart';
 import '../../../core/ui/product_image.dart';
+import '../../../core/ui/responsive.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../explore/application/explore_providers.dart';
 
@@ -58,7 +60,7 @@ class DrawerPage extends ConsumerWidget {
             },
             child: ListView(
               physics: const AlwaysScrollableScrollPhysics(),
-              padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
+              padding: pagePadding(context, maxWidth: 1000, top: 4),
               children: [
                 _DrawerHeader(drawer: drawer),
                 const SizedBox(height: 12),
@@ -78,7 +80,8 @@ class DrawerPage extends ConsumerWidget {
                                 icon: Icons.inventory_2_outlined,
                                 title: l10n.itemsEmpty,
                               )
-                              : Column(
+                              : CardGrid(
+                                minTileWidth: 300,
                                 children: [
                                   for (final item in items)
                                     _ItemTile(drawerId: drawerId, item: item),
@@ -125,7 +128,7 @@ class _DrawerHeader extends ConsumerWidget {
           DrawerCover(
             seed: drawer.id,
             photo: drawer.photoUrl,
-            height: 140,
+            height: 230,
             overlay: Row(
               children: [
                 Pill(
@@ -266,14 +269,14 @@ class _DrawerHeader extends ConsumerWidget {
   }
 }
 
-class _ItemTile extends StatelessWidget {
+class _ItemTile extends ConsumerWidget {
   const _ItemTile({required this.drawerId, required this.item});
 
   final String drawerId;
   final InventoryEntry item;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
@@ -284,44 +287,42 @@ class _ItemTile extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ProductImage(
-              key: Key('item-photo-${item.itemModelId}'),
-              photo: item.photos.firstOrNull,
-              width: double.infinity,
-              height: 150,
-              radius: 0,
+            AspectRatio(
+              aspectRatio: 4 / 3,
+              child: ProductImage(
+                key: Key('item-photo-${item.itemModelId}'),
+                photo: item.photos.firstOrNull,
+                width: double.infinity,
+                radius: 0,
+              ),
             ),
             Padding(
               padding: const EdgeInsets.all(16),
-              child: Row(
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(item.name, style: theme.textTheme.titleMedium),
-                        const SizedBox(height: 4),
-                        Text(
-                          l10n.pricePerSlot(
-                            formatPaise(item.pricePerSlotPaise),
-                            item.slotMinutes,
-                          ),
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            color: scheme.onSurfaceVariant,
-                          ),
-                        ),
-                      ],
+                  Text(item.name, style: theme.textTheme.titleMedium),
+                  const SizedBox(height: 4),
+                  Text(
+                    l10n.pricePerSlot(
+                      formatPaise(item.pricePerSlotPaise),
+                      item.slotMinutes,
+                    ),
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: scheme.onSurfaceVariant,
                     ),
                   ),
-                  const SizedBox(width: 12),
-                  Pill(
-                    label: l10n.availableNowCount(item.availableNow),
-                    color:
-                        item.availableNow > 0
-                            ? const Color(0xFF138A4B)
-                            : scheme.error,
-                  ),
+                  if (item.availableNow > 0 &&
+                      ref
+                          .watch(servedDrawerIdsProvider)
+                          .contains(drawerId)) ...[
+                    const SizedBox(height: 10),
+                    Pill(
+                      key: const Key('available-label'),
+                      label: l10n.availableLabel,
+                      color: AppTheme.success,
+                    ),
+                  ],
                 ],
               ),
             ),

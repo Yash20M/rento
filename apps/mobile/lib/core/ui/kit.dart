@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../app/theme.dart';
 import 'brand.dart';
 
 /// Small shared building blocks so every screen looks like one app (P3-39).
@@ -30,6 +31,15 @@ class Pill extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final c = color ?? Theme.of(context).colorScheme.primary;
+    final scheme = Theme.of(context).colorScheme;
+    // Text on a solid pill is white or ink, whichever reads better; a tinted pill darkens its colour toward the text colour.
+    final onSolid = c.computeLuminance() > 0.3 ? AppTheme.ink : Colors.white;
+    final fg =
+        onDark
+            ? Colors.white
+            : filled
+            ? onSolid
+            : Color.lerp(c, scheme.onSurface, 0.45)!;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
@@ -45,15 +55,19 @@ class Pill extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           if (icon != null) ...[
-            Icon(icon, size: 14, color: filled || onDark ? Colors.white : c),
+            Icon(icon, size: 14, color: fg),
             const SizedBox(width: 4),
           ],
-          Text(
-            label,
-            style: TextStyle(
-              color: filled || onDark ? Colors.white : c,
-              fontWeight: FontWeight.w700,
-              fontSize: 12.5,
+          Flexible(
+            child: Text(
+              label,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                color: fg,
+                fontWeight: FontWeight.w700,
+                fontSize: 12.5,
+              ),
             ),
           ),
         ],

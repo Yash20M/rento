@@ -374,7 +374,9 @@ void main() {
         await tester.tap(find.byKey(const Key('offline-check')));
         await tester.pumpAndSettle();
         expect(find.byKey(const Key('offline-banner')), findsNothing);
-        expect(second.to('POST', '/v1/auth/refresh'), hasLength(2));
+        // The start-up attempt, one more when Explore (which now lists every drawer when no place is known) makes its
+        // first request while the session is still pending, and the one "Check again" makes. A loop would be far more.
+        expect(second.to('POST', '/v1/auth/refresh'), hasLength(3));
       },
     );
 

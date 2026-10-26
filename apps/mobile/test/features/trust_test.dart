@@ -124,11 +124,12 @@ void main() {
         'GET /v1/bookings': const StubResponse(200, <Object>[]),
       });
       await pumpApp(tester, api, signedIn: true);
-      await tester.tap(find.byKey(const Key('choose-location')));
-      await tester.pumpAndSettle();
-      await tester.tap(find.byKey(const Key('demo-Bengaluru · Indiranagar')));
+      await chooseDemoPlace(tester);
+      await tester.ensureVisible(find.text('Indiranagar').first);
       await tester.pumpAndSettle();
       await tester.tap(find.text('Indiranagar').first);
+      await tester.pumpAndSettle();
+      await tester.ensureVisible(find.byKey(const Key('hours-tile')));
       await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('hours-tile')));
       await tester.pumpAndSettle();

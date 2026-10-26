@@ -48,9 +48,9 @@ describe('error catalog (docs/api/error-catalog.md)', () => {
 });
 
 describe('ADRs (docs/adr)', () => {
-  it('T-01 contains ADR-001…ADR-015, one file each', () => {
+  it('T-01 contains ADR-001…ADR-016, one file each', () => {
     const numbers = adrFiles.map((name) => name.slice(4, 7));
-    expect(numbers).toEqual(Array.from({ length: 15 }, (_, i) => String(i + 1).padStart(3, '0')));
+    expect(numbers).toEqual(Array.from({ length: 16 }, (_, i) => String(i + 1).padStart(3, '0')));
   });
 
   it.each(adrFiles)('T-02 %s is well-formed', (name) => {
@@ -85,7 +85,7 @@ describe('ADRs (docs/adr)', () => {
     const rows = [
       ...index.matchAll(/^\| \[ADR-(\d{3})\]\(([^)]+)\) \|.*\| (Accepted|Proposed) \|$/gm),
     ].map((m) => ({ id: m[1] as string, link: m[2] as string, status: m[3] as string }));
-    expect(rows).toHaveLength(15);
+    expect(rows).toHaveLength(16);
     for (const row of rows) {
       expect(adrStatus(read('docs', 'adr', row.link)), `index status for ADR-${row.id}`).toBe(
         row.status,

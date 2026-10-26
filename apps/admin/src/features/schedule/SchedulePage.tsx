@@ -163,7 +163,7 @@ export function SchedulePage() {
                   {can('assets:write', schedule.data.drawerId) && (
                     <button
                       type="button"
-                      className="mt-1 text-xs text-primary underline-offset-2 hover:underline"
+                      className="mt-1 text-xs text-brand-text underline-offset-2 hover:underline"
                       onClick={() => setBlockFor(asset)}
                     >
                       Block time…

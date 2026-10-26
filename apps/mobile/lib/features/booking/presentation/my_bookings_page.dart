@@ -12,6 +12,7 @@ import '../../../core/ui/product_image.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../application/booking_providers.dart';
 import 'booking_widgets.dart';
+import '../../../core/ui/responsive.dart';
 
 const _finished = {'completed', 'cancelled', 'expired', 'no_show'};
 
@@ -39,7 +40,7 @@ class MyBookingsPage extends ConsumerWidget {
         body: bookings.when(
           loading:
               () => ListView(
-                padding: const EdgeInsets.all(16),
+                padding: pagePadding(context),
                 children: const [CardSkeletons(count: 3)],
               ),
           error:
@@ -90,7 +91,7 @@ class _BookingList extends StatelessWidget {
     return RefreshIndicator(
       onRefresh: () async => ref.invalidate(myBookingsProvider),
       child: ListView.builder(
-        padding: const EdgeInsets.all(16),
+        padding: pagePadding(context),
         itemCount: bookings.length,
         itemBuilder: (context, index) {
           final b = bookings[index];
@@ -113,9 +114,9 @@ class _BookingList extends StatelessWidget {
                     children: [
                       ProductImage(
                         photo: b.itemModel.photoUrl,
-                        width: 72,
-                        height: 72,
-                        radius: 16,
+                        width: 96,
+                        height: 96,
+                        radius: 18,
                       ),
                       const SizedBox(width: 14),
                       Expanded(
@@ -124,6 +125,8 @@ class _BookingList extends StatelessWidget {
                           children: [
                             Text(
                               b.itemModel.name,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
                               style: Theme.of(context).textTheme.titleMedium,
                             ),
                             const SizedBox(height: 2),
@@ -136,11 +139,11 @@ class _BookingList extends StatelessWidget {
                               style: Theme.of(context).textTheme.bodyMedium
                                   ?.copyWith(color: scheme.onSurfaceVariant),
                             ),
+                            const SizedBox(height: 8),
+                            StatusChip(status: b.status),
                           ],
                         ),
                       ),
-                      const SizedBox(width: 8),
-                      StatusChip(status: b.status),
                     ],
                   ),
                 ),

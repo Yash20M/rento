@@ -771,7 +771,7 @@ sequenceDiagram
 - Request permission **only when the user opens discovery**, with an in-app rationale first; request *while-in-use*, **never background** location.
 - Denied permission is a first-class path (manual city/area/pin selection), not an error.
 - Send coordinates in a **POST body** (not URL query strings, which land in access logs and proxies), **rounded to ~3 decimals (~110 m)**; precise coordinates aren't needed to rank drawers across a city.
-- **Do not persist** raw user coordinates. Log at most a coarse area/zone id. Retention: none for searches.
+- **Do not persist** raw user coordinates. Log at most a coarse area/zone id. Retention: none for searches. *Exception (ADR-016):* the app keeps the last search place on the device only, rounded to 2 decimals (~1.1 km) plus a place name, in secure storage, and deletes it when the session ends.
 - Document this in the privacy policy; consider India's Digital Personal Data Protection Act, 2023 obligations (❓ consult counsel).
 
 ---
@@ -1493,6 +1493,7 @@ Multiple service areas/cities, analytics & BI, inventory optimisation (rebalanci
 | [ADR-013](docs/adr/ADR-013-rbac-permission-catalog.md) | RBAC: fixed code-defined permission catalog + data-defined custom roles; Super Admin as locked bypass role; unified `users` table (staff = users holding roles); server-side permission resolution with short cache | Proposed | New permissions need a code release (by design); per-request lookup cost, mitigated by cache |
 | [ADR-014](docs/adr/ADR-014-social-login.md) | Social login: native SDK → server-verified provider token → our own tokens; identity key = (provider, subject); no auto-link on unverified email; Sign in with Apple included for App Store 4.8 | Proposed | Three provider integrations to maintain; Facebook email unreliability |
 | [ADR-015](docs/adr/ADR-015-locked-asset-policy.md) | Booking claim: `SKIP LOCKED` first, then a bounded blocking fallback when every free-looking unit is locked by another in-flight claim — no false 409s, no lock cycles; the exclusion constraint stays the only guarantee | Accepted | A request on a hot asset may wait up to `lock_timeout` |
+| [ADR-016](docs/adr/ADR-016-remembered-search-place.md) | The app keeps the last search place on the device (secure storage) rounded to 2 decimals (~1.1 km) plus a place name, restores it at start and deletes it when the session ends; the exact point stays in memory | Accepted | After a restart distances are measured from the rounded point (up to ~0.8 km off) |
 
 Each ADR is a short file in [`docs/adr/`](docs/adr/README.md) (written in P1-12). A status becomes **Accepted** only when the decision is implemented and covered by passing tests.
 

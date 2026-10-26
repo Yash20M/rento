@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../core/api/api_client.dart';
+import '../core/location/saved_place.dart';
 import '../core/api/auth_api.dart';
 import '../core/api/booking_api.dart';
 import '../core/api/catalog_api.dart';
@@ -43,9 +44,14 @@ final retryDelaysProvider = Provider<List<Duration>>(
 
 final sessionStoreProvider = Provider<SessionStore>((ref) {
   final cache = ref.watch(readCacheProvider);
+  final secure = ref.watch(secureStoreProvider);
   final store = SessionStore(
-    ref.watch(secureStoreProvider),
-    onCleared: cache.clear,
+    secure,
+    // The saved bookings and the last searched place go with the session (ADR-016).
+    onCleared: () async {
+      await cache.clear();
+      await secure.delete(SavedPlace.storageKey);
+    },
   );
   ref.onDispose(store.dispose);
   return store;

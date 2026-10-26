@@ -10,7 +10,7 @@ export const Table = ({ className, ...props }: React.TableHTMLAttributes<HTMLTab
     tabIndex={0}
     className="relative w-full min-w-0 max-w-full overflow-x-auto rounded-2xl border bg-card shadow-card focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring"
   >
-    <table className={cn('w-full caption-bottom text-sm', className)} {...props} />
+    <table className={cn('w-full min-w-[46rem] caption-bottom text-sm', className)} {...props} />
   </div>
 );
 
@@ -30,7 +30,7 @@ export const Tr = ({ className, ...props }: React.HTMLAttributes<HTMLTableRowEle
 );
 
 export const Th = ({ className, ...props }: React.ThHTMLAttributes<HTMLTableCellElement>) => (
-  <th scope="col" className={cn('px-3 py-2 font-medium', className)} {...props} />
+  <th scope="col" className={cn('px-3 py-2 font-medium whitespace-nowrap', className)} {...props} />
 );
 
 export const Td = ({ className, ...props }: React.TdHTMLAttributes<HTMLTableCellElement>) => (

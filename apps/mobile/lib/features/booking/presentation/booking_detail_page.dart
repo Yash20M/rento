@@ -12,6 +12,7 @@ import '../application/booking_providers.dart';
 import 'booking_guidance.dart';
 import 'booking_widgets.dart';
 import 'extend_sheet.dart';
+import '../../../core/ui/responsive.dart';
 
 /// One booking: what it is, its state, and — while allowed — a way to cancel it.
 class BookingDetailPage extends ConsumerStatefulWidget {
@@ -85,7 +86,7 @@ class _BookingDetailPageState extends ConsumerState<BookingDetailPage> {
             ),
         data:
             (b) => ListView(
-              padding: const EdgeInsets.all(16),
+              padding: pagePadding(context),
               children: [
                 if (_error != null) ...[
                   Text(
@@ -148,9 +149,15 @@ class _BookingDetailPageState extends ConsumerState<BookingDetailPage> {
       child: SafeArea(
         top: false,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+          padding: EdgeInsets.fromLTRB(
+            contentInset(context),
+            12,
+            contentInset(context),
+            12,
+          ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               for (var i = 0; i < actions.length; i++) ...[
                 if (i > 0) const SizedBox(height: 8),

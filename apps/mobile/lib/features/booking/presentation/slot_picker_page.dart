@@ -10,6 +10,8 @@ import '../../../core/format/money.dart';
 import '../../../core/format/time.dart';
 import '../../../core/ui/error_text.dart';
 import '../../../core/ui/kit.dart';
+import '../../../core/ui/responsive.dart';
+import '../../../app/theme.dart';
 import '../../../core/ui/product_image.dart';
 import '../../../core/util/uuid.dart';
 import '../../../l10n/generated/app_localizations.dart';
@@ -40,6 +42,7 @@ class _SlotPickerPageState extends ConsumerState<SlotPickerPage> {
   String? _attemptKey;
   bool _busy = false;
   Object? _error;
+  AreaCheck? _area;
 
   AvailabilityKey _key(String date) => (
     drawerId: widget.drawerId,
@@ -53,6 +56,7 @@ class _SlotPickerPageState extends ConsumerState<SlotPickerPage> {
     _duration = null;
     _attemptKey = null;
     _error = null;
+    _area = null;
   });
 
   Future<void> _reserve(Availability availability) async {
@@ -62,7 +66,18 @@ class _SlotPickerPageState extends ConsumerState<SlotPickerPage> {
     setState(() {
       _busy = true;
       _error = null;
+      _area = null;
     });
+    // Is this drawer in the customer's area? Looked up now, when they order, not while they browse.
+    final area = await checkServiceArea(ref, widget.drawerId);
+    if (!mounted) return;
+    if (area != AreaCheck.ok) {
+      setState(() {
+        _area = area;
+        _busy = false;
+      });
+      return;
+    }
     // One key per attempt: a retry of THIS attempt (timeout, 503) returns the original hold instead of a second one.
     final key = _attemptKey ??= newUuid();
     try {
@@ -157,30 +172,31 @@ class _SlotPickerPageState extends ConsumerState<SlotPickerPage> {
 
     return scaffold(
       ListView(
-        padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+        padding: pagePadding(context, top: 0),
         children: [
-          if (item.photos.isNotEmpty) ...[
-            _Gallery(photos: item.photos),
-            const SizedBox(height: 16),
-          ],
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: Text(
-                  l10n.pricePerSlot(
-                    formatPaise(item.pricePerSlotPaise),
-                    item.slotMinutes,
-                  ),
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-              ),
-            ],
+          _Gallery(photos: item.photos),
+          const SizedBox(height: 16),
+          Text(
+            item.name,
+            key: const Key('item-title'),
+            style: Theme.of(context).textTheme.headlineSmall,
+          ),
+          const SizedBox(height: 6),
+          Text(
+            l10n.pricePerSlot(
+              formatPaise(item.pricePerSlotPaise),
+              item.slotMinutes,
+            ),
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              color: AppTheme.brandText(Theme.of(context).brightness),
+            ),
           ),
           const SizedBox(height: 18),
           SectionTitle(l10n.chooseDay),
           SizedBox(
-            height: 76,
+            // taller with larger system text, so the weekday and the date never get cut off
+            height:
+                76 * MediaQuery.textScalerOf(context).scale(1).clamp(1.0, 1.8),
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
               itemCount: days.length,
@@ -208,6 +224,7 @@ class _SlotPickerPageState extends ConsumerState<SlotPickerPage> {
         ],
       ),
       bar: _ReserveBar(
+        notice: _notice(context, l10n),
         total: rental == null ? null : formatPaise(rental + item.depositPaise),
         enabled:
             a != null &&
@@ -217,6 +234,63 @@ class _SlotPickerPageState extends ConsumerState<SlotPickerPage> {
             ref.watch(onlineProvider),
         busy: _busy,
         onReserve: a == null ? null : () => _reserve(a),
+      ),
+    );
+  }
+
+  /// Why a reservation failed (or that verification is needed). It sits in the bar that stays in view: with the big
+  /// product picture on top, an error at the end of the list would be out of sight when the person taps Reserve.
+  Widget? _notice(BuildContext context, AppLocalizations l10n) {
+    final error = _error;
+    final area = _area;
+    if (error == null && area == null) return null;
+    final scheme = Theme.of(context).colorScheme;
+    final message =
+        area != null
+            ? (area == AreaCheck.locationNeeded
+                ? l10n.locationNeededToOrder
+                : l10n.notInYourArea)
+            : errorText(l10n, error!);
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: scheme.errorContainer,
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Icon(
+                  Icons.error_outline_rounded,
+                  size: 20,
+                  color: scheme.onErrorContainer,
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    message,
+                    key: const Key('reserve-error'),
+                    style: TextStyle(color: scheme.onErrorContainer),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          if (error is ApiException && error.code == ErrorCode.kycRequired)
+            Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: OutlinedButton(
+                key: const Key('verify-now'),
+                onPressed: () => context.push('/kyc'),
+                child: Text(l10n.kycVerifyNow),
+              ),
+            ),
+        ],
       ),
     );
   }
@@ -285,6 +359,7 @@ class _SlotPickerPageState extends ConsumerState<SlotPickerPage> {
                         _duration = null;
                         _attemptKey = null;
                         _error = null;
+                        _area = null;
                       }),
                 ),
             ],
@@ -307,6 +382,7 @@ class _SlotPickerPageState extends ConsumerState<SlotPickerPage> {
                         _duration = minutes;
                         _attemptKey = null;
                         _error = null;
+                        _area = null;
                       }),
                 ),
             ],
@@ -333,24 +409,6 @@ class _SlotPickerPageState extends ConsumerState<SlotPickerPage> {
             ),
           ),
         ],
-        if (_error != null) ...[
-          const SizedBox(height: 12),
-          Text(
-            errorText(l10n, _error!),
-            key: const Key('reserve-error'),
-            style: TextStyle(color: theme.colorScheme.error),
-          ),
-        ],
-        if (_error is ApiException &&
-            (_error as ApiException).code == ErrorCode.kycRequired)
-          Padding(
-            padding: const EdgeInsets.only(top: 8),
-            child: OutlinedButton(
-              key: const Key('verify-now'),
-              onPressed: () => context.push('/kyc'),
-              child: Text(l10n.kycVerifyNow),
-            ),
-          ),
         const SizedBox(height: 12),
         Text(l10n.snapshotNote, style: theme.textTheme.bodySmall),
       ],
@@ -383,52 +441,108 @@ class _Gallery extends StatefulWidget {
 }
 
 class _GalleryState extends State<_Gallery> {
+  final _controller = PageController();
   int _page = 0;
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _show(int i) => _controller.animateToPage(
+    i,
+    duration: const Duration(milliseconds: 250),
+    curve: Curves.easeOut,
+  );
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final scheme = Theme.of(context).colorScheme;
+    // The picture is the point of renting something: nearly square on a phone, capped on a wide screen.
+    final photos = widget.photos.isEmpty ? <String?>[null] : widget.photos;
+    final height = (MediaQuery.sizeOf(context).width * 0.9).clamp(260.0, 440.0);
     return Column(
       children: [
         SizedBox(
-          height: 220,
-          child: PageView(
-            key: const Key('item-gallery'),
-            onPageChanged: (i) => setState(() => _page = i),
+          height: height,
+          child: Stack(
             children: [
-              for (var i = 0; i < widget.photos.length; i++)
-                Semantics(
-                  label: l10n.galleryCount(i + 1, widget.photos.length),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 2),
-                    child: ProductImage(
-                      photo: widget.photos[i],
-                      height: 220,
-                      radius: 24,
+              PageView(
+                key: const Key('item-gallery'),
+                controller: _controller,
+                onPageChanged: (i) => setState(() => _page = i),
+                children: [
+                  for (var i = 0; i < photos.length; i++)
+                    Semantics(
+                      label: l10n.galleryCount(i + 1, photos.length),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 2),
+                        child: ProductImage(
+                          photo: photos[i],
+                          height: height,
+                          radius: 28,
+                        ),
+                      ),
                     ),
+                ],
+              ),
+              if (photos.length > 1)
+                Positioned(
+                  right: 14,
+                  top: 14,
+                  child: Pill(
+                    key: const Key('gallery-counter'),
+                    label: '${_page + 1} / ${photos.length}',
+                    onDark: true,
+                    color: Colors.white,
                   ),
                 ),
             ],
           ),
         ),
-        if (widget.photos.length > 1) ...[
+        if (photos.length > 1) ...[
           const SizedBox(height: 10),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              for (var i = 0; i < widget.photos.length; i++)
-                AnimatedContainer(
-                  duration: const Duration(milliseconds: 200),
-                  margin: const EdgeInsets.symmetric(horizontal: 3),
-                  width: i == _page ? 20 : 7,
-                  height: 7,
-                  decoration: BoxDecoration(
-                    color: i == _page ? scheme.primary : scheme.outlineVariant,
-                    borderRadius: BorderRadius.circular(99),
+          // Thumbnails: tap to jump (a mouse cannot swipe), and they show how many pictures there are.
+          SizedBox(
+            height: 64,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              itemCount: photos.length,
+              separatorBuilder: (_, _) => const SizedBox(width: 8),
+              itemBuilder:
+                  (context, i) => Semantics(
+                    button: true,
+                    selected: i == _page,
+                    label: l10n.galleryCount(i + 1, photos.length),
+                    child: InkWell(
+                      key: Key('gallery-thumb-$i'),
+                      borderRadius: BorderRadius.circular(14),
+                      onTap: () => _show(i),
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 200),
+                        width: 64,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(14),
+                          border: Border.all(
+                            width: 2,
+                            color:
+                                i == _page
+                                    ? scheme.primary
+                                    : Colors.transparent,
+                          ),
+                        ),
+                        child: ProductImage(
+                          photo: photos[i],
+                          width: 60,
+                          height: 60,
+                          radius: 12,
+                        ),
+                      ),
+                    ),
                   ),
-                ),
-            ],
+            ),
           ),
         ],
       ],
@@ -472,27 +586,31 @@ class _DayCard extends StatelessWidget {
               color: selected ? scheme.primary : scheme.outlineVariant,
             ),
           ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                parts.first,
-                style: TextStyle(
-                  color: fg.withValues(alpha: selected ? 0.85 : 0.65),
-                  fontWeight: FontWeight.w600,
-                  fontSize: 12.5,
+          // scales down instead of overflowing when the system text is very large
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  parts.first,
+                  style: TextStyle(
+                    color: fg.withValues(alpha: selected ? 0.85 : 0.65),
+                    fontWeight: FontWeight.w600,
+                    fontSize: 12.5,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 2),
-              Text(
-                parts.length > 1 ? parts.last : '',
-                style: TextStyle(
-                  color: fg,
-                  fontWeight: FontWeight.w800,
-                  fontSize: 20,
+                const SizedBox(height: 2),
+                Text(
+                  parts.length > 1 ? parts.last : '',
+                  style: TextStyle(
+                    color: fg,
+                    fontWeight: FontWeight.w800,
+                    fontSize: 20,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -503,12 +621,14 @@ class _DayCard extends StatelessWidget {
 /// Fixed at the bottom: what it will cost and the button to reserve.
 class _ReserveBar extends StatelessWidget {
   const _ReserveBar({
+    this.notice,
     required this.total,
     required this.enabled,
     required this.busy,
     required this.onReserve,
   });
 
+  final Widget? notice;
   final String? total;
   final bool enabled;
   final bool busy;
@@ -524,28 +644,52 @@ class _ReserveBar extends StatelessWidget {
       child: SafeArea(
         top: false,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
-          child: Row(
+          padding: EdgeInsets.fromLTRB(
+            contentInset(context),
+            12,
+            contentInset(context),
+            12,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Expanded(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      total == null ? l10n.pickATimeFirst : l10n.totalToPay,
-                      style: theme.textTheme.bodySmall,
-                    ),
-                    if (total != null)
-                      Text(total!, style: theme.textTheme.titleLarge),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 12),
-              FilledButton(
-                key: const Key('reserve'),
-                onPressed: enabled ? onReserve : null,
-                child: Text(l10n.reserveAction),
+              if (notice != null) notice!,
+              LayoutBuilder(
+                builder: (context, box) {
+                  final summary = Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        total == null ? l10n.pickATimeFirst : l10n.totalToPay,
+                        style: theme.textTheme.bodySmall,
+                      ),
+                      if (total != null)
+                        Text(total!, style: theme.textTheme.titleLarge),
+                    ],
+                  );
+                  final button = FilledButton(
+                    key: const Key('reserve'),
+                    onPressed: enabled ? onReserve : null,
+                    child: Text(l10n.reserveAction),
+                  );
+                  // Side by side when there is room; stacked on a narrow screen or with very large text.
+                  final stacked =
+                      box.maxWidth < 340 ||
+                      MediaQuery.textScalerOf(context).scale(1) > 1.3;
+                  return stacked
+                      ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [summary, const SizedBox(height: 8), button],
+                      )
+                      : Row(
+                        children: [
+                          Expanded(child: summary),
+                          const SizedBox(width: 12),
+                          button,
+                        ],
+                      );
+                },
               ),
             ],
           ),

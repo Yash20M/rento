@@ -8,6 +8,7 @@ import 'package:rento_mobile/app/providers.dart';
 import 'package:rento_mobile/core/location/location_service.dart';
 import 'package:rento_mobile/core/media/photo_picker.dart';
 import 'package:rento_mobile/core/storage/secure_store.dart';
+import 'package:rento_mobile/features/explore/application/explore_providers.dart';
 
 import 'fixtures.dart';
 import 'stub_http_adapter.dart';
@@ -107,6 +108,7 @@ Future<Pumped> pumpApp(
   List<Duration> retryDelays = const [],
   InMemorySecureStore? store,
   PhotoPicker? picker,
+  bool autoLocate = false,
 }) async {
   tester.view.physicalSize = size;
   tester.view.devicePixelRatio = 1;
@@ -131,6 +133,8 @@ Future<Pumped> pumpApp(
       locationServiceProvider.overrideWithValue(location ?? FakeLocation()),
       // No automatic repeats unless a test asks for them: request counts stay exact.
       retryDelaysProvider.overrideWithValue(retryDelays),
+      // Off unless a test is about it: the person chooses a place, as before.
+      autoLocateEnabledProvider.overrideWithValue(autoLocate),
       if (picker != null) photoPickerProvider.overrideWithValue(picker),
     ],
   );
@@ -161,4 +165,20 @@ class FakePhotoPicker implements PhotoPicker {
     asked.add(source);
     return photo;
   }
+}
+
+/// Where the customer is searching, set directly (the app finds the position by itself; there is no picker any more).
+/// Defaults to the Indiranagar demo place.
+Future<void> chooseDemoPlace(
+  WidgetTester tester, {
+  GeoPoint point = const GeoPoint(latitude: 12.9784, longitude: 77.6408),
+  String? name,
+}) async {
+  final container = ProviderScope.containerOf(
+    tester.element(find.byType(RentoApp)),
+  );
+  container
+      .read(locationChoiceProvider.notifier)
+      .choose(LocationChoice(point: point, name: name));
+  await tester.pumpAndSettle();
 }
