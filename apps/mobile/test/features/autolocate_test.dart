@@ -138,7 +138,7 @@ void main() {
   });
 
   testWidgets(
-    'A-05 a remembered place is used and the phone is not asked again',
+    'A-05 a remembered place starts the list at once; the same position found later changes nothing',
     (tester) async {
       final location = FakeLocation();
       final api = _api();
@@ -150,14 +150,47 @@ void main() {
         autoLocate: true,
         store: await _storeWithPlace(),
       );
-      expect(location.calls, 0);
+      expect(location.calls, 1, reason: 'the position is still looked up');
       expect(api.to('POST', '/v1/drawers/nearby'), hasLength(1));
+    },
+  );
+
+  testWidgets(
+    'A-06 someone who has travelled: the real position replaces the old remembered place',
+    (tester) async {
+      final api = _api();
+      final store = await _storeWithPlace(latitude: 17.41, longitude: 78.45);
+      await pumpApp(
+        tester,
+        api,
+        signedIn: true,
+        location: FakeLocation(
+          point: const GeoPoint(latitude: 12.9784, longitude: 77.6408),
+        ),
+        autoLocate: true,
+        store: store,
+      );
+      final searches = api.to('POST', '/v1/drawers/nearby');
+      // the remembered place may be searched first (if it loads before the position), but the LAST word is the real one
+      expect(searches, isNotEmpty);
+      expect((searches.last.data as Map)['latitude'], 12.9784);
+      expect(
+        await store.read('last_place'),
+        contains('12.98'),
+        reason: 'the remembered place now follows the person',
+      );
     },
   );
 }
 
-Future<InMemorySecureStore> _storeWithPlace() async {
+Future<InMemorySecureStore> _storeWithPlace({
+  double latitude = 12.98,
+  double longitude = 77.64,
+}) async {
   final store = InMemorySecureStore();
-  await store.write('last_place', '{"latitude":12.98,"longitude":77.64}');
+  await store.write(
+    'last_place',
+    '{"latitude":$latitude,"longitude":$longitude}',
+  );
   return store;
 }

@@ -60,25 +60,29 @@ final locationChoiceProvider =
 /// Whether the app finds the phone's position by itself when nothing is remembered. Tests switch it off.
 final autoLocateEnabledProvider = Provider<bool>((_) => true);
 
-/// Finds where the customer is, once per signed-in session, when no place is remembered: the nearest drawers then
-/// appear without a question. If the position cannot be had (permission, services off) nothing is chosen and the app
+/// Finds where the customer is, once per signed-in session: the nearest drawers then appear without a question. If the position cannot be had (permission, services off) nothing is chosen and the app
 /// shows every drawer instead.
 final autoLocateProvider = FutureProvider<void>((ref) async {
   if (!ref.watch(autoLocateEnabledProvider)) return;
   if (ref.watch(authControllerProvider) is! SignedIn) return;
-  final saved = SavedPlace.decode(
-    await ref.read(secureStoreProvider).read(SavedPlace.storageKey),
-  );
-  if (saved != null || ref.read(locationChoiceProvider) != null) return;
+  // A remembered place (rounded to ~1 km) gets the list going at once; the real position is still looked up in the
+  // background so someone who has travelled is not shown last week's city. It only replaces the place when it differs.
   try {
     final point = await ref.read(locationServiceProvider).current();
-    if (ref.read(locationChoiceProvider) == null) {
+    final now = ref.read(locationChoiceProvider);
+    final moved =
+        now == null ||
+        SavedPlace.coarse(now.point.latitude) !=
+            SavedPlace.coarse(point.latitude) ||
+        SavedPlace.coarse(now.point.longitude) !=
+            SavedPlace.coarse(point.longitude);
+    if (moved) {
       ref
           .read(locationChoiceProvider.notifier)
           .choose(LocationChoice(point: point));
     }
   } catch (_) {
-    // No position: the explore screen falls back to showing every drawer.
+    // No position: the remembered place (if any) stays, otherwise the screen shows every drawer.
   }
 });
 
