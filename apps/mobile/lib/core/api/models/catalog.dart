@@ -112,7 +112,25 @@ abstract class InventoryEntry with _$InventoryEntry {
     @JsonKey(required: true) required String categoryId,
     @JsonKey(required: true) required List<String> photos,
     @JsonKey(required: true) required String? description,
+
+    /// What one slot costs right now: the offer price while an offer is active, else the normal price.
     @JsonKey(required: true) required int pricePerSlotPaise,
+
+    /// The normal price of one slot (before any offer).
+    @JsonKey(required: true) required int originalPricePerSlotPaise,
+
+    /// Percent off while an offer is active, else `null`.
+    @JsonKey(required: true) required int? discountPercent,
+
+    /// When the active offer ends; `null` when there is no offer or it has no end.
+    @JsonKey(required: true) required DateTime? discountEndsAt,
+
+    /// Added within the last 14 days.
+    @JsonKey(required: true) required bool isNew,
+
+    /// Marked by the staff to be featured on the home screen.
+    @JsonKey(required: true) required bool featured,
+    @JsonKey(required: true) required DateTime createdAt,
     @JsonKey(required: true) required int slotMinutes,
     @JsonKey(required: true) required int minDurationMin,
     @JsonKey(required: true) required int maxDurationMin,
@@ -156,7 +174,11 @@ abstract class Availability with _$Availability {
     @JsonKey(required: true) required int minDurationMin,
     @JsonKey(required: true) required int maxDurationMin,
     @JsonKey(required: true) required int bufferMin,
+
+    /// What one slot costs right now (the offer price while an offer is active).
     @JsonKey(required: true) required int pricePerSlotPaise,
+    @JsonKey(required: true) required int originalPricePerSlotPaise,
+    @JsonKey(required: true) required int? discountPercent,
     @JsonKey(required: true) required DateTime? opensAt,
     @JsonKey(required: true) required DateTime? closesAt,
     @JsonKey(required: true) required List<AvailabilitySlot> slots,
@@ -166,4 +188,29 @@ abstract class Availability with _$Availability {
 
   factory Availability.fromJson(Map<String, dynamic> json) =>
       _$AvailabilityFromJson(json);
+}
+
+/// A banner of the home screen, set up by staff (`PublicPromotionDto`). Only live banners are ever sent.
+@freezed
+abstract class PublicPromotion with _$PublicPromotion {
+  const factory PublicPromotion({
+    @JsonKey(required: true) required String id,
+    @JsonKey(required: true) required String title,
+    @JsonKey(required: true) required String? subtitle,
+
+    /// Label of the banner's button, e.g. "Shop now".
+    @JsonKey(required: true) required String? ctaLabel,
+
+    /// `orange`, `ink`, `teal` or `plum`: the colour when there is no picture.
+    @JsonKey(required: true) required String theme,
+
+    /// A `/v1/media/<id>` path on the API, or `null`.
+    @JsonKey(required: true) required String? imageUrl,
+
+    /// The product the banner opens, or `null` for a plain announcement.
+    @JsonKey(required: true) required String? itemModelId,
+  }) = _PublicPromotion;
+
+  factory PublicPromotion.fromJson(Map<String, dynamic> json) =>
+      _$PublicPromotionFromJson(json);
 }

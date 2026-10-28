@@ -7,7 +7,7 @@ import type { Database } from '../../../db/kysely';
 import { KYSELY } from '../../../db/tokens';
 import { type Tx, withTransaction } from '../../../db/transaction';
 import { DrawerRepository } from '../../drawers';
-import { InventoryRepository } from '../../inventory';
+import { InventoryRepository, effectiveSlotPrice } from '../../inventory';
 import {
   FakePaymentProvider,
   PAYMENT_PROVIDER,
@@ -79,10 +79,18 @@ export class BookingExtensionService {
       );
       if (extraMinutes > max) throw unavailable(max);
 
-      const price = rentalPrice(extraMinutes, model.slot_minutes, model.price_per_slot_paise);
+      // An extension is bought at the offer that applies now, like a booking is.
+      const slotPrice = effectiveSlotPrice(model, this.clock.now());
+      const price = rentalPrice(extraMinutes, model.slot_minutes, slotPrice.pricePaise);
+      const saved = rentalPrice(extraMinutes, model.slot_minutes, slotPrice.listPaise) - price;
       const extension = await trx
         .insertInto('booking_extensions')
-        .values({ booking_id: id, extra_minutes: extraMinutes, extra_price_paise: price })
+        .values({
+          booking_id: id,
+          extra_minutes: extraMinutes,
+          extra_price_paise: price,
+          extra_discount_paise: saved,
+        })
         .returningAll()
         .executeTakeFirstOrThrow();
       const { orderId } = await this.provider.createOrder({
@@ -175,6 +183,7 @@ export class BookingExtensionService {
         .set({
           ends_at: newEnd,
           price_paise: sql`price_paise + ${extension.extra_price_paise}`,
+          discount_paise: sql`discount_paise + ${extension.extra_discount_paise}`,
           version: sql`version + 1`,
         })
         .where('id', '=', id)

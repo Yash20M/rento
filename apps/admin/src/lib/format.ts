@@ -88,3 +88,41 @@ export function zonedLocalToIso(local: string, timeZone: string): string | undef
   instant = wall - offsetAt(instant); // a second pass settles times next to a daylight-saving change
   return Number.isNaN(instant) ? undefined : new Date(instant).toISOString();
 }
+
+/** The price after an offer: the discount is whole paise, rounded DOWN (the same rule the server applies). */
+export const offerPricePaise = (pricePaise: number, percent: number): number =>
+  pricePaise - Math.floor((pricePaise * percent) / 100);
+
+const pad = (n: number): string => String(n).padStart(2, '0');
+
+/** An instant → the value of an `<input type="datetime-local">`, in the viewer's own time zone. */
+export function toLocalInput(iso: string | null | undefined): string {
+  if (!iso) return '';
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return '';
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
+/**
+ * What a `datetime-local` field holds (the viewer's local time) → an ISO instant in UTC. `null` for an empty field,
+ * `undefined` when the text is not a real date and time.
+ */
+export function fromLocalInput(text: string): string | null | undefined {
+  const value = text.trim();
+  if (value === '') return null;
+  if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(value)) return undefined;
+  const d = new Date(value);
+  return Number.isNaN(d.getTime()) ? undefined : d.toISOString();
+}
+
+/** A short date and time in the viewer's time zone, e.g. `7 Jan, 10:30 am`. */
+export function formatWhen(iso: string): string {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return iso;
+  return new Intl.DateTimeFormat('en-IN', {
+    day: 'numeric',
+    month: 'short',
+    hour: 'numeric',
+    minute: '2-digit',
+  }).format(d);
+}

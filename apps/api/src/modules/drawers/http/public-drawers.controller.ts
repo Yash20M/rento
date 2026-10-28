@@ -6,6 +6,7 @@ import { CLOCK, type Clock } from '../../../common/clock/clock';
 import { problem, uuidParam } from '../../../common/http/problem-response';
 import type { Database } from '../../../db/kysely';
 import { KYSELY } from '../../../db/tokens';
+import { effectiveSlotPrice, isNewItem } from '../../inventory';
 import { DrawerRepository, type DrawerRow, type HoursRow } from '../data/drawer.repository';
 import { drawerNotFound, isOpenAt } from '../domain/drawer-rules';
 import { AvailabilityService } from '../services/availability.service';
@@ -112,20 +113,30 @@ export class PublicDrawersController {
     @Param('id', uuidParam(drawerNotFound)) id: string,
   ): Promise<InventoryEntryDto[]> {
     const { entries } = await this.availability.drawerInventory(id);
-    return entries.map(({ model, total, availableNow }) => ({
-      itemModelId: model.id,
-      name: model.name,
-      categoryId: model.category_id,
-      photos: model.photos as string[],
-      description: model.description,
-      pricePerSlotPaise: model.price_per_slot_paise,
-      slotMinutes: model.slot_minutes,
-      minDurationMin: model.min_duration_min,
-      maxDurationMin: model.max_duration_min,
-      depositPaise: model.deposit_paise,
-      total,
-      availableNow,
-    }));
+    const now = this.clock.now();
+    return entries.map(({ model, total, availableNow }) => {
+      const price = effectiveSlotPrice(model, now);
+      return {
+        itemModelId: model.id,
+        name: model.name,
+        categoryId: model.category_id,
+        photos: model.photos as string[],
+        description: model.description,
+        pricePerSlotPaise: price.pricePaise,
+        originalPricePerSlotPaise: price.listPaise,
+        discountPercent: price.discountPercent,
+        discountEndsAt: price.discountEndsAt?.toISOString() ?? null,
+        isNew: isNewItem(model.created_at, now),
+        featured: model.featured,
+        createdAt: model.created_at.toISOString(),
+        slotMinutes: model.slot_minutes,
+        minDurationMin: model.min_duration_min,
+        maxDurationMin: model.max_duration_min,
+        depositPaise: model.deposit_paise,
+        total,
+        availableNow,
+      };
+    });
   }
 
   @Get(':id/items/:modelId/availability')
@@ -138,6 +149,7 @@ export class PublicDrawersController {
     @Query() query: AvailabilityQuery,
   ): Promise<AvailabilityDto> {
     const a = await this.availability.availability(id, modelId, query.date);
+    const price = effectiveSlotPrice(a.model, this.clock.now());
     return {
       drawerId: a.drawer.id,
       itemModelId: a.model.id,
@@ -147,7 +159,9 @@ export class PublicDrawersController {
       minDurationMin: a.model.min_duration_min,
       maxDurationMin: a.model.max_duration_min,
       bufferMin: a.model.buffer_min,
-      pricePerSlotPaise: a.model.price_per_slot_paise,
+      pricePerSlotPaise: price.pricePaise,
+      originalPricePerSlotPaise: price.listPaise,
+      discountPercent: price.discountPercent,
       opensAt: a.opensAt?.toISOString() ?? null,
       closesAt: a.closesAt?.toISOString() ?? null,
       slots: a.slots.map((s) => ({

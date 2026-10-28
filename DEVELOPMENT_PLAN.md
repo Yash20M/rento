@@ -891,6 +891,13 @@ Task format:
   - Build: orange tokens, logo + favicon, split sign-in, sidebar from 1024 px, table min-width, stat cards, 320 px header.
   - Evidence: 2026-10-25 (M28) · admin 298/298, lint+typecheck green, live UI 22/22 (the 4 earlier failures were the developer .env SEED_PASSWORD overriding the demo password in the throw-away stack; fixed in scripts/lib/live-stack.mjs) · screenshots 320/390/820/1440 + dark in docs/ui/m28 with no horizontal overflow
 
+- [~] **P3-55 Offers, banners, new/featured merchandising (API + admin)** · Backend/Admin · Depends: P3-51, P3-52 · Refs: owner request 2026-10-27, docs/prompts/M29.md
+  - Build: migrations 0019/0020 (item offers, featured flag, `promotions` banners, `discount_paise` on bookings/extensions); pricing rules in `inventory/domain/pricing.ts` (offer 1-90%, half-open window, floor discount, price fixed at booking); public `/v1/promotions`; admin "Offers & banners" page, offer fields on products, audit-logged.
+  - Evidence: 2026-10-27 (M29) · api unit+db 160/160, api 685/685, concurrency 125/125, admin 418/418, contracts:check, pnpm check green, live browser UI 23/23 (incl. L-18, axe on /offers) · mutation checks on money paths
+- [~] **P3-56 Customer app: two-column product grid, banners, offers/new/featured rails** · Mobile · Depends: P3-55 · Refs: owner request 2026-10-27
+  - Build: `ProductTile`/`ProductGrid` (2 columns on phones, up to 5 wide), `PromoCarousel`, home sections from server data, `PriceBlock` on product page, savings in slot summary and booking detail.
+  - Evidence: 2026-10-27 (M29) · Flutter 344/344 (tile PT-01..07, grid PG-01/02, home HM-01..09, banners BN-01..11, offer OF-01..07, responsive sweep) · analyze/format/codegen green · OPEN: not deployed, no device/emulator check, full `pnpm verify` not run
+
 - [ ] **P4-01 Payment provider abstraction + Razorpay orders** · Backend · Depends: P2-22, P0-05 · Refs: README §9.5
   - Build: `PaymentProvider` interface, Razorpay adapter (create order, capture, refund, fetch), `payments` table, order creation at hold time, amount always server-computed.
   - Test: unit/api with fake provider; contract tests against Razorpay **test mode** (manual, recorded); amount tampering impossible (client sends no amount).

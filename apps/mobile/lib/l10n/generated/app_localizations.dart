@@ -1754,6 +1754,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Available'**
   String get availableLabel;
+
+  /// Heading of the products that have an active discount.
+  ///
+  /// In en, this message translates to:
+  /// **'Offers for you'**
+  String get offersForYou;
+
+  /// Heading of the products added in the last two weeks.
+  ///
+  /// In en, this message translates to:
+  /// **'New arrivals'**
+  String get newArrivals;
+
+  /// Heading of the products staff chose to feature.
+  ///
+  /// In en, this message translates to:
+  /// **'Featured'**
+  String get featuredHeading;
+
+  /// Heading of the complete product grid.
+  ///
+  /// In en, this message translates to:
+  /// **'All products'**
+  String get allProducts;
+
+  /// Badge on a product with an offer: the percent off.
+  ///
+  /// In en, this message translates to:
+  /// **'-{percent}%'**
+  String discountBadge(int percent);
+
+  /// Badge on a product added recently.
+  ///
+  /// In en, this message translates to:
+  /// **'NEW'**
+  String get newBadge;
+
+  /// Under a price: how long one slot is.
+  ///
+  /// In en, this message translates to:
+  /// **'per {minutes} min'**
+  String perSlotShort(int minutes);
+
+  /// Spoken label of the struck-out normal price.
+  ///
+  /// In en, this message translates to:
+  /// **'was {price}'**
+  String wasPrice(String price);
+
+  /// Under the price of a product whose offer has an end.
+  ///
+  /// In en, this message translates to:
+  /// **'Offer ends {when}'**
+  String offerEndsOn(String when);
+
+  /// Price summary line: the saving from the offer.
+  ///
+  /// In en, this message translates to:
+  /// **'Offer -{percent}%'**
+  String summaryOffer(int percent);
+
+  /// Price summary line when only the amount saved is known.
+  ///
+  /// In en, this message translates to:
+  /// **'Offer saving'**
+  String get summaryOfferNoPercent;
+
+  /// Line showing what an offer saved the customer.
+  ///
+  /// In en, this message translates to:
+  /// **'You save {amount}'**
+  String youSave(String amount);
+
+  /// Shown when a banner's product cannot be opened.
+  ///
+  /// In en, this message translates to:
+  /// **'That item is not available near you right now.'**
+  String get promoNotAvailable;
+
+  /// Spoken label of a banner in the carousel.
+  ///
+  /// In en, this message translates to:
+  /// **'Offer {index} of {total}'**
+  String bannerCountLabel(int index, int total);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

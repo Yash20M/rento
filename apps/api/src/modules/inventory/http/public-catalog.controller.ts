@@ -1,5 +1,6 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { Controller, Get, Inject, Param, Query } from '@nestjs/common';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { CLOCK, type Clock } from '../../../common/clock/clock';
 import { problem, uuidParam } from '../../../common/http/problem-response';
 import { itemModelNotFound } from '../domain/inventory-errors';
 import { CategoryService } from '../services/category.service';
@@ -14,6 +15,7 @@ export class PublicCatalogController {
   constructor(
     private readonly categories: CategoryService,
     private readonly models: ItemModelService,
+    @Inject(CLOCK) private readonly clock: Clock,
   ) {}
 
   @Get('categories')
@@ -26,7 +28,7 @@ export class PublicCatalogController {
   @ApiOkResponse({ type: ItemModelDto, isArray: true, description: 'Active models only.' })
   async listModels(@Query() query: ItemModelQuery): Promise<ItemModelDto[]> {
     const rows = await this.models.list({ categoryId: query.categoryId, includeInactive: false });
-    return rows.map(itemModelView);
+    return rows.map((m) => itemModelView(m, this.clock.now()));
   }
 
   @Get('item-models/:id')
@@ -35,6 +37,6 @@ export class PublicCatalogController {
   async getModel(@Param('id', uuidParam(itemModelNotFound)) id: string): Promise<ItemModelDto> {
     const model = await this.models.get(id);
     if (model.status !== 'active') throw itemModelNotFound();
-    return itemModelView(model);
+    return itemModelView(model, this.clock.now());
   }
 }

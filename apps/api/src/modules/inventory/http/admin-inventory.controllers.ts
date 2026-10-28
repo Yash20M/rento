@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Inject,
   Delete,
   Get,
   HttpCode,
@@ -17,12 +18,14 @@ import {
   ApiOkResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { CLOCK, type Clock } from '../../../common/clock/clock';
 import { ClientIp } from '../../../common/http/client-ip.decorator';
 import { AUTH_PROBLEMS, problem, uuidParam } from '../../../common/http/problem-response';
 import { AccessScopes, PermissionGuard, RequirePermission } from '../../access-control';
 import { AccessTokenGuard, CurrentUser, type AuthenticatedUser } from '../../auth-users';
 import type { AssetView, CategoryWithCount, ItemModelRow } from '../data/inventory.repository';
 import { assetNotFound, categoryNotFound, itemModelNotFound } from '../domain/inventory-errors';
+import { isNewItem, offerState } from '../domain/pricing';
 import { AssetService } from '../services/asset.service';
 import { CategoryService } from '../services/category.service';
 import { ItemModelService } from '../services/item-model.service';
@@ -55,7 +58,10 @@ export const categoryView = (c: {
   itemModelCount: c.item_model_count ?? 0,
 });
 
-export const itemModelView = (m: ItemModelRow & { asset_count?: number }): ItemModelDto => ({
+export const itemModelView = (
+  m: ItemModelRow & { asset_count?: number },
+  now: Date,
+): ItemModelDto => ({
   id: m.id,
   categoryId: m.category_id,
   name: m.name,
@@ -69,6 +75,13 @@ export const itemModelView = (m: ItemModelRow & { asset_count?: number }): ItemM
   depositPaise: m.deposit_paise,
   status: m.status,
   assetCount: m.asset_count ?? 0,
+  discountPercent: m.discount_percent,
+  discountStartsAt: m.discount_starts_at?.toISOString() ?? null,
+  discountEndsAt: m.discount_ends_at?.toISOString() ?? null,
+  offerState: offerState(m, now),
+  featured: m.featured,
+  isNew: isNewItem(m.created_at, now),
+  createdAt: m.created_at.toISOString(),
 });
 
 const assetView = (a: AssetView): AssetDto => ({
@@ -148,7 +161,10 @@ export class AdminCategoriesController {
 @UseGuards(AccessTokenGuard, PermissionGuard)
 @Controller('admin/item-models')
 export class AdminItemModelsController {
-  constructor(private readonly models: ItemModelService) {}
+  constructor(
+    private readonly models: ItemModelService,
+    @Inject(CLOCK) private readonly clock: Clock,
+  ) {}
 
   @Get()
   @RequirePermission('inventory:read')
@@ -156,7 +172,7 @@ export class AdminItemModelsController {
   @problem(403, AUTH_PROBLEMS)
   async list(@Query() query: ItemModelQuery): Promise<ItemModelDto[]> {
     const rows = await this.models.list({ categoryId: query.categoryId, includeInactive: true });
-    return rows.map(itemModelView);
+    return rows.map((m) => itemModelView(m, this.clock.now()));
   }
 
   @Get(':id')
@@ -165,7 +181,7 @@ export class AdminItemModelsController {
   @problem(403, AUTH_PROBLEMS)
   @problem(404, '`NOT_FOUND`')
   async get(@Param('id', uuidParam(itemModelNotFound)) id: string): Promise<ItemModelDto> {
-    return itemModelView(await this.models.get(id));
+    return itemModelView(await this.models.get(id), this.clock.now());
   }
 
   @Post()
@@ -178,7 +194,7 @@ export class AdminItemModelsController {
     @ClientIp() ip: string,
     @Body() dto: CreateItemModelDto,
   ): Promise<ItemModelDto> {
-    return itemModelView(await this.models.create({ id: user.id, ip }, dto));
+    return itemModelView(await this.models.create({ id: user.id, ip }, dto), this.clock.now());
   }
 
   @Patch(':id')
@@ -194,7 +210,7 @@ export class AdminItemModelsController {
     @Param('id', uuidParam(itemModelNotFound)) id: string,
     @Body() dto: UpdateItemModelDto,
   ): Promise<ItemModelDto> {
-    return itemModelView(await this.models.update({ id: user.id, ip }, id, dto));
+    return itemModelView(await this.models.update({ id: user.id, ip }, id, dto), this.clock.now());
   }
 }
 

@@ -64,6 +64,42 @@ class CardGrid extends StatelessWidget {
   );
 }
 
+/// How many product cards sit in a row: two on every phone, more as the window grows.
+int productColumns(double width) {
+  if (width < 600) return 2;
+  if (width < 900) return 3;
+  if (width < 1200) return 4;
+  return 5;
+}
+
+/// Products in equal-width columns ([productColumns]); each card keeps its natural height, and a taller card does not
+/// stretch its neighbour.
+class ProductGrid extends StatelessWidget {
+  const ProductGrid({
+    super.key,
+    required this.children,
+    this.spacing = 12,
+    this.runSpacing = 12,
+  });
+
+  final List<Widget> children;
+  final double spacing;
+  final double runSpacing;
+
+  @override
+  Widget build(BuildContext context) => LayoutBuilder(
+    builder: (context, box) {
+      final columns = productColumns(MediaQuery.sizeOf(context).width);
+      final tile = (box.maxWidth - spacing * (columns - 1)) / columns;
+      return Wrap(
+        spacing: spacing,
+        runSpacing: runSpacing,
+        children: [for (final c in children) SizedBox(width: tile, child: c)],
+      );
+    },
+  );
+}
+
 /// Screen-width classes used by shells.
 bool isWideLayout(BuildContext context) =>
     MediaQuery.sizeOf(context).width >= 900;

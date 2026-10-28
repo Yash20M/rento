@@ -1332,5 +1332,54 @@
   "locationNeededToOrder": "Allow location access so we can check Rento is available in your area, then try again.",
   "@locationNeededToOrder": {"description": "Shown when ordering needs the position and it could not be found."},
   "availableLabel": "Available",
-  "@availableLabel": {"description": "Badge on a product that can be rented now in the customer's area."}
+  "@availableLabel": {"description": "Badge on a product that can be rented now in the customer's area."},
+  "offersForYou": "Offers for you",
+  "@offersForYou": {"description": "Heading of the products that have an active discount."},
+  "newArrivals": "New arrivals",
+  "@newArrivals": {"description": "Heading of the products added in the last two weeks."},
+  "featuredHeading": "Featured",
+  "@featuredHeading": {"description": "Heading of the products staff chose to feature."},
+  "allProducts": "All products",
+  "@allProducts": {"description": "Heading of the complete product grid."},
+  "discountBadge": "-{percent}%",
+  "@discountBadge": {
+    "description": "Badge on a product with an offer: the percent off.",
+    "placeholders": {"percent": {"type": "int"}}
+  },
+  "newBadge": "NEW",
+  "@newBadge": {"description": "Badge on a product added recently."},
+  "perSlotShort": "per {minutes} min",
+  "@perSlotShort": {
+    "description": "Under a price: how long one slot is.",
+    "placeholders": {"minutes": {"type": "int"}}
+  },
+  "wasPrice": "was {price}",
+  "@wasPrice": {
+    "description": "Spoken label of the struck-out normal price.",
+    "placeholders": {"price": {"type": "String"}}
+  },
+  "offerEndsOn": "Offer ends {when}",
+  "@offerEndsOn": {
+    "description": "Under the price of a product whose offer has an end.",
+    "placeholders": {"when": {"type": "String"}}
+  },
+  "summaryOffer": "Offer -{percent}%",
+  "@summaryOffer": {
+    "description": "Price summary line: the saving from the offer.",
+    "placeholders": {"percent": {"type": "int"}}
+  },
+  "summaryOfferNoPercent": "Offer saving",
+  "@summaryOfferNoPercent": {"description": "Price summary line when only the amount saved is known."},
+  "youSave": "You save {amount}",
+  "@youSave": {
+    "description": "Line showing what an offer saved the customer.",
+    "placeholders": {"amount": {"type": "String"}}
+  },
+  "promoNotAvailable": "That item is not available near you right now.",
+  "@promoNotAvailable": {"description": "Shown when a banner's product cannot be opened."},
+  "bannerCountLabel": "Offer {index} of {total}",
+  "@bannerCountLabel": {
+    "description": "Spoken label of a banner in the carousel.",
+    "placeholders": {"index": {"type": "int"}, "total": {"type": "int"}}
+  }
 }

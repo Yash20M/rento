@@ -289,7 +289,8 @@ void main() {
         expect(find.text('1 Test Street, Bengaluru'), findsOneWidget);
         expect(find.text('Ring the bell at the glass door'), findsOneWidget);
         expect(find.byKey(const Key('drawer-open-state')), findsOneWidget);
-        expect(find.text('₹49 per 30 min'), findsOneWidget);
+        expect(find.text('₹49'), findsOneWidget);
+        expect(find.text('per 30 min'), findsOneWidget);
         expect(
           find.text('Available'),
           findsOneWidget,

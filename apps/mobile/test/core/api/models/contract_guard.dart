@@ -108,6 +108,10 @@ final Map<String, ModelBinding> contractModels = {
     NearbyResponse.fromJson,
     (m) => (m as NearbyResponse).toJson(),
   ),
+  'PublicPromotionDto': ModelBinding(
+    PublicPromotion.fromJson,
+    (m) => (m as PublicPromotion).toJson(),
+  ),
   'InventoryEntryDto': ModelBinding(
     InventoryEntry.fromJson,
     (m) => (m as InventoryEntry).toJson(),
@@ -184,6 +188,10 @@ const Set<String> ignoredSchemas = {
   'ErrorCode',
   // Admin-panel only (the React SPA uses the generated TypeScript client); the mobile app never calls these.
   'ChangePasswordDto', // admin panel first; the mobile app may add it later
+  // Banners are set up in the admin panel; the app only reads the public view (PublicPromotionDto).
+  'PromotionDto',
+  'CreatePromotionDto',
+  'UpdatePromotionDto',
   // Two-step verification is the admin panel's (P4-05); the mobile app never calls these.
   'MfaStatusDto',
   'MfaEnrolStartDto',

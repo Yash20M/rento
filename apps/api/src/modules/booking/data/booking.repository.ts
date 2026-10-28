@@ -179,6 +179,8 @@ export class BookingRepository {
       bufferMin: number;
       holdExpiresAt: Date;
       pricePaise: number;
+      /** What the customer saved against the list price (0 without an offer). */
+      discountPaise: number;
       depositPaise: number;
     },
   ): Promise<BookingRow> {
@@ -195,6 +197,7 @@ export class BookingRepository {
         buffer_min: b.bufferMin,
         hold_expires_at: b.holdExpiresAt,
         price_paise: b.pricePaise,
+        discount_paise: b.discountPaise,
         deposit_paise: b.depositPaise,
       })
       .returningAll()

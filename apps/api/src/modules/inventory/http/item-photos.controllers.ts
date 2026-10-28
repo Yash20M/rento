@@ -4,6 +4,7 @@ import {
   Get,
   Headers,
   HttpCode,
+  Inject,
   Param,
   Post,
   Req,
@@ -20,6 +21,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import type { FastifyReply, FastifyRequest } from 'fastify';
+import { CLOCK, type Clock } from '../../../common/clock/clock';
 import { AppError } from '../../../common/errors/app-error';
 import { ClientIp } from '../../../common/http/client-ip.decorator';
 import { AUTH_PROBLEMS, problem, uuidParam } from '../../../common/http/problem-response';
@@ -40,7 +42,10 @@ const mediaNotFound = (): AppError =>
 @UseGuards(AccessTokenGuard, PermissionGuard)
 @Controller('admin/item-models/:id/photos')
 export class AdminItemPhotosController {
-  constructor(private readonly photos: ItemPhotoService) {}
+  constructor(
+    private readonly photos: ItemPhotoService,
+    @Inject(CLOCK) private readonly clock: Clock,
+  ) {}
 
   @Post()
   @RequirePermission('inventory:write')
@@ -68,7 +73,10 @@ export class AdminItemPhotosController {
     @Headers('content-type') contentType: string | undefined,
   ): Promise<ItemModelDto> {
     const claimed = (contentType ?? '').split(';')[0]!.trim().toLowerCase();
-    return itemModelView(await this.photos.add({ id: user.id, ip }, id, request.body, claimed));
+    return itemModelView(
+      await this.photos.add({ id: user.id, ip }, id, request.body, claimed),
+      this.clock.now(),
+    );
   }
 
   @Delete(':mediaId')
@@ -83,7 +91,10 @@ export class AdminItemPhotosController {
     @Param('id', uuidParam(itemModelNotFound)) id: string,
     @Param('mediaId', uuidParam(mediaNotFound)) mediaId: string,
   ): Promise<ItemModelDto> {
-    return itemModelView(await this.photos.remove({ id: user.id, ip }, id, mediaId));
+    return itemModelView(
+      await this.photos.remove({ id: user.id, ip }, id, mediaId),
+      this.clock.now(),
+    );
   }
 }
 

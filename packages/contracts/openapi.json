@@ -3899,6 +3899,386 @@
         ]
       }
     },
+    "/v1/admin/promotions": {
+      "get": {
+        "operationId": "AdminPromotionsController_list",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Every banner, in the order customers see them (switched-off and scheduled ones included).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PromotionDto"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "`UNAUTHENTICATED` / `TOKEN_EXPIRED` (401) — missing, invalid or expired access token. `PERMISSION_DENIED` (403) — you lack the permission for this resource or drawer.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "admin: promotions"
+        ]
+      },
+      "post": {
+        "operationId": "AdminPromotionsController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePromotionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PromotionDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "`UNAUTHENTICATED` / `TOKEN_EXPIRED` (401) — missing, invalid or expired access token. `PERMISSION_DENIED` (403) — you lack the permission for this resource or drawer.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "`VALIDATION_FAILED` — see `errors[]`.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "admin: promotions"
+        ]
+      }
+    },
+    "/v1/admin/promotions/{id}": {
+      "patch": {
+        "operationId": "AdminPromotionsController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePromotionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PromotionDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "`UNAUTHENTICATED` / `TOKEN_EXPIRED` (401) — missing, invalid or expired access token. `PERMISSION_DENIED` (403) — you lack the permission for this resource or drawer.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "`NOT_FOUND`",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "`VALIDATION_FAILED`",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "admin: promotions"
+        ]
+      },
+      "delete": {
+        "operationId": "AdminPromotionsController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "The banner and its picture are deleted."
+          },
+          "403": {
+            "description": "`UNAUTHENTICATED` / `TOKEN_EXPIRED` (401) — missing, invalid or expired access token. `PERMISSION_DENIED` (403) — you lack the permission for this resource or drawer.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "`NOT_FOUND`",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "admin: promotions"
+        ]
+      }
+    },
+    "/v1/admin/promotions/{id}/image": {
+      "post": {
+        "operationId": "AdminPromotionsController_setImage",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "description": "The picture itself (JPEG, PNG or WebP, at most 5 MB), sent as the request body.",
+          "content": {
+            "image/jpeg": {
+              "schema": {
+                "type": "string",
+                "format": "binary"
+              }
+            },
+            "image/png": {
+              "schema": {
+                "type": "string",
+                "format": "binary"
+              }
+            },
+            "image/webp": {
+              "schema": {
+                "type": "string",
+                "format": "binary"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The banner with its new picture (the old one is deleted).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PromotionDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "`UNAUTHENTICATED` / `TOKEN_EXPIRED` (401) — missing, invalid or expired access token. `PERMISSION_DENIED` (403) — you lack the permission for this resource or drawer.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "`NOT_FOUND`",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "`VALIDATION_FAILED` — not a JPEG/PNG/WebP image, empty, or larger than 5 MB.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "admin: promotions"
+        ]
+      },
+      "delete": {
+        "operationId": "AdminPromotionsController_clearImage",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The banner without a picture (also when it had none).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PromotionDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "`UNAUTHENTICATED` / `TOKEN_EXPIRED` (401) — missing, invalid or expired access token. `PERMISSION_DENIED` (403) — you lack the permission for this resource or drawer.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "`NOT_FOUND`",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "admin: promotions"
+        ]
+      }
+    },
+    "/v1/promotions": {
+      "get": {
+        "operationId": "PublicPromotionsController_list",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Banners that are switched on, have begun and have not ended, in the staff's order.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PublicPromotionDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "catalog"
+        ]
+      }
+    },
     "/v1/admin/drawers": {
       "get": {
         "operationId": "AdminDrawersController_list",
@@ -8549,6 +8929,45 @@
           "assetCount": {
             "type": "number",
             "description": "Physical assets of this model that are not retired."
+          },
+          "discountPercent": {
+            "type": "number",
+            "nullable": true,
+            "minimum": 1,
+            "maximum": 90,
+            "description": "Percent off the slot price (the offer), or null when the model has none."
+          },
+          "discountStartsAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time"
+          },
+          "discountEndsAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time"
+          },
+          "offerState": {
+            "type": "string",
+            "enum": [
+              "none",
+              "scheduled",
+              "active",
+              "ended"
+            ],
+            "description": "Where the offer is on the calendar right now."
+          },
+          "featured": {
+            "type": "boolean",
+            "description": "Shown in the customer app under \"Featured\"."
+          },
+          "isNew": {
+            "type": "boolean",
+            "description": "Added within the last 14 days."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
           }
         },
         "required": [
@@ -8564,7 +8983,14 @@
           "bufferMin",
           "depositPaise",
           "status",
-          "assetCount"
+          "assetCount",
+          "discountPercent",
+          "discountStartsAt",
+          "discountEndsAt",
+          "offerState",
+          "featured",
+          "isNew",
+          "createdAt"
         ]
       },
       "CreateItemModelDto": {
@@ -8619,6 +9045,26 @@
             "minimum": 0,
             "maximum": 10000000,
             "default": 0
+          },
+          "discountPercent": {
+            "type": "number",
+            "nullable": true,
+            "minimum": 1,
+            "maximum": 90
+          },
+          "discountStartsAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time"
+          },
+          "discountEndsAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time"
+          },
+          "featured": {
+            "type": "boolean",
+            "default": false
           },
           "categoryId": {
             "type": "string",
@@ -8675,6 +9121,25 @@
           },
           "depositPaise": {
             "type": "number"
+          },
+          "discountPercent": {
+            "type": "number",
+            "nullable": true,
+            "minimum": 1,
+            "maximum": 90
+          },
+          "discountStartsAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time"
+          },
+          "discountEndsAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time"
+          },
+          "featured": {
+            "type": "boolean"
           },
           "status": {
             "type": "string",
@@ -8876,6 +9341,271 @@
         "required": [
           "toDrawerId",
           "reason"
+        ]
+      },
+      "PromotionDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string",
+            "example": "Weekend offer"
+          },
+          "subtitle": {
+            "type": "string",
+            "nullable": true
+          },
+          "ctaLabel": {
+            "type": "string",
+            "nullable": true,
+            "description": "Label of the button, e.g. \"Shop now\"."
+          },
+          "theme": {
+            "type": "string",
+            "enum": [
+              "orange",
+              "ink",
+              "teal",
+              "plum"
+            ],
+            "description": "Colour of the banner when it has no picture."
+          },
+          "imageUrl": {
+            "type": "string",
+            "nullable": true,
+            "description": "A `/v1/media/<id>` path, or null."
+          },
+          "itemModelId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true,
+            "description": "The product the banner opens; null when none, or when that product is off the shelf."
+          },
+          "itemModelName": {
+            "type": "string",
+            "nullable": true,
+            "description": "Name of the product it opens."
+          },
+          "startsAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time"
+          },
+          "endsAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time"
+          },
+          "active": {
+            "type": "boolean",
+            "description": "The on/off switch."
+          },
+          "sortOrder": {
+            "type": "number",
+            "description": "Lower numbers come first."
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "live",
+              "scheduled",
+              "ended",
+              "off"
+            ],
+            "description": "What customers see right now."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "subtitle",
+          "ctaLabel",
+          "theme",
+          "imageUrl",
+          "itemModelId",
+          "itemModelName",
+          "startsAt",
+          "endsAt",
+          "active",
+          "sortOrder",
+          "state",
+          "createdAt"
+        ]
+      },
+      "CreatePromotionDto": {
+        "type": "object",
+        "properties": {
+          "subtitle": {
+            "type": "string",
+            "nullable": true,
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "ctaLabel": {
+            "type": "string",
+            "nullable": true,
+            "minLength": 1,
+            "maxLength": 30
+          },
+          "theme": {
+            "type": "string",
+            "enum": [
+              "orange",
+              "ink",
+              "teal",
+              "plum"
+            ],
+            "default": "orange"
+          },
+          "itemModelId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "startsAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time"
+          },
+          "endsAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time"
+          },
+          "active": {
+            "type": "boolean",
+            "default": true
+          },
+          "sortOrder": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 10000,
+            "default": 0
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80
+          }
+        },
+        "required": [
+          "title"
+        ]
+      },
+      "UpdatePromotionDto": {
+        "type": "object",
+        "properties": {
+          "subtitle": {
+            "type": "string",
+            "nullable": true,
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "ctaLabel": {
+            "type": "string",
+            "nullable": true,
+            "minLength": 1,
+            "maxLength": 30
+          },
+          "theme": {
+            "type": "string",
+            "enum": [
+              "orange",
+              "ink",
+              "teal",
+              "plum"
+            ],
+            "default": "orange"
+          },
+          "itemModelId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "startsAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time"
+          },
+          "endsAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time"
+          },
+          "active": {
+            "type": "boolean",
+            "default": true
+          },
+          "sortOrder": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 10000,
+            "default": 0
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80
+          }
+        }
+      },
+      "PublicPromotionDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string",
+            "example": "Weekend offer"
+          },
+          "subtitle": {
+            "type": "string",
+            "nullable": true
+          },
+          "ctaLabel": {
+            "type": "string",
+            "nullable": true,
+            "description": "Label of the button, e.g. \"Shop now\"."
+          },
+          "theme": {
+            "type": "string",
+            "enum": [
+              "orange",
+              "ink",
+              "teal",
+              "plum"
+            ],
+            "description": "Colour of the banner when it has no picture."
+          },
+          "imageUrl": {
+            "type": "string",
+            "nullable": true,
+            "description": "A `/v1/media/<id>` path, or null."
+          },
+          "itemModelId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true,
+            "description": "The product the banner opens; null when none, or when that product is off the shelf."
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "subtitle",
+          "ctaLabel",
+          "theme",
+          "imageUrl",
+          "itemModelId"
         ]
       },
       "HoursDto": {
@@ -9349,7 +10079,37 @@
           },
           "pricePerSlotPaise": {
             "type": "number",
-            "example": 9900
+            "example": 7900,
+            "description": "What one slot costs right now: the offer price while an offer is active, else the normal price."
+          },
+          "originalPricePerSlotPaise": {
+            "type": "number",
+            "example": 9900,
+            "description": "The normal price of one slot (before any offer)."
+          },
+          "discountPercent": {
+            "type": "number",
+            "nullable": true,
+            "description": "Percent off while an offer is active, else null."
+          },
+          "discountEndsAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time",
+            "description": "When the active offer ends; null when there is no offer or it has no end."
+          },
+          "isNew": {
+            "type": "boolean",
+            "description": "Added within the last 14 days."
+          },
+          "featured": {
+            "type": "boolean",
+            "description": "Marked by the staff to be featured on the home screen."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the product was added."
           },
           "slotMinutes": {
             "type": "number",
@@ -9382,6 +10142,12 @@
           "photos",
           "description",
           "pricePerSlotPaise",
+          "originalPricePerSlotPaise",
+          "discountPercent",
+          "discountEndsAt",
+          "isNew",
+          "featured",
+          "createdAt",
           "slotMinutes",
           "minDurationMin",
           "maxDurationMin",
@@ -9450,7 +10216,17 @@
           },
           "pricePerSlotPaise": {
             "type": "number",
-            "example": 9900
+            "example": 7900,
+            "description": "What one slot costs right now (the offer price while an offer is active)."
+          },
+          "originalPricePerSlotPaise": {
+            "type": "number",
+            "example": 9900,
+            "description": "The normal price of one slot."
+          },
+          "discountPercent": {
+            "type": "number",
+            "nullable": true
           },
           "opensAt": {
             "type": "string",
@@ -9487,6 +10263,8 @@
           "maxDurationMin",
           "bufferMin",
           "pricePerSlotPaise",
+          "originalPricePerSlotPaise",
+          "discountPercent",
           "opensAt",
           "closesAt",
           "slots",
@@ -9970,7 +10748,11 @@
           },
           "pricePaise": {
             "type": "number",
-            "description": "Rental price in paise."
+            "description": "Rental price in paise: what is charged (after any offer)."
+          },
+          "discountPaise": {
+            "type": "number",
+            "description": "What the customer saved thanks to an offer, in paise (0 without one). Price + savings = the normal price."
           },
           "depositPaise": {
             "type": "number",
@@ -10031,6 +10813,7 @@
           "endsAt",
           "durationMinutes",
           "pricePaise",
+          "discountPaise",
           "depositPaise",
           "totalPaise",
           "currency",
@@ -10229,7 +11012,11 @@
           },
           "pricePaise": {
             "type": "number",
-            "description": "Rental price in paise."
+            "description": "Rental price in paise: what is charged (after any offer)."
+          },
+          "discountPaise": {
+            "type": "number",
+            "description": "What the customer saved thanks to an offer, in paise (0 without one). Price + savings = the normal price."
           },
           "depositPaise": {
             "type": "number",
@@ -10293,6 +11080,7 @@
           "endsAt",
           "durationMinutes",
           "pricePaise",
+          "discountPaise",
           "depositPaise",
           "totalPaise",
           "currency",
@@ -10400,7 +11188,11 @@
           },
           "pricePaise": {
             "type": "number",
-            "description": "Rental price in paise."
+            "description": "Rental price in paise: what is charged (after any offer)."
+          },
+          "discountPaise": {
+            "type": "number",
+            "description": "What the customer saved thanks to an offer, in paise (0 without one). Price + savings = the normal price."
           },
           "depositPaise": {
             "type": "number",
@@ -10470,6 +11262,7 @@
           "endsAt",
           "durationMinutes",
           "pricePaise",
+          "discountPaise",
           "depositPaise",
           "totalPaise",
           "currency",

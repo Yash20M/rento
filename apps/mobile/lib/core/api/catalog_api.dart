@@ -28,6 +28,15 @@ class CatalogApi {
     ];
   });
 
+  /// The banners of the home screen that are live right now (public).
+  Future<List<PublicPromotion>> promotions() => guardApi(() async {
+    final response = await _dio.get<List<dynamic>>('/v1/promotions');
+    return [
+      for (final item in response.data!)
+        PublicPromotion.fromJson(item as Map<String, dynamic>),
+    ];
+  });
+
   Future<List<InventoryEntry>> inventory(String drawerId) => guardApi(() async {
     final response = await _dio.get<List<dynamic>>(
       '/v1/drawers/$drawerId/inventory',

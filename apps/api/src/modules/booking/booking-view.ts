@@ -28,6 +28,7 @@ export function toBookingDto(
     endsAt: view.ends_at.toISOString(),
     durationMinutes: Math.round((view.ends_at.getTime() - view.starts_at.getTime()) / MINUTE_MS),
     pricePaise: view.price_paise,
+    discountPaise: view.discount_paise,
     depositPaise: view.deposit_paise,
     totalPaise: view.price_paise + view.deposit_paise,
     currency: view.currency,

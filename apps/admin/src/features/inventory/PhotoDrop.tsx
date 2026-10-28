@@ -12,12 +12,15 @@ export function PhotoDrop({
   disabled,
   busyLabel,
   hint,
+  single = false,
 }: {
   onFiles: (files: File[]) => void;
   disabled?: boolean | undefined;
   /** Shown instead of the prompt while something is uploading. */
   busyLabel?: string | undefined;
   hint?: string | undefined;
+  /** One picture only (a banner), not several. */
+  single?: boolean | undefined;
 }) {
   const input = useRef<HTMLInputElement>(null);
   const hintId = useId();
@@ -54,7 +57,7 @@ export function PhotoDrop({
         ref={input}
         type="file"
         accept={PHOTO_TYPES.join(',')}
-        multiple
+        multiple={!single}
         className="sr-only"
         aria-label="Choose photos"
         aria-describedby={hintId}

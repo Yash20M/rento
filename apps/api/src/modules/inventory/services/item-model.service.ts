@@ -8,6 +8,7 @@ import { withTransaction } from '../../../db/transaction';
 import { type Actor, AuditLog } from '../../reporting-audit';
 import { InventoryRepository, type ItemModelRow } from '../data/inventory.repository';
 import { hasFutureBookings, invalidField, itemModelNotFound } from '../domain/inventory-errors';
+import { offerProblems } from '../domain/pricing';
 import { modelRuleProblems } from '../domain/rules';
 import { ItemPhotoService } from './item-photo.service';
 
@@ -22,6 +23,12 @@ export interface ItemModelInput {
   maxDurationMin: number;
   bufferMin?: number | undefined;
   depositPaise?: number | undefined;
+  /** 1–90, or `null` for no offer. */
+  discountPercent?: number | null | undefined;
+  /** ISO instants with a UTC offset, or `null`. */
+  discountStartsAt?: string | null | undefined;
+  discountEndsAt?: string | null | undefined;
+  featured?: boolean | undefined;
 }
 
 export type ItemModelPatch = Partial<Omit<ItemModelInput, 'description'>> & {
@@ -40,8 +47,15 @@ const snapshot = (m: ItemModelRow) => ({
   maxDurationMin: m.max_duration_min,
   bufferMin: m.buffer_min,
   depositPaise: m.deposit_paise,
+  discountPercent: m.discount_percent,
+  discountStartsAt: m.discount_starts_at?.toISOString() ?? null,
+  discountEndsAt: m.discount_ends_at?.toISOString() ?? null,
+  featured: m.featured,
   status: m.status,
 });
+
+const asDate = (value: string | null | undefined): Date | null =>
+  value === undefined || value === null ? null : new Date(value);
 
 const rulesError = (problems: Array<{ field: string; message: string }>): AppError =>
   new AppError({
@@ -79,6 +93,16 @@ export class ItemModelService {
       maxDurationMin: input.maxDurationMin,
       bufferMin: input.bufferMin ?? 0,
     });
+    problems.push(
+      ...offerProblems(
+        {
+          percent: input.discountPercent ?? null,
+          startsAt: asDate(input.discountStartsAt),
+          endsAt: asDate(input.discountEndsAt),
+        },
+        this.clock.now(),
+      ),
+    );
     if (problems.length > 0) throw rulesError(problems);
 
     return withTransaction(this.db, async (trx) => {
@@ -96,6 +120,11 @@ export class ItemModelService {
         maxDurationMin: input.maxDurationMin,
         bufferMin: input.bufferMin ?? 0,
         depositPaise: input.depositPaise ?? 0,
+        discountPercent: input.discountPercent ?? null,
+        discountStartsAt: asDate(input.discountStartsAt),
+        discountEndsAt: asDate(input.discountEndsAt),
+        featured: input.featured ?? false,
+        createdAt: this.clock.now(),
       });
       await this.audit.record(trx, {
         actor,
@@ -119,7 +148,27 @@ export class ItemModelService {
         maxDurationMin: patch.maxDurationMin ?? before.max_duration_min,
         bufferMin: patch.bufferMin ?? before.buffer_min,
       };
-      const problems = modelRuleProblems(rules);
+      const problems: Array<{ field: string; message: string }> = modelRuleProblems(rules);
+      // The offer is judged as a whole (what the model will look like after this change). An end date that is left alone
+      // is not re-checked: an offer that has simply run out may stay as it is while other fields are edited.
+      problems.push(
+        ...offerProblems(
+          {
+            percent:
+              patch.discountPercent !== undefined ? patch.discountPercent : before.discount_percent,
+            startsAt:
+              patch.discountStartsAt !== undefined
+                ? asDate(patch.discountStartsAt)
+                : before.discount_starts_at,
+            endsAt:
+              patch.discountEndsAt !== undefined
+                ? asDate(patch.discountEndsAt)
+                : before.discount_ends_at,
+          },
+          this.clock.now(),
+          { endsChanged: patch.discountEndsAt !== undefined },
+        ),
+      );
       if (problems.length > 0) throw rulesError(problems);
 
       if (patch.categoryId && !(await this.inventory.findCategory(trx, patch.categoryId))) {
@@ -148,6 +197,14 @@ export class ItemModelService {
         ...(patch.maxDurationMin !== undefined && { max_duration_min: patch.maxDurationMin }),
         ...(patch.bufferMin !== undefined && { buffer_min: patch.bufferMin }),
         ...(patch.depositPaise !== undefined && { deposit_paise: patch.depositPaise }),
+        ...(patch.discountPercent !== undefined && { discount_percent: patch.discountPercent }),
+        ...(patch.discountStartsAt !== undefined && {
+          discount_starts_at: asDate(patch.discountStartsAt),
+        }),
+        ...(patch.discountEndsAt !== undefined && {
+          discount_ends_at: asDate(patch.discountEndsAt),
+        }),
+        ...(patch.featured !== undefined && { featured: patch.featured }),
         ...(patch.status !== undefined && { status: patch.status }),
       });
       const after = await this.inventory.findItemModel(trx, id);

@@ -533,3 +533,105 @@ test('L-17 two-step verification: set up with a scanned secret, keep the recover
   await page.getByRole('button', { name: 'Turn off' }).click();
   await expect(page.getByTestId('mfa-state')).toContainText('Off');
 });
+
+test('L-18 offers: an offer set on a product and a banner made in the panel reach customers through the public API, and go away again', async ({
+  page,
+}) => {
+  await signIn(page, OWNER);
+  const png = Buffer.from(
+    'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==',
+    'base64',
+  );
+  const customerView = async () => {
+    const drawers = (await (await page.request.get('/v1/drawers')).json()) as Array<{
+      id: string;
+      name: string;
+    }>;
+    const hub = drawers.find((d) => d.name === 'Indiranagar Hub')!;
+    const entries = (await (
+      await page.request.get(`/v1/drawers/${hub.id}/inventory`)
+    ).json()) as Array<{
+      name: string;
+      pricePerSlotPaise: number;
+      originalPricePerSlotPaise: number;
+      discountPercent: number | null;
+      featured: boolean;
+    }>;
+    return entries.find((e) => e.name === 'PlayStation 5')!;
+  };
+  const before = await customerView();
+  expect(before.discountPercent).toBeNull();
+
+  // 1. the offer, on the product
+  await page.goto('/inventory/models');
+  await page
+    .getByRole('row', { name: /PlayStation 5/ })
+    .getByRole('button', { name: 'Edit' })
+    .click();
+  const product = page.getByRole('dialog');
+  await product.getByLabel('Discount (%)').fill('25');
+  await expect(product.getByText('Customers will pay')).toBeVisible();
+  await product.getByLabel(/feature this product/i).check();
+  await product.getByRole('button', { name: 'Save' }).click();
+  await expect(page.getByRole('dialog')).toHaveCount(0);
+  await expect(
+    page.getByRole('row', { name: /PlayStation 5/ }).getByText('−25% offer'),
+  ).toBeVisible();
+  const during = await customerView();
+  expect(during).toMatchObject({ discountPercent: 25, featured: true });
+  expect(during.pricePerSlotPaise).toBe(
+    during.originalPricePerSlotPaise - Math.floor((during.originalPricePerSlotPaise * 25) / 100),
+  );
+
+  // 2. the banner, with a picture and a product to open
+  await page.goto('/offers');
+  await page.getByRole('button', { name: 'New banner' }).click();
+  const form = page.getByRole('dialog', { name: 'New banner' });
+  await form.getByLabel('Title', { exact: true }).fill('Live-test banner');
+  await form.getByLabel('Subtitle').fill('25% off the console');
+  await form.getByLabel('Button label').fill('Shop now');
+  await form.getByLabel('Opens this product').selectOption({ label: 'PlayStation 5' });
+  await form
+    .getByLabel('Choose photos')
+    .setInputFiles({ name: 'banner.png', mimeType: 'image/png', buffer: png });
+  await expect(form.getByRole('button', { name: 'Remove picture' })).toBeVisible();
+  await form.getByRole('button', { name: 'Save' }).click();
+  await expect(page.getByRole('dialog')).toHaveCount(0);
+  const row = page.getByRole('row', { name: /Live-test banner/ });
+  await expect(row.getByText('Live', { exact: true })).toBeVisible();
+  const shown = (await (await page.request.get('/v1/promotions')).json()) as Array<{
+    title: string;
+    imageUrl: string | null;
+    itemModelId: string | null;
+  }>;
+  const mine = shown.find((p) => p.title === 'Live-test banner')!;
+  expect(mine.itemModelId).not.toBeNull();
+  expect((await page.request.get(mine.imageUrl!)).status()).toBe(200);
+
+  // 3. switch it off: customers stop seeing it, staff still do
+  await row.getByRole('button', { name: 'Turn off Live-test banner' }).click();
+  await expect(row.getByText('Off', { exact: true })).toBeVisible();
+  const hidden = (await (await page.request.get('/v1/promotions')).json()) as Array<{
+    title: string;
+  }>;
+  expect(hidden.some((p) => p.title === 'Live-test banner')).toBe(false);
+
+  // 4. delete it (asks first), and clear the offer again
+  await row.getByRole('button', { name: 'Delete' }).click();
+  await page
+    .getByRole('dialog', { name: 'Delete banner?' })
+    .getByRole('button', { name: 'Delete' })
+    .click();
+  await expect(page.getByRole('row', { name: /Live-test banner/ })).toHaveCount(0);
+  await page.goto('/inventory/models');
+  await page
+    .getByRole('row', { name: /PlayStation 5/ })
+    .getByRole('button', { name: 'Edit' })
+    .click();
+  const again = page.getByRole('dialog');
+  await again.getByLabel('Discount (%)').fill('');
+  await again.getByLabel(/feature this product/i).uncheck();
+  await again.getByRole('button', { name: 'Save' }).click();
+  await expect(page.getByRole('dialog')).toHaveCount(0);
+  expect(await customerView()).toMatchObject({ discountPercent: null, featured: false });
+});

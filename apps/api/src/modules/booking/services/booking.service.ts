@@ -13,7 +13,7 @@ import type { Database } from '../../../db/kysely';
 import { KYSELY } from '../../../db/tokens';
 import type { Tx } from '../../../db/transaction';
 import { DrawerRepository } from '../../drawers';
-import { InventoryRepository } from '../../inventory';
+import { InventoryRepository, effectiveSlotPrice } from '../../inventory';
 import { KycService } from '../../kyc';
 import { PaymentRepository } from '../../payments';
 import { toBookingDto } from '../booking-view';
@@ -138,6 +138,14 @@ export class BookingService {
     const holdExpiresAt = new Date(
       Math.min(now.getTime() + this.config.holdMinutes * MINUTE_MS, startsAt.getTime()),
     );
+    // The price is fixed now, at the offer that applies at this moment, and kept on the booking (price charged + saving).
+    const slotPrice = effectiveSlotPrice(model, now);
+    const charged = rentalPrice(request.durationMinutes, model.slot_minutes, slotPrice.pricePaise);
+    const rental = {
+      charged,
+      saved:
+        rentalPrice(request.durationMinutes, model.slot_minutes, slotPrice.listPaise) - charged,
+    };
     const tried: string[] = [];
     for (let attempt = 0; attempt < MAX_CLAIM_ATTEMPTS; attempt += 1) {
       const search = {
@@ -168,11 +176,8 @@ export class BookingService {
           endsAt,
           bufferMin: model.buffer_min,
           holdExpiresAt,
-          pricePaise: rentalPrice(
-            request.durationMinutes,
-            model.slot_minutes,
-            model.price_per_slot_paise,
-          ),
+          pricePaise: rental.charged,
+          discountPaise: rental.saved,
           depositPaise: model.deposit_paise,
         });
         await this.bookings.insertOccupancy(trx, booking.id, assetId, startsAt, blockedUntil);

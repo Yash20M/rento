@@ -149,6 +149,12 @@ export class InventoryRepository {
       maxDurationMin: number;
       bufferMin: number;
       depositPaise: number;
+      discountPercent: number | null;
+      discountStartsAt: Date | null;
+      discountEndsAt: Date | null;
+      featured: boolean;
+      /** From the injected clock, so "new" is judged on the same time as everything else. */
+      createdAt: Date;
     },
   ): Promise<ItemModelRow> {
     return db
@@ -164,6 +170,12 @@ export class InventoryRepository {
         max_duration_min: model.maxDurationMin,
         buffer_min: model.bufferMin,
         deposit_paise: model.depositPaise,
+        discount_percent: model.discountPercent,
+        discount_starts_at: model.discountStartsAt,
+        discount_ends_at: model.discountEndsAt,
+        featured: model.featured,
+        created_at: model.createdAt,
+        updated_at: model.createdAt,
       })
       .returningAll()
       .executeTakeFirstOrThrow();

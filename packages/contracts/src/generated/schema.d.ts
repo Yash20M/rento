@@ -900,6 +900,70 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/admin/promotions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["AdminPromotionsController_list"];
+        put?: never;
+        post: operations["AdminPromotionsController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/promotions/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["AdminPromotionsController_remove"];
+        options?: never;
+        head?: never;
+        patch: operations["AdminPromotionsController_update"];
+        trace?: never;
+    };
+    "/v1/admin/promotions/{id}/image": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["AdminPromotionsController_setImage"];
+        delete: operations["AdminPromotionsController_clearImage"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/promotions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["PublicPromotionsController_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/admin/drawers": {
         parameters: {
             query?: never;
@@ -2088,6 +2152,23 @@ export interface components {
             status: "active" | "inactive";
             /** @description Physical assets of this model that are not retired. */
             assetCount: number;
+            /** @description Percent off the slot price (the offer), or null when the model has none. */
+            discountPercent: number | null;
+            /** Format: date-time */
+            discountStartsAt: string | null;
+            /** Format: date-time */
+            discountEndsAt: string | null;
+            /**
+             * @description Where the offer is on the calendar right now.
+             * @enum {string}
+             */
+            offerState: "none" | "scheduled" | "active" | "ended";
+            /** @description Shown in the customer app under "Featured". */
+            featured: boolean;
+            /** @description Added within the last 14 days. */
+            isNew: boolean;
+            /** Format: date-time */
+            createdAt: string;
         };
         CreateItemModelDto: {
             name: string;
@@ -2102,6 +2183,13 @@ export interface components {
             bufferMin: number;
             /** @default 0 */
             depositPaise: number;
+            discountPercent?: number | null;
+            /** Format: date-time */
+            discountStartsAt?: string | null;
+            /** Format: date-time */
+            discountEndsAt?: string | null;
+            /** @default false */
+            featured: boolean;
             /** Format: uuid */
             categoryId: string;
         };
@@ -2117,6 +2205,12 @@ export interface components {
             maxDurationMin?: number;
             bufferMin?: number;
             depositPaise?: number;
+            discountPercent?: number | null;
+            /** Format: date-time */
+            discountStartsAt?: string | null;
+            /** Format: date-time */
+            discountEndsAt?: string | null;
+            featured?: boolean;
             /**
              * @description Models are deactivated, never deleted.
              * @enum {string}
@@ -2189,6 +2283,105 @@ export interface components {
             toDrawerId: string;
             /** @description Why — kept in the audit trail. */
             reason: string;
+        };
+        PromotionDto: {
+            /** Format: uuid */
+            id: string;
+            /** @example Weekend offer */
+            title: string;
+            subtitle: string | null;
+            /** @description Label of the button, e.g. "Shop now". */
+            ctaLabel: string | null;
+            /**
+             * @description Colour of the banner when it has no picture.
+             * @enum {string}
+             */
+            theme: "orange" | "ink" | "teal" | "plum";
+            /** @description A `/v1/media/<id>` path, or null. */
+            imageUrl: string | null;
+            /**
+             * Format: uuid
+             * @description The product the banner opens; null when none, or when that product is off the shelf.
+             */
+            itemModelId: string | null;
+            /** @description Name of the product it opens. */
+            itemModelName: string | null;
+            /** Format: date-time */
+            startsAt: string | null;
+            /** Format: date-time */
+            endsAt: string | null;
+            /** @description The on/off switch. */
+            active: boolean;
+            /** @description Lower numbers come first. */
+            sortOrder: number;
+            /**
+             * @description What customers see right now.
+             * @enum {string}
+             */
+            state: "live" | "scheduled" | "ended" | "off";
+            /** Format: date-time */
+            createdAt: string;
+        };
+        CreatePromotionDto: {
+            subtitle?: string | null;
+            ctaLabel?: string | null;
+            /**
+             * @default orange
+             * @enum {string}
+             */
+            theme: "orange" | "ink" | "teal" | "plum";
+            /** Format: uuid */
+            itemModelId?: string | null;
+            /** Format: date-time */
+            startsAt?: string | null;
+            /** Format: date-time */
+            endsAt?: string | null;
+            /** @default true */
+            active: boolean;
+            /** @default 0 */
+            sortOrder: number;
+            title: string;
+        };
+        UpdatePromotionDto: {
+            subtitle?: string | null;
+            ctaLabel?: string | null;
+            /**
+             * @default orange
+             * @enum {string}
+             */
+            theme: "orange" | "ink" | "teal" | "plum";
+            /** Format: uuid */
+            itemModelId?: string | null;
+            /** Format: date-time */
+            startsAt?: string | null;
+            /** Format: date-time */
+            endsAt?: string | null;
+            /** @default true */
+            active: boolean;
+            /** @default 0 */
+            sortOrder: number;
+            title?: string;
+        };
+        PublicPromotionDto: {
+            /** Format: uuid */
+            id: string;
+            /** @example Weekend offer */
+            title: string;
+            subtitle: string | null;
+            /** @description Label of the button, e.g. "Shop now". */
+            ctaLabel: string | null;
+            /**
+             * @description Colour of the banner when it has no picture.
+             * @enum {string}
+             */
+            theme: "orange" | "ink" | "teal" | "plum";
+            /** @description A `/v1/media/<id>` path, or null. */
+            imageUrl: string | null;
+            /**
+             * Format: uuid
+             * @description The product the banner opens; null when none, or when that product is off the shelf.
+             */
+            itemModelId: string | null;
         };
         HoursDto: {
             /** @description ISO weekday: 1 = Monday … 7 = Sunday. */
@@ -2359,8 +2552,32 @@ export interface components {
             categoryId: string;
             photos: string[];
             description: string | null;
-            /** @example 9900 */
+            /**
+             * @description What one slot costs right now: the offer price while an offer is active, else the normal price.
+             * @example 7900
+             */
             pricePerSlotPaise: number;
+            /**
+             * @description The normal price of one slot (before any offer).
+             * @example 9900
+             */
+            originalPricePerSlotPaise: number;
+            /** @description Percent off while an offer is active, else null. */
+            discountPercent: number | null;
+            /**
+             * Format: date-time
+             * @description When the active offer ends; null when there is no offer or it has no end.
+             */
+            discountEndsAt: string | null;
+            /** @description Added within the last 14 days. */
+            isNew: boolean;
+            /** @description Marked by the staff to be featured on the home screen. */
+            featured: boolean;
+            /**
+             * Format: date-time
+             * @description When the product was added.
+             */
+            createdAt: string;
             /** @example 60 */
             slotMinutes: number;
             /** @example 60 */
@@ -2401,8 +2618,17 @@ export interface components {
             maxDurationMin: number;
             /** @example 15 */
             bufferMin: number;
-            /** @example 9900 */
+            /**
+             * @description What one slot costs right now (the offer price while an offer is active).
+             * @example 7900
+             */
             pricePerSlotPaise: number;
+            /**
+             * @description The normal price of one slot.
+             * @example 9900
+             */
+            originalPricePerSlotPaise: number;
+            discountPercent: number | null;
             /** Format: date-time */
             opensAt: string | null;
             /** Format: date-time */
@@ -2582,8 +2808,10 @@ export interface components {
             /** Format: date-time */
             endsAt: string;
             durationMinutes: number;
-            /** @description Rental price in paise. */
+            /** @description Rental price in paise: what is charged (after any offer). */
             pricePaise: number;
+            /** @description What the customer saved thanks to an offer, in paise (0 without one). Price + savings = the normal price. */
+            discountPaise: number;
             /** @description Deposit in paise. */
             depositPaise: number;
             /** @description What the customer pays: rental + deposit, in paise. */
@@ -2671,8 +2899,10 @@ export interface components {
             /** Format: date-time */
             endsAt: string;
             durationMinutes: number;
-            /** @description Rental price in paise. */
+            /** @description Rental price in paise: what is charged (after any offer). */
             pricePaise: number;
+            /** @description What the customer saved thanks to an offer, in paise (0 without one). Price + savings = the normal price. */
+            discountPaise: number;
             /** @description Deposit in paise. */
             depositPaise: number;
             /** @description What the customer pays: rental + deposit, in paise. */
@@ -2723,8 +2953,10 @@ export interface components {
             /** Format: date-time */
             endsAt: string;
             durationMinutes: number;
-            /** @description Rental price in paise. */
+            /** @description Rental price in paise: what is charged (after any offer). */
             pricePaise: number;
+            /** @description What the customer saved thanks to an offer, in paise (0 without one). Price + savings = the normal price. */
+            discountPaise: number;
             /** @description Deposit in paise. */
             depositPaise: number;
             /** @description What the customer pays: rental + deposit, in paise. */
@@ -5919,6 +6151,282 @@ export interface operations {
                 };
                 content: {
                     "application/problem+json": components["schemas"]["ProblemDetailsDto"];
+                };
+            };
+        };
+    };
+    AdminPromotionsController_list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Every banner, in the order customers see them (switched-off and scheduled ones included). */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PromotionDto"][];
+                };
+            };
+            /** @description `UNAUTHENTICATED` / `TOKEN_EXPIRED` (401) — missing, invalid or expired access token. `PERMISSION_DENIED` (403) — you lack the permission for this resource or drawer. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetailsDto"];
+                };
+            };
+        };
+    };
+    AdminPromotionsController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreatePromotionDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PromotionDto"];
+                };
+            };
+            /** @description `UNAUTHENTICATED` / `TOKEN_EXPIRED` (401) — missing, invalid or expired access token. `PERMISSION_DENIED` (403) — you lack the permission for this resource or drawer. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetailsDto"];
+                };
+            };
+            /** @description `VALIDATION_FAILED` — see `errors[]`. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetailsDto"];
+                };
+            };
+        };
+    };
+    AdminPromotionsController_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The banner and its picture are deleted. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description `UNAUTHENTICATED` / `TOKEN_EXPIRED` (401) — missing, invalid or expired access token. `PERMISSION_DENIED` (403) — you lack the permission for this resource or drawer. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetailsDto"];
+                };
+            };
+            /** @description `NOT_FOUND` */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetailsDto"];
+                };
+            };
+        };
+    };
+    AdminPromotionsController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdatePromotionDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PromotionDto"];
+                };
+            };
+            /** @description `UNAUTHENTICATED` / `TOKEN_EXPIRED` (401) — missing, invalid or expired access token. `PERMISSION_DENIED` (403) — you lack the permission for this resource or drawer. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetailsDto"];
+                };
+            };
+            /** @description `NOT_FOUND` */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetailsDto"];
+                };
+            };
+            /** @description `VALIDATION_FAILED` */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetailsDto"];
+                };
+            };
+        };
+    };
+    AdminPromotionsController_setImage: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        /** @description The picture itself (JPEG, PNG or WebP, at most 5 MB), sent as the request body. */
+        requestBody: {
+            content: {
+                "image/jpeg": string;
+                "image/png": string;
+                "image/webp": string;
+            };
+        };
+        responses: {
+            /** @description The banner with its new picture (the old one is deleted). */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PromotionDto"];
+                };
+            };
+            /** @description `UNAUTHENTICATED` / `TOKEN_EXPIRED` (401) — missing, invalid or expired access token. `PERMISSION_DENIED` (403) — you lack the permission for this resource or drawer. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetailsDto"];
+                };
+            };
+            /** @description `NOT_FOUND` */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetailsDto"];
+                };
+            };
+            /** @description `VALIDATION_FAILED` — not a JPEG/PNG/WebP image, empty, or larger than 5 MB. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetailsDto"];
+                };
+            };
+        };
+    };
+    AdminPromotionsController_clearImage: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The banner without a picture (also when it had none). */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PromotionDto"];
+                };
+            };
+            /** @description `UNAUTHENTICATED` / `TOKEN_EXPIRED` (401) — missing, invalid or expired access token. `PERMISSION_DENIED` (403) — you lack the permission for this resource or drawer. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetailsDto"];
+                };
+            };
+            /** @description `NOT_FOUND` */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetailsDto"];
+                };
+            };
+        };
+    };
+    PublicPromotionsController_list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Banners that are switched on, have begun and have not ended, in the staff's order. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicPromotionDto"][];
                 };
             };
         };

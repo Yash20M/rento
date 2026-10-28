@@ -1456,7 +1456,13 @@ as List<NearbyDrawer>,
 /// @nodoc
 mixin _$InventoryEntry {
 
-@JsonKey(required: true) String get itemModelId;@JsonKey(required: true) String get name;@JsonKey(required: true) String get categoryId;@JsonKey(required: true) List<String> get photos;@JsonKey(required: true) String? get description;@JsonKey(required: true) int get pricePerSlotPaise;@JsonKey(required: true) int get slotMinutes;@JsonKey(required: true) int get minDurationMin;@JsonKey(required: true) int get maxDurationMin;@JsonKey(required: true) int get depositPaise;@JsonKey(required: true) int get total;@JsonKey(required: true) int get availableNow;
+@JsonKey(required: true) String get itemModelId;@JsonKey(required: true) String get name;@JsonKey(required: true) String get categoryId;@JsonKey(required: true) List<String> get photos;@JsonKey(required: true) String? get description;/// What one slot costs right now: the offer price while an offer is active, else the normal price.
+@JsonKey(required: true) int get pricePerSlotPaise;/// The normal price of one slot (before any offer).
+@JsonKey(required: true) int get originalPricePerSlotPaise;/// Percent off while an offer is active, else `null`.
+@JsonKey(required: true) int? get discountPercent;/// When the active offer ends; `null` when there is no offer or it has no end.
+@JsonKey(required: true) DateTime? get discountEndsAt;/// Added within the last 14 days.
+@JsonKey(required: true) bool get isNew;/// Marked by the staff to be featured on the home screen.
+@JsonKey(required: true) bool get featured;@JsonKey(required: true) DateTime get createdAt;@JsonKey(required: true) int get slotMinutes;@JsonKey(required: true) int get minDurationMin;@JsonKey(required: true) int get maxDurationMin;@JsonKey(required: true) int get depositPaise;@JsonKey(required: true) int get total;@JsonKey(required: true) int get availableNow;
 /// Create a copy of InventoryEntry
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -1469,16 +1475,16 @@ $InventoryEntryCopyWith<InventoryEntry> get copyWith => _$InventoryEntryCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is InventoryEntry&&(identical(other.itemModelId, itemModelId) || other.itemModelId == itemModelId)&&(identical(other.name, name) || other.name == name)&&(identical(other.categoryId, categoryId) || other.categoryId == categoryId)&&const DeepCollectionEquality().equals(other.photos, photos)&&(identical(other.description, description) || other.description == description)&&(identical(other.pricePerSlotPaise, pricePerSlotPaise) || other.pricePerSlotPaise == pricePerSlotPaise)&&(identical(other.slotMinutes, slotMinutes) || other.slotMinutes == slotMinutes)&&(identical(other.minDurationMin, minDurationMin) || other.minDurationMin == minDurationMin)&&(identical(other.maxDurationMin, maxDurationMin) || other.maxDurationMin == maxDurationMin)&&(identical(other.depositPaise, depositPaise) || other.depositPaise == depositPaise)&&(identical(other.total, total) || other.total == total)&&(identical(other.availableNow, availableNow) || other.availableNow == availableNow));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is InventoryEntry&&(identical(other.itemModelId, itemModelId) || other.itemModelId == itemModelId)&&(identical(other.name, name) || other.name == name)&&(identical(other.categoryId, categoryId) || other.categoryId == categoryId)&&const DeepCollectionEquality().equals(other.photos, photos)&&(identical(other.description, description) || other.description == description)&&(identical(other.pricePerSlotPaise, pricePerSlotPaise) || other.pricePerSlotPaise == pricePerSlotPaise)&&(identical(other.originalPricePerSlotPaise, originalPricePerSlotPaise) || other.originalPricePerSlotPaise == originalPricePerSlotPaise)&&(identical(other.discountPercent, discountPercent) || other.discountPercent == discountPercent)&&(identical(other.discountEndsAt, discountEndsAt) || other.discountEndsAt == discountEndsAt)&&(identical(other.isNew, isNew) || other.isNew == isNew)&&(identical(other.featured, featured) || other.featured == featured)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.slotMinutes, slotMinutes) || other.slotMinutes == slotMinutes)&&(identical(other.minDurationMin, minDurationMin) || other.minDurationMin == minDurationMin)&&(identical(other.maxDurationMin, maxDurationMin) || other.maxDurationMin == maxDurationMin)&&(identical(other.depositPaise, depositPaise) || other.depositPaise == depositPaise)&&(identical(other.total, total) || other.total == total)&&(identical(other.availableNow, availableNow) || other.availableNow == availableNow));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,itemModelId,name,categoryId,const DeepCollectionEquality().hash(photos),description,pricePerSlotPaise,slotMinutes,minDurationMin,maxDurationMin,depositPaise,total,availableNow);
+int get hashCode => Object.hash(runtimeType,itemModelId,name,categoryId,const DeepCollectionEquality().hash(photos),description,pricePerSlotPaise,originalPricePerSlotPaise,discountPercent,discountEndsAt,isNew,featured,createdAt,slotMinutes,minDurationMin,maxDurationMin,depositPaise,total,availableNow);
 
 @override
 String toString() {
-  return 'InventoryEntry(itemModelId: $itemModelId, name: $name, categoryId: $categoryId, photos: $photos, description: $description, pricePerSlotPaise: $pricePerSlotPaise, slotMinutes: $slotMinutes, minDurationMin: $minDurationMin, maxDurationMin: $maxDurationMin, depositPaise: $depositPaise, total: $total, availableNow: $availableNow)';
+  return 'InventoryEntry(itemModelId: $itemModelId, name: $name, categoryId: $categoryId, photos: $photos, description: $description, pricePerSlotPaise: $pricePerSlotPaise, originalPricePerSlotPaise: $originalPricePerSlotPaise, discountPercent: $discountPercent, discountEndsAt: $discountEndsAt, isNew: $isNew, featured: $featured, createdAt: $createdAt, slotMinutes: $slotMinutes, minDurationMin: $minDurationMin, maxDurationMin: $maxDurationMin, depositPaise: $depositPaise, total: $total, availableNow: $availableNow)';
 }
 
 
@@ -1489,7 +1495,7 @@ abstract mixin class $InventoryEntryCopyWith<$Res>  {
   factory $InventoryEntryCopyWith(InventoryEntry value, $Res Function(InventoryEntry) _then) = _$InventoryEntryCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(required: true) String itemModelId,@JsonKey(required: true) String name,@JsonKey(required: true) String categoryId,@JsonKey(required: true) List<String> photos,@JsonKey(required: true) String? description,@JsonKey(required: true) int pricePerSlotPaise,@JsonKey(required: true) int slotMinutes,@JsonKey(required: true) int minDurationMin,@JsonKey(required: true) int maxDurationMin,@JsonKey(required: true) int depositPaise,@JsonKey(required: true) int total,@JsonKey(required: true) int availableNow
+@JsonKey(required: true) String itemModelId,@JsonKey(required: true) String name,@JsonKey(required: true) String categoryId,@JsonKey(required: true) List<String> photos,@JsonKey(required: true) String? description,@JsonKey(required: true) int pricePerSlotPaise,@JsonKey(required: true) int originalPricePerSlotPaise,@JsonKey(required: true) int? discountPercent,@JsonKey(required: true) DateTime? discountEndsAt,@JsonKey(required: true) bool isNew,@JsonKey(required: true) bool featured,@JsonKey(required: true) DateTime createdAt,@JsonKey(required: true) int slotMinutes,@JsonKey(required: true) int minDurationMin,@JsonKey(required: true) int maxDurationMin,@JsonKey(required: true) int depositPaise,@JsonKey(required: true) int total,@JsonKey(required: true) int availableNow
 });
 
 
@@ -1506,7 +1512,7 @@ class _$InventoryEntryCopyWithImpl<$Res>
 
 /// Create a copy of InventoryEntry
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? itemModelId = null,Object? name = null,Object? categoryId = null,Object? photos = null,Object? description = freezed,Object? pricePerSlotPaise = null,Object? slotMinutes = null,Object? minDurationMin = null,Object? maxDurationMin = null,Object? depositPaise = null,Object? total = null,Object? availableNow = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? itemModelId = null,Object? name = null,Object? categoryId = null,Object? photos = null,Object? description = freezed,Object? pricePerSlotPaise = null,Object? originalPricePerSlotPaise = null,Object? discountPercent = freezed,Object? discountEndsAt = freezed,Object? isNew = null,Object? featured = null,Object? createdAt = null,Object? slotMinutes = null,Object? minDurationMin = null,Object? maxDurationMin = null,Object? depositPaise = null,Object? total = null,Object? availableNow = null,}) {
   return _then(_self.copyWith(
 itemModelId: null == itemModelId ? _self.itemModelId : itemModelId // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
@@ -1514,7 +1520,13 @@ as String,categoryId: null == categoryId ? _self.categoryId : categoryId // igno
 as String,photos: null == photos ? _self.photos : photos // ignore: cast_nullable_to_non_nullable
 as List<String>,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String?,pricePerSlotPaise: null == pricePerSlotPaise ? _self.pricePerSlotPaise : pricePerSlotPaise // ignore: cast_nullable_to_non_nullable
-as int,slotMinutes: null == slotMinutes ? _self.slotMinutes : slotMinutes // ignore: cast_nullable_to_non_nullable
+as int,originalPricePerSlotPaise: null == originalPricePerSlotPaise ? _self.originalPricePerSlotPaise : originalPricePerSlotPaise // ignore: cast_nullable_to_non_nullable
+as int,discountPercent: freezed == discountPercent ? _self.discountPercent : discountPercent // ignore: cast_nullable_to_non_nullable
+as int?,discountEndsAt: freezed == discountEndsAt ? _self.discountEndsAt : discountEndsAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,isNew: null == isNew ? _self.isNew : isNew // ignore: cast_nullable_to_non_nullable
+as bool,featured: null == featured ? _self.featured : featured // ignore: cast_nullable_to_non_nullable
+as bool,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as DateTime,slotMinutes: null == slotMinutes ? _self.slotMinutes : slotMinutes // ignore: cast_nullable_to_non_nullable
 as int,minDurationMin: null == minDurationMin ? _self.minDurationMin : minDurationMin // ignore: cast_nullable_to_non_nullable
 as int,maxDurationMin: null == maxDurationMin ? _self.maxDurationMin : maxDurationMin // ignore: cast_nullable_to_non_nullable
 as int,depositPaise: null == depositPaise ? _self.depositPaise : depositPaise // ignore: cast_nullable_to_non_nullable
@@ -1605,10 +1617,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(required: true)  String itemModelId, @JsonKey(required: true)  String name, @JsonKey(required: true)  String categoryId, @JsonKey(required: true)  List<String> photos, @JsonKey(required: true)  String? description, @JsonKey(required: true)  int pricePerSlotPaise, @JsonKey(required: true)  int slotMinutes, @JsonKey(required: true)  int minDurationMin, @JsonKey(required: true)  int maxDurationMin, @JsonKey(required: true)  int depositPaise, @JsonKey(required: true)  int total, @JsonKey(required: true)  int availableNow)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(required: true)  String itemModelId, @JsonKey(required: true)  String name, @JsonKey(required: true)  String categoryId, @JsonKey(required: true)  List<String> photos, @JsonKey(required: true)  String? description, @JsonKey(required: true)  int pricePerSlotPaise, @JsonKey(required: true)  int originalPricePerSlotPaise, @JsonKey(required: true)  int? discountPercent, @JsonKey(required: true)  DateTime? discountEndsAt, @JsonKey(required: true)  bool isNew, @JsonKey(required: true)  bool featured, @JsonKey(required: true)  DateTime createdAt, @JsonKey(required: true)  int slotMinutes, @JsonKey(required: true)  int minDurationMin, @JsonKey(required: true)  int maxDurationMin, @JsonKey(required: true)  int depositPaise, @JsonKey(required: true)  int total, @JsonKey(required: true)  int availableNow)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _InventoryEntry() when $default != null:
-return $default(_that.itemModelId,_that.name,_that.categoryId,_that.photos,_that.description,_that.pricePerSlotPaise,_that.slotMinutes,_that.minDurationMin,_that.maxDurationMin,_that.depositPaise,_that.total,_that.availableNow);case _:
+return $default(_that.itemModelId,_that.name,_that.categoryId,_that.photos,_that.description,_that.pricePerSlotPaise,_that.originalPricePerSlotPaise,_that.discountPercent,_that.discountEndsAt,_that.isNew,_that.featured,_that.createdAt,_that.slotMinutes,_that.minDurationMin,_that.maxDurationMin,_that.depositPaise,_that.total,_that.availableNow);case _:
   return orElse();
 
 }
@@ -1626,10 +1638,10 @@ return $default(_that.itemModelId,_that.name,_that.categoryId,_that.photos,_that
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(required: true)  String itemModelId, @JsonKey(required: true)  String name, @JsonKey(required: true)  String categoryId, @JsonKey(required: true)  List<String> photos, @JsonKey(required: true)  String? description, @JsonKey(required: true)  int pricePerSlotPaise, @JsonKey(required: true)  int slotMinutes, @JsonKey(required: true)  int minDurationMin, @JsonKey(required: true)  int maxDurationMin, @JsonKey(required: true)  int depositPaise, @JsonKey(required: true)  int total, @JsonKey(required: true)  int availableNow)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(required: true)  String itemModelId, @JsonKey(required: true)  String name, @JsonKey(required: true)  String categoryId, @JsonKey(required: true)  List<String> photos, @JsonKey(required: true)  String? description, @JsonKey(required: true)  int pricePerSlotPaise, @JsonKey(required: true)  int originalPricePerSlotPaise, @JsonKey(required: true)  int? discountPercent, @JsonKey(required: true)  DateTime? discountEndsAt, @JsonKey(required: true)  bool isNew, @JsonKey(required: true)  bool featured, @JsonKey(required: true)  DateTime createdAt, @JsonKey(required: true)  int slotMinutes, @JsonKey(required: true)  int minDurationMin, @JsonKey(required: true)  int maxDurationMin, @JsonKey(required: true)  int depositPaise, @JsonKey(required: true)  int total, @JsonKey(required: true)  int availableNow)  $default,) {final _that = this;
 switch (_that) {
 case _InventoryEntry():
-return $default(_that.itemModelId,_that.name,_that.categoryId,_that.photos,_that.description,_that.pricePerSlotPaise,_that.slotMinutes,_that.minDurationMin,_that.maxDurationMin,_that.depositPaise,_that.total,_that.availableNow);case _:
+return $default(_that.itemModelId,_that.name,_that.categoryId,_that.photos,_that.description,_that.pricePerSlotPaise,_that.originalPricePerSlotPaise,_that.discountPercent,_that.discountEndsAt,_that.isNew,_that.featured,_that.createdAt,_that.slotMinutes,_that.minDurationMin,_that.maxDurationMin,_that.depositPaise,_that.total,_that.availableNow);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -1646,10 +1658,10 @@ return $default(_that.itemModelId,_that.name,_that.categoryId,_that.photos,_that
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(required: true)  String itemModelId, @JsonKey(required: true)  String name, @JsonKey(required: true)  String categoryId, @JsonKey(required: true)  List<String> photos, @JsonKey(required: true)  String? description, @JsonKey(required: true)  int pricePerSlotPaise, @JsonKey(required: true)  int slotMinutes, @JsonKey(required: true)  int minDurationMin, @JsonKey(required: true)  int maxDurationMin, @JsonKey(required: true)  int depositPaise, @JsonKey(required: true)  int total, @JsonKey(required: true)  int availableNow)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(required: true)  String itemModelId, @JsonKey(required: true)  String name, @JsonKey(required: true)  String categoryId, @JsonKey(required: true)  List<String> photos, @JsonKey(required: true)  String? description, @JsonKey(required: true)  int pricePerSlotPaise, @JsonKey(required: true)  int originalPricePerSlotPaise, @JsonKey(required: true)  int? discountPercent, @JsonKey(required: true)  DateTime? discountEndsAt, @JsonKey(required: true)  bool isNew, @JsonKey(required: true)  bool featured, @JsonKey(required: true)  DateTime createdAt, @JsonKey(required: true)  int slotMinutes, @JsonKey(required: true)  int minDurationMin, @JsonKey(required: true)  int maxDurationMin, @JsonKey(required: true)  int depositPaise, @JsonKey(required: true)  int total, @JsonKey(required: true)  int availableNow)?  $default,) {final _that = this;
 switch (_that) {
 case _InventoryEntry() when $default != null:
-return $default(_that.itemModelId,_that.name,_that.categoryId,_that.photos,_that.description,_that.pricePerSlotPaise,_that.slotMinutes,_that.minDurationMin,_that.maxDurationMin,_that.depositPaise,_that.total,_that.availableNow);case _:
+return $default(_that.itemModelId,_that.name,_that.categoryId,_that.photos,_that.description,_that.pricePerSlotPaise,_that.originalPricePerSlotPaise,_that.discountPercent,_that.discountEndsAt,_that.isNew,_that.featured,_that.createdAt,_that.slotMinutes,_that.minDurationMin,_that.maxDurationMin,_that.depositPaise,_that.total,_that.availableNow);case _:
   return null;
 
 }
@@ -1661,7 +1673,7 @@ return $default(_that.itemModelId,_that.name,_that.categoryId,_that.photos,_that
 @JsonSerializable()
 
 class _InventoryEntry implements InventoryEntry {
-  const _InventoryEntry({@JsonKey(required: true) required this.itemModelId, @JsonKey(required: true) required this.name, @JsonKey(required: true) required this.categoryId, @JsonKey(required: true) required final  List<String> photos, @JsonKey(required: true) required this.description, @JsonKey(required: true) required this.pricePerSlotPaise, @JsonKey(required: true) required this.slotMinutes, @JsonKey(required: true) required this.minDurationMin, @JsonKey(required: true) required this.maxDurationMin, @JsonKey(required: true) required this.depositPaise, @JsonKey(required: true) required this.total, @JsonKey(required: true) required this.availableNow}): _photos = photos;
+  const _InventoryEntry({@JsonKey(required: true) required this.itemModelId, @JsonKey(required: true) required this.name, @JsonKey(required: true) required this.categoryId, @JsonKey(required: true) required final  List<String> photos, @JsonKey(required: true) required this.description, @JsonKey(required: true) required this.pricePerSlotPaise, @JsonKey(required: true) required this.originalPricePerSlotPaise, @JsonKey(required: true) required this.discountPercent, @JsonKey(required: true) required this.discountEndsAt, @JsonKey(required: true) required this.isNew, @JsonKey(required: true) required this.featured, @JsonKey(required: true) required this.createdAt, @JsonKey(required: true) required this.slotMinutes, @JsonKey(required: true) required this.minDurationMin, @JsonKey(required: true) required this.maxDurationMin, @JsonKey(required: true) required this.depositPaise, @JsonKey(required: true) required this.total, @JsonKey(required: true) required this.availableNow}): _photos = photos;
   factory _InventoryEntry.fromJson(Map<String, dynamic> json) => _$InventoryEntryFromJson(json);
 
 @override@JsonKey(required: true) final  String itemModelId;
@@ -1675,7 +1687,19 @@ class _InventoryEntry implements InventoryEntry {
 }
 
 @override@JsonKey(required: true) final  String? description;
+/// What one slot costs right now: the offer price while an offer is active, else the normal price.
 @override@JsonKey(required: true) final  int pricePerSlotPaise;
+/// The normal price of one slot (before any offer).
+@override@JsonKey(required: true) final  int originalPricePerSlotPaise;
+/// Percent off while an offer is active, else `null`.
+@override@JsonKey(required: true) final  int? discountPercent;
+/// When the active offer ends; `null` when there is no offer or it has no end.
+@override@JsonKey(required: true) final  DateTime? discountEndsAt;
+/// Added within the last 14 days.
+@override@JsonKey(required: true) final  bool isNew;
+/// Marked by the staff to be featured on the home screen.
+@override@JsonKey(required: true) final  bool featured;
+@override@JsonKey(required: true) final  DateTime createdAt;
 @override@JsonKey(required: true) final  int slotMinutes;
 @override@JsonKey(required: true) final  int minDurationMin;
 @override@JsonKey(required: true) final  int maxDurationMin;
@@ -1696,16 +1720,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _InventoryEntry&&(identical(other.itemModelId, itemModelId) || other.itemModelId == itemModelId)&&(identical(other.name, name) || other.name == name)&&(identical(other.categoryId, categoryId) || other.categoryId == categoryId)&&const DeepCollectionEquality().equals(other._photos, _photos)&&(identical(other.description, description) || other.description == description)&&(identical(other.pricePerSlotPaise, pricePerSlotPaise) || other.pricePerSlotPaise == pricePerSlotPaise)&&(identical(other.slotMinutes, slotMinutes) || other.slotMinutes == slotMinutes)&&(identical(other.minDurationMin, minDurationMin) || other.minDurationMin == minDurationMin)&&(identical(other.maxDurationMin, maxDurationMin) || other.maxDurationMin == maxDurationMin)&&(identical(other.depositPaise, depositPaise) || other.depositPaise == depositPaise)&&(identical(other.total, total) || other.total == total)&&(identical(other.availableNow, availableNow) || other.availableNow == availableNow));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _InventoryEntry&&(identical(other.itemModelId, itemModelId) || other.itemModelId == itemModelId)&&(identical(other.name, name) || other.name == name)&&(identical(other.categoryId, categoryId) || other.categoryId == categoryId)&&const DeepCollectionEquality().equals(other._photos, _photos)&&(identical(other.description, description) || other.description == description)&&(identical(other.pricePerSlotPaise, pricePerSlotPaise) || other.pricePerSlotPaise == pricePerSlotPaise)&&(identical(other.originalPricePerSlotPaise, originalPricePerSlotPaise) || other.originalPricePerSlotPaise == originalPricePerSlotPaise)&&(identical(other.discountPercent, discountPercent) || other.discountPercent == discountPercent)&&(identical(other.discountEndsAt, discountEndsAt) || other.discountEndsAt == discountEndsAt)&&(identical(other.isNew, isNew) || other.isNew == isNew)&&(identical(other.featured, featured) || other.featured == featured)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.slotMinutes, slotMinutes) || other.slotMinutes == slotMinutes)&&(identical(other.minDurationMin, minDurationMin) || other.minDurationMin == minDurationMin)&&(identical(other.maxDurationMin, maxDurationMin) || other.maxDurationMin == maxDurationMin)&&(identical(other.depositPaise, depositPaise) || other.depositPaise == depositPaise)&&(identical(other.total, total) || other.total == total)&&(identical(other.availableNow, availableNow) || other.availableNow == availableNow));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,itemModelId,name,categoryId,const DeepCollectionEquality().hash(_photos),description,pricePerSlotPaise,slotMinutes,minDurationMin,maxDurationMin,depositPaise,total,availableNow);
+int get hashCode => Object.hash(runtimeType,itemModelId,name,categoryId,const DeepCollectionEquality().hash(_photos),description,pricePerSlotPaise,originalPricePerSlotPaise,discountPercent,discountEndsAt,isNew,featured,createdAt,slotMinutes,minDurationMin,maxDurationMin,depositPaise,total,availableNow);
 
 @override
 String toString() {
-  return 'InventoryEntry(itemModelId: $itemModelId, name: $name, categoryId: $categoryId, photos: $photos, description: $description, pricePerSlotPaise: $pricePerSlotPaise, slotMinutes: $slotMinutes, minDurationMin: $minDurationMin, maxDurationMin: $maxDurationMin, depositPaise: $depositPaise, total: $total, availableNow: $availableNow)';
+  return 'InventoryEntry(itemModelId: $itemModelId, name: $name, categoryId: $categoryId, photos: $photos, description: $description, pricePerSlotPaise: $pricePerSlotPaise, originalPricePerSlotPaise: $originalPricePerSlotPaise, discountPercent: $discountPercent, discountEndsAt: $discountEndsAt, isNew: $isNew, featured: $featured, createdAt: $createdAt, slotMinutes: $slotMinutes, minDurationMin: $minDurationMin, maxDurationMin: $maxDurationMin, depositPaise: $depositPaise, total: $total, availableNow: $availableNow)';
 }
 
 
@@ -1716,7 +1740,7 @@ abstract mixin class _$InventoryEntryCopyWith<$Res> implements $InventoryEntryCo
   factory _$InventoryEntryCopyWith(_InventoryEntry value, $Res Function(_InventoryEntry) _then) = __$InventoryEntryCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(required: true) String itemModelId,@JsonKey(required: true) String name,@JsonKey(required: true) String categoryId,@JsonKey(required: true) List<String> photos,@JsonKey(required: true) String? description,@JsonKey(required: true) int pricePerSlotPaise,@JsonKey(required: true) int slotMinutes,@JsonKey(required: true) int minDurationMin,@JsonKey(required: true) int maxDurationMin,@JsonKey(required: true) int depositPaise,@JsonKey(required: true) int total,@JsonKey(required: true) int availableNow
+@JsonKey(required: true) String itemModelId,@JsonKey(required: true) String name,@JsonKey(required: true) String categoryId,@JsonKey(required: true) List<String> photos,@JsonKey(required: true) String? description,@JsonKey(required: true) int pricePerSlotPaise,@JsonKey(required: true) int originalPricePerSlotPaise,@JsonKey(required: true) int? discountPercent,@JsonKey(required: true) DateTime? discountEndsAt,@JsonKey(required: true) bool isNew,@JsonKey(required: true) bool featured,@JsonKey(required: true) DateTime createdAt,@JsonKey(required: true) int slotMinutes,@JsonKey(required: true) int minDurationMin,@JsonKey(required: true) int maxDurationMin,@JsonKey(required: true) int depositPaise,@JsonKey(required: true) int total,@JsonKey(required: true) int availableNow
 });
 
 
@@ -1733,7 +1757,7 @@ class __$InventoryEntryCopyWithImpl<$Res>
 
 /// Create a copy of InventoryEntry
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? itemModelId = null,Object? name = null,Object? categoryId = null,Object? photos = null,Object? description = freezed,Object? pricePerSlotPaise = null,Object? slotMinutes = null,Object? minDurationMin = null,Object? maxDurationMin = null,Object? depositPaise = null,Object? total = null,Object? availableNow = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? itemModelId = null,Object? name = null,Object? categoryId = null,Object? photos = null,Object? description = freezed,Object? pricePerSlotPaise = null,Object? originalPricePerSlotPaise = null,Object? discountPercent = freezed,Object? discountEndsAt = freezed,Object? isNew = null,Object? featured = null,Object? createdAt = null,Object? slotMinutes = null,Object? minDurationMin = null,Object? maxDurationMin = null,Object? depositPaise = null,Object? total = null,Object? availableNow = null,}) {
   return _then(_InventoryEntry(
 itemModelId: null == itemModelId ? _self.itemModelId : itemModelId // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
@@ -1741,7 +1765,13 @@ as String,categoryId: null == categoryId ? _self.categoryId : categoryId // igno
 as String,photos: null == photos ? _self._photos : photos // ignore: cast_nullable_to_non_nullable
 as List<String>,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String?,pricePerSlotPaise: null == pricePerSlotPaise ? _self.pricePerSlotPaise : pricePerSlotPaise // ignore: cast_nullable_to_non_nullable
-as int,slotMinutes: null == slotMinutes ? _self.slotMinutes : slotMinutes // ignore: cast_nullable_to_non_nullable
+as int,originalPricePerSlotPaise: null == originalPricePerSlotPaise ? _self.originalPricePerSlotPaise : originalPricePerSlotPaise // ignore: cast_nullable_to_non_nullable
+as int,discountPercent: freezed == discountPercent ? _self.discountPercent : discountPercent // ignore: cast_nullable_to_non_nullable
+as int?,discountEndsAt: freezed == discountEndsAt ? _self.discountEndsAt : discountEndsAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,isNew: null == isNew ? _self.isNew : isNew // ignore: cast_nullable_to_non_nullable
+as bool,featured: null == featured ? _self.featured : featured // ignore: cast_nullable_to_non_nullable
+as bool,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as DateTime,slotMinutes: null == slotMinutes ? _self.slotMinutes : slotMinutes // ignore: cast_nullable_to_non_nullable
 as int,minDurationMin: null == minDurationMin ? _self.minDurationMin : minDurationMin // ignore: cast_nullable_to_non_nullable
 as int,maxDurationMin: null == maxDurationMin ? _self.maxDurationMin : maxDurationMin // ignore: cast_nullable_to_non_nullable
 as int,depositPaise: null == depositPaise ? _self.depositPaise : depositPaise // ignore: cast_nullable_to_non_nullable
@@ -2032,7 +2062,8 @@ as int,
 mixin _$Availability {
 
 @JsonKey(required: true) String get drawerId;@JsonKey(required: true) String get itemModelId;/// The calendar day in the drawer's time zone, `YYYY-MM-DD`.
-@JsonKey(required: true) String get date;@JsonKey(required: true) String get timezone;@JsonKey(required: true) int get slotMinutes;@JsonKey(required: true) int get minDurationMin;@JsonKey(required: true) int get maxDurationMin;@JsonKey(required: true) int get bufferMin;@JsonKey(required: true) int get pricePerSlotPaise;@JsonKey(required: true) DateTime? get opensAt;@JsonKey(required: true) DateTime? get closesAt;@JsonKey(required: true) List<AvailabilitySlot> get slots;@JsonKey(required: true) bool get snapshot;@JsonKey(required: true) DateTime get generatedAt;
+@JsonKey(required: true) String get date;@JsonKey(required: true) String get timezone;@JsonKey(required: true) int get slotMinutes;@JsonKey(required: true) int get minDurationMin;@JsonKey(required: true) int get maxDurationMin;@JsonKey(required: true) int get bufferMin;/// What one slot costs right now (the offer price while an offer is active).
+@JsonKey(required: true) int get pricePerSlotPaise;@JsonKey(required: true) int get originalPricePerSlotPaise;@JsonKey(required: true) int? get discountPercent;@JsonKey(required: true) DateTime? get opensAt;@JsonKey(required: true) DateTime? get closesAt;@JsonKey(required: true) List<AvailabilitySlot> get slots;@JsonKey(required: true) bool get snapshot;@JsonKey(required: true) DateTime get generatedAt;
 /// Create a copy of Availability
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -2045,16 +2076,16 @@ $AvailabilityCopyWith<Availability> get copyWith => _$AvailabilityCopyWithImpl<A
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Availability&&(identical(other.drawerId, drawerId) || other.drawerId == drawerId)&&(identical(other.itemModelId, itemModelId) || other.itemModelId == itemModelId)&&(identical(other.date, date) || other.date == date)&&(identical(other.timezone, timezone) || other.timezone == timezone)&&(identical(other.slotMinutes, slotMinutes) || other.slotMinutes == slotMinutes)&&(identical(other.minDurationMin, minDurationMin) || other.minDurationMin == minDurationMin)&&(identical(other.maxDurationMin, maxDurationMin) || other.maxDurationMin == maxDurationMin)&&(identical(other.bufferMin, bufferMin) || other.bufferMin == bufferMin)&&(identical(other.pricePerSlotPaise, pricePerSlotPaise) || other.pricePerSlotPaise == pricePerSlotPaise)&&(identical(other.opensAt, opensAt) || other.opensAt == opensAt)&&(identical(other.closesAt, closesAt) || other.closesAt == closesAt)&&const DeepCollectionEquality().equals(other.slots, slots)&&(identical(other.snapshot, snapshot) || other.snapshot == snapshot)&&(identical(other.generatedAt, generatedAt) || other.generatedAt == generatedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Availability&&(identical(other.drawerId, drawerId) || other.drawerId == drawerId)&&(identical(other.itemModelId, itemModelId) || other.itemModelId == itemModelId)&&(identical(other.date, date) || other.date == date)&&(identical(other.timezone, timezone) || other.timezone == timezone)&&(identical(other.slotMinutes, slotMinutes) || other.slotMinutes == slotMinutes)&&(identical(other.minDurationMin, minDurationMin) || other.minDurationMin == minDurationMin)&&(identical(other.maxDurationMin, maxDurationMin) || other.maxDurationMin == maxDurationMin)&&(identical(other.bufferMin, bufferMin) || other.bufferMin == bufferMin)&&(identical(other.pricePerSlotPaise, pricePerSlotPaise) || other.pricePerSlotPaise == pricePerSlotPaise)&&(identical(other.originalPricePerSlotPaise, originalPricePerSlotPaise) || other.originalPricePerSlotPaise == originalPricePerSlotPaise)&&(identical(other.discountPercent, discountPercent) || other.discountPercent == discountPercent)&&(identical(other.opensAt, opensAt) || other.opensAt == opensAt)&&(identical(other.closesAt, closesAt) || other.closesAt == closesAt)&&const DeepCollectionEquality().equals(other.slots, slots)&&(identical(other.snapshot, snapshot) || other.snapshot == snapshot)&&(identical(other.generatedAt, generatedAt) || other.generatedAt == generatedAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,drawerId,itemModelId,date,timezone,slotMinutes,minDurationMin,maxDurationMin,bufferMin,pricePerSlotPaise,opensAt,closesAt,const DeepCollectionEquality().hash(slots),snapshot,generatedAt);
+int get hashCode => Object.hash(runtimeType,drawerId,itemModelId,date,timezone,slotMinutes,minDurationMin,maxDurationMin,bufferMin,pricePerSlotPaise,originalPricePerSlotPaise,discountPercent,opensAt,closesAt,const DeepCollectionEquality().hash(slots),snapshot,generatedAt);
 
 @override
 String toString() {
-  return 'Availability(drawerId: $drawerId, itemModelId: $itemModelId, date: $date, timezone: $timezone, slotMinutes: $slotMinutes, minDurationMin: $minDurationMin, maxDurationMin: $maxDurationMin, bufferMin: $bufferMin, pricePerSlotPaise: $pricePerSlotPaise, opensAt: $opensAt, closesAt: $closesAt, slots: $slots, snapshot: $snapshot, generatedAt: $generatedAt)';
+  return 'Availability(drawerId: $drawerId, itemModelId: $itemModelId, date: $date, timezone: $timezone, slotMinutes: $slotMinutes, minDurationMin: $minDurationMin, maxDurationMin: $maxDurationMin, bufferMin: $bufferMin, pricePerSlotPaise: $pricePerSlotPaise, originalPricePerSlotPaise: $originalPricePerSlotPaise, discountPercent: $discountPercent, opensAt: $opensAt, closesAt: $closesAt, slots: $slots, snapshot: $snapshot, generatedAt: $generatedAt)';
 }
 
 
@@ -2065,7 +2096,7 @@ abstract mixin class $AvailabilityCopyWith<$Res>  {
   factory $AvailabilityCopyWith(Availability value, $Res Function(Availability) _then) = _$AvailabilityCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(required: true) String drawerId,@JsonKey(required: true) String itemModelId,@JsonKey(required: true) String date,@JsonKey(required: true) String timezone,@JsonKey(required: true) int slotMinutes,@JsonKey(required: true) int minDurationMin,@JsonKey(required: true) int maxDurationMin,@JsonKey(required: true) int bufferMin,@JsonKey(required: true) int pricePerSlotPaise,@JsonKey(required: true) DateTime? opensAt,@JsonKey(required: true) DateTime? closesAt,@JsonKey(required: true) List<AvailabilitySlot> slots,@JsonKey(required: true) bool snapshot,@JsonKey(required: true) DateTime generatedAt
+@JsonKey(required: true) String drawerId,@JsonKey(required: true) String itemModelId,@JsonKey(required: true) String date,@JsonKey(required: true) String timezone,@JsonKey(required: true) int slotMinutes,@JsonKey(required: true) int minDurationMin,@JsonKey(required: true) int maxDurationMin,@JsonKey(required: true) int bufferMin,@JsonKey(required: true) int pricePerSlotPaise,@JsonKey(required: true) int originalPricePerSlotPaise,@JsonKey(required: true) int? discountPercent,@JsonKey(required: true) DateTime? opensAt,@JsonKey(required: true) DateTime? closesAt,@JsonKey(required: true) List<AvailabilitySlot> slots,@JsonKey(required: true) bool snapshot,@JsonKey(required: true) DateTime generatedAt
 });
 
 
@@ -2082,7 +2113,7 @@ class _$AvailabilityCopyWithImpl<$Res>
 
 /// Create a copy of Availability
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? drawerId = null,Object? itemModelId = null,Object? date = null,Object? timezone = null,Object? slotMinutes = null,Object? minDurationMin = null,Object? maxDurationMin = null,Object? bufferMin = null,Object? pricePerSlotPaise = null,Object? opensAt = freezed,Object? closesAt = freezed,Object? slots = null,Object? snapshot = null,Object? generatedAt = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? drawerId = null,Object? itemModelId = null,Object? date = null,Object? timezone = null,Object? slotMinutes = null,Object? minDurationMin = null,Object? maxDurationMin = null,Object? bufferMin = null,Object? pricePerSlotPaise = null,Object? originalPricePerSlotPaise = null,Object? discountPercent = freezed,Object? opensAt = freezed,Object? closesAt = freezed,Object? slots = null,Object? snapshot = null,Object? generatedAt = null,}) {
   return _then(_self.copyWith(
 drawerId: null == drawerId ? _self.drawerId : drawerId // ignore: cast_nullable_to_non_nullable
 as String,itemModelId: null == itemModelId ? _self.itemModelId : itemModelId // ignore: cast_nullable_to_non_nullable
@@ -2093,7 +2124,9 @@ as int,minDurationMin: null == minDurationMin ? _self.minDurationMin : minDurati
 as int,maxDurationMin: null == maxDurationMin ? _self.maxDurationMin : maxDurationMin // ignore: cast_nullable_to_non_nullable
 as int,bufferMin: null == bufferMin ? _self.bufferMin : bufferMin // ignore: cast_nullable_to_non_nullable
 as int,pricePerSlotPaise: null == pricePerSlotPaise ? _self.pricePerSlotPaise : pricePerSlotPaise // ignore: cast_nullable_to_non_nullable
-as int,opensAt: freezed == opensAt ? _self.opensAt : opensAt // ignore: cast_nullable_to_non_nullable
+as int,originalPricePerSlotPaise: null == originalPricePerSlotPaise ? _self.originalPricePerSlotPaise : originalPricePerSlotPaise // ignore: cast_nullable_to_non_nullable
+as int,discountPercent: freezed == discountPercent ? _self.discountPercent : discountPercent // ignore: cast_nullable_to_non_nullable
+as int?,opensAt: freezed == opensAt ? _self.opensAt : opensAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,closesAt: freezed == closesAt ? _self.closesAt : closesAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,slots: null == slots ? _self.slots : slots // ignore: cast_nullable_to_non_nullable
 as List<AvailabilitySlot>,snapshot: null == snapshot ? _self.snapshot : snapshot // ignore: cast_nullable_to_non_nullable
@@ -2183,10 +2216,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(required: true)  String drawerId, @JsonKey(required: true)  String itemModelId, @JsonKey(required: true)  String date, @JsonKey(required: true)  String timezone, @JsonKey(required: true)  int slotMinutes, @JsonKey(required: true)  int minDurationMin, @JsonKey(required: true)  int maxDurationMin, @JsonKey(required: true)  int bufferMin, @JsonKey(required: true)  int pricePerSlotPaise, @JsonKey(required: true)  DateTime? opensAt, @JsonKey(required: true)  DateTime? closesAt, @JsonKey(required: true)  List<AvailabilitySlot> slots, @JsonKey(required: true)  bool snapshot, @JsonKey(required: true)  DateTime generatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(required: true)  String drawerId, @JsonKey(required: true)  String itemModelId, @JsonKey(required: true)  String date, @JsonKey(required: true)  String timezone, @JsonKey(required: true)  int slotMinutes, @JsonKey(required: true)  int minDurationMin, @JsonKey(required: true)  int maxDurationMin, @JsonKey(required: true)  int bufferMin, @JsonKey(required: true)  int pricePerSlotPaise, @JsonKey(required: true)  int originalPricePerSlotPaise, @JsonKey(required: true)  int? discountPercent, @JsonKey(required: true)  DateTime? opensAt, @JsonKey(required: true)  DateTime? closesAt, @JsonKey(required: true)  List<AvailabilitySlot> slots, @JsonKey(required: true)  bool snapshot, @JsonKey(required: true)  DateTime generatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Availability() when $default != null:
-return $default(_that.drawerId,_that.itemModelId,_that.date,_that.timezone,_that.slotMinutes,_that.minDurationMin,_that.maxDurationMin,_that.bufferMin,_that.pricePerSlotPaise,_that.opensAt,_that.closesAt,_that.slots,_that.snapshot,_that.generatedAt);case _:
+return $default(_that.drawerId,_that.itemModelId,_that.date,_that.timezone,_that.slotMinutes,_that.minDurationMin,_that.maxDurationMin,_that.bufferMin,_that.pricePerSlotPaise,_that.originalPricePerSlotPaise,_that.discountPercent,_that.opensAt,_that.closesAt,_that.slots,_that.snapshot,_that.generatedAt);case _:
   return orElse();
 
 }
@@ -2204,10 +2237,10 @@ return $default(_that.drawerId,_that.itemModelId,_that.date,_that.timezone,_that
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(required: true)  String drawerId, @JsonKey(required: true)  String itemModelId, @JsonKey(required: true)  String date, @JsonKey(required: true)  String timezone, @JsonKey(required: true)  int slotMinutes, @JsonKey(required: true)  int minDurationMin, @JsonKey(required: true)  int maxDurationMin, @JsonKey(required: true)  int bufferMin, @JsonKey(required: true)  int pricePerSlotPaise, @JsonKey(required: true)  DateTime? opensAt, @JsonKey(required: true)  DateTime? closesAt, @JsonKey(required: true)  List<AvailabilitySlot> slots, @JsonKey(required: true)  bool snapshot, @JsonKey(required: true)  DateTime generatedAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(required: true)  String drawerId, @JsonKey(required: true)  String itemModelId, @JsonKey(required: true)  String date, @JsonKey(required: true)  String timezone, @JsonKey(required: true)  int slotMinutes, @JsonKey(required: true)  int minDurationMin, @JsonKey(required: true)  int maxDurationMin, @JsonKey(required: true)  int bufferMin, @JsonKey(required: true)  int pricePerSlotPaise, @JsonKey(required: true)  int originalPricePerSlotPaise, @JsonKey(required: true)  int? discountPercent, @JsonKey(required: true)  DateTime? opensAt, @JsonKey(required: true)  DateTime? closesAt, @JsonKey(required: true)  List<AvailabilitySlot> slots, @JsonKey(required: true)  bool snapshot, @JsonKey(required: true)  DateTime generatedAt)  $default,) {final _that = this;
 switch (_that) {
 case _Availability():
-return $default(_that.drawerId,_that.itemModelId,_that.date,_that.timezone,_that.slotMinutes,_that.minDurationMin,_that.maxDurationMin,_that.bufferMin,_that.pricePerSlotPaise,_that.opensAt,_that.closesAt,_that.slots,_that.snapshot,_that.generatedAt);case _:
+return $default(_that.drawerId,_that.itemModelId,_that.date,_that.timezone,_that.slotMinutes,_that.minDurationMin,_that.maxDurationMin,_that.bufferMin,_that.pricePerSlotPaise,_that.originalPricePerSlotPaise,_that.discountPercent,_that.opensAt,_that.closesAt,_that.slots,_that.snapshot,_that.generatedAt);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -2224,10 +2257,10 @@ return $default(_that.drawerId,_that.itemModelId,_that.date,_that.timezone,_that
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(required: true)  String drawerId, @JsonKey(required: true)  String itemModelId, @JsonKey(required: true)  String date, @JsonKey(required: true)  String timezone, @JsonKey(required: true)  int slotMinutes, @JsonKey(required: true)  int minDurationMin, @JsonKey(required: true)  int maxDurationMin, @JsonKey(required: true)  int bufferMin, @JsonKey(required: true)  int pricePerSlotPaise, @JsonKey(required: true)  DateTime? opensAt, @JsonKey(required: true)  DateTime? closesAt, @JsonKey(required: true)  List<AvailabilitySlot> slots, @JsonKey(required: true)  bool snapshot, @JsonKey(required: true)  DateTime generatedAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(required: true)  String drawerId, @JsonKey(required: true)  String itemModelId, @JsonKey(required: true)  String date, @JsonKey(required: true)  String timezone, @JsonKey(required: true)  int slotMinutes, @JsonKey(required: true)  int minDurationMin, @JsonKey(required: true)  int maxDurationMin, @JsonKey(required: true)  int bufferMin, @JsonKey(required: true)  int pricePerSlotPaise, @JsonKey(required: true)  int originalPricePerSlotPaise, @JsonKey(required: true)  int? discountPercent, @JsonKey(required: true)  DateTime? opensAt, @JsonKey(required: true)  DateTime? closesAt, @JsonKey(required: true)  List<AvailabilitySlot> slots, @JsonKey(required: true)  bool snapshot, @JsonKey(required: true)  DateTime generatedAt)?  $default,) {final _that = this;
 switch (_that) {
 case _Availability() when $default != null:
-return $default(_that.drawerId,_that.itemModelId,_that.date,_that.timezone,_that.slotMinutes,_that.minDurationMin,_that.maxDurationMin,_that.bufferMin,_that.pricePerSlotPaise,_that.opensAt,_that.closesAt,_that.slots,_that.snapshot,_that.generatedAt);case _:
+return $default(_that.drawerId,_that.itemModelId,_that.date,_that.timezone,_that.slotMinutes,_that.minDurationMin,_that.maxDurationMin,_that.bufferMin,_that.pricePerSlotPaise,_that.originalPricePerSlotPaise,_that.discountPercent,_that.opensAt,_that.closesAt,_that.slots,_that.snapshot,_that.generatedAt);case _:
   return null;
 
 }
@@ -2239,7 +2272,7 @@ return $default(_that.drawerId,_that.itemModelId,_that.date,_that.timezone,_that
 @JsonSerializable()
 
 class _Availability implements Availability {
-  const _Availability({@JsonKey(required: true) required this.drawerId, @JsonKey(required: true) required this.itemModelId, @JsonKey(required: true) required this.date, @JsonKey(required: true) required this.timezone, @JsonKey(required: true) required this.slotMinutes, @JsonKey(required: true) required this.minDurationMin, @JsonKey(required: true) required this.maxDurationMin, @JsonKey(required: true) required this.bufferMin, @JsonKey(required: true) required this.pricePerSlotPaise, @JsonKey(required: true) required this.opensAt, @JsonKey(required: true) required this.closesAt, @JsonKey(required: true) required final  List<AvailabilitySlot> slots, @JsonKey(required: true) required this.snapshot, @JsonKey(required: true) required this.generatedAt}): _slots = slots;
+  const _Availability({@JsonKey(required: true) required this.drawerId, @JsonKey(required: true) required this.itemModelId, @JsonKey(required: true) required this.date, @JsonKey(required: true) required this.timezone, @JsonKey(required: true) required this.slotMinutes, @JsonKey(required: true) required this.minDurationMin, @JsonKey(required: true) required this.maxDurationMin, @JsonKey(required: true) required this.bufferMin, @JsonKey(required: true) required this.pricePerSlotPaise, @JsonKey(required: true) required this.originalPricePerSlotPaise, @JsonKey(required: true) required this.discountPercent, @JsonKey(required: true) required this.opensAt, @JsonKey(required: true) required this.closesAt, @JsonKey(required: true) required final  List<AvailabilitySlot> slots, @JsonKey(required: true) required this.snapshot, @JsonKey(required: true) required this.generatedAt}): _slots = slots;
   factory _Availability.fromJson(Map<String, dynamic> json) => _$AvailabilityFromJson(json);
 
 @override@JsonKey(required: true) final  String drawerId;
@@ -2251,7 +2284,10 @@ class _Availability implements Availability {
 @override@JsonKey(required: true) final  int minDurationMin;
 @override@JsonKey(required: true) final  int maxDurationMin;
 @override@JsonKey(required: true) final  int bufferMin;
+/// What one slot costs right now (the offer price while an offer is active).
 @override@JsonKey(required: true) final  int pricePerSlotPaise;
+@override@JsonKey(required: true) final  int originalPricePerSlotPaise;
+@override@JsonKey(required: true) final  int? discountPercent;
 @override@JsonKey(required: true) final  DateTime? opensAt;
 @override@JsonKey(required: true) final  DateTime? closesAt;
  final  List<AvailabilitySlot> _slots;
@@ -2277,16 +2313,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Availability&&(identical(other.drawerId, drawerId) || other.drawerId == drawerId)&&(identical(other.itemModelId, itemModelId) || other.itemModelId == itemModelId)&&(identical(other.date, date) || other.date == date)&&(identical(other.timezone, timezone) || other.timezone == timezone)&&(identical(other.slotMinutes, slotMinutes) || other.slotMinutes == slotMinutes)&&(identical(other.minDurationMin, minDurationMin) || other.minDurationMin == minDurationMin)&&(identical(other.maxDurationMin, maxDurationMin) || other.maxDurationMin == maxDurationMin)&&(identical(other.bufferMin, bufferMin) || other.bufferMin == bufferMin)&&(identical(other.pricePerSlotPaise, pricePerSlotPaise) || other.pricePerSlotPaise == pricePerSlotPaise)&&(identical(other.opensAt, opensAt) || other.opensAt == opensAt)&&(identical(other.closesAt, closesAt) || other.closesAt == closesAt)&&const DeepCollectionEquality().equals(other._slots, _slots)&&(identical(other.snapshot, snapshot) || other.snapshot == snapshot)&&(identical(other.generatedAt, generatedAt) || other.generatedAt == generatedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Availability&&(identical(other.drawerId, drawerId) || other.drawerId == drawerId)&&(identical(other.itemModelId, itemModelId) || other.itemModelId == itemModelId)&&(identical(other.date, date) || other.date == date)&&(identical(other.timezone, timezone) || other.timezone == timezone)&&(identical(other.slotMinutes, slotMinutes) || other.slotMinutes == slotMinutes)&&(identical(other.minDurationMin, minDurationMin) || other.minDurationMin == minDurationMin)&&(identical(other.maxDurationMin, maxDurationMin) || other.maxDurationMin == maxDurationMin)&&(identical(other.bufferMin, bufferMin) || other.bufferMin == bufferMin)&&(identical(other.pricePerSlotPaise, pricePerSlotPaise) || other.pricePerSlotPaise == pricePerSlotPaise)&&(identical(other.originalPricePerSlotPaise, originalPricePerSlotPaise) || other.originalPricePerSlotPaise == originalPricePerSlotPaise)&&(identical(other.discountPercent, discountPercent) || other.discountPercent == discountPercent)&&(identical(other.opensAt, opensAt) || other.opensAt == opensAt)&&(identical(other.closesAt, closesAt) || other.closesAt == closesAt)&&const DeepCollectionEquality().equals(other._slots, _slots)&&(identical(other.snapshot, snapshot) || other.snapshot == snapshot)&&(identical(other.generatedAt, generatedAt) || other.generatedAt == generatedAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,drawerId,itemModelId,date,timezone,slotMinutes,minDurationMin,maxDurationMin,bufferMin,pricePerSlotPaise,opensAt,closesAt,const DeepCollectionEquality().hash(_slots),snapshot,generatedAt);
+int get hashCode => Object.hash(runtimeType,drawerId,itemModelId,date,timezone,slotMinutes,minDurationMin,maxDurationMin,bufferMin,pricePerSlotPaise,originalPricePerSlotPaise,discountPercent,opensAt,closesAt,const DeepCollectionEquality().hash(_slots),snapshot,generatedAt);
 
 @override
 String toString() {
-  return 'Availability(drawerId: $drawerId, itemModelId: $itemModelId, date: $date, timezone: $timezone, slotMinutes: $slotMinutes, minDurationMin: $minDurationMin, maxDurationMin: $maxDurationMin, bufferMin: $bufferMin, pricePerSlotPaise: $pricePerSlotPaise, opensAt: $opensAt, closesAt: $closesAt, slots: $slots, snapshot: $snapshot, generatedAt: $generatedAt)';
+  return 'Availability(drawerId: $drawerId, itemModelId: $itemModelId, date: $date, timezone: $timezone, slotMinutes: $slotMinutes, minDurationMin: $minDurationMin, maxDurationMin: $maxDurationMin, bufferMin: $bufferMin, pricePerSlotPaise: $pricePerSlotPaise, originalPricePerSlotPaise: $originalPricePerSlotPaise, discountPercent: $discountPercent, opensAt: $opensAt, closesAt: $closesAt, slots: $slots, snapshot: $snapshot, generatedAt: $generatedAt)';
 }
 
 
@@ -2297,7 +2333,7 @@ abstract mixin class _$AvailabilityCopyWith<$Res> implements $AvailabilityCopyWi
   factory _$AvailabilityCopyWith(_Availability value, $Res Function(_Availability) _then) = __$AvailabilityCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(required: true) String drawerId,@JsonKey(required: true) String itemModelId,@JsonKey(required: true) String date,@JsonKey(required: true) String timezone,@JsonKey(required: true) int slotMinutes,@JsonKey(required: true) int minDurationMin,@JsonKey(required: true) int maxDurationMin,@JsonKey(required: true) int bufferMin,@JsonKey(required: true) int pricePerSlotPaise,@JsonKey(required: true) DateTime? opensAt,@JsonKey(required: true) DateTime? closesAt,@JsonKey(required: true) List<AvailabilitySlot> slots,@JsonKey(required: true) bool snapshot,@JsonKey(required: true) DateTime generatedAt
+@JsonKey(required: true) String drawerId,@JsonKey(required: true) String itemModelId,@JsonKey(required: true) String date,@JsonKey(required: true) String timezone,@JsonKey(required: true) int slotMinutes,@JsonKey(required: true) int minDurationMin,@JsonKey(required: true) int maxDurationMin,@JsonKey(required: true) int bufferMin,@JsonKey(required: true) int pricePerSlotPaise,@JsonKey(required: true) int originalPricePerSlotPaise,@JsonKey(required: true) int? discountPercent,@JsonKey(required: true) DateTime? opensAt,@JsonKey(required: true) DateTime? closesAt,@JsonKey(required: true) List<AvailabilitySlot> slots,@JsonKey(required: true) bool snapshot,@JsonKey(required: true) DateTime generatedAt
 });
 
 
@@ -2314,7 +2350,7 @@ class __$AvailabilityCopyWithImpl<$Res>
 
 /// Create a copy of Availability
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? drawerId = null,Object? itemModelId = null,Object? date = null,Object? timezone = null,Object? slotMinutes = null,Object? minDurationMin = null,Object? maxDurationMin = null,Object? bufferMin = null,Object? pricePerSlotPaise = null,Object? opensAt = freezed,Object? closesAt = freezed,Object? slots = null,Object? snapshot = null,Object? generatedAt = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? drawerId = null,Object? itemModelId = null,Object? date = null,Object? timezone = null,Object? slotMinutes = null,Object? minDurationMin = null,Object? maxDurationMin = null,Object? bufferMin = null,Object? pricePerSlotPaise = null,Object? originalPricePerSlotPaise = null,Object? discountPercent = freezed,Object? opensAt = freezed,Object? closesAt = freezed,Object? slots = null,Object? snapshot = null,Object? generatedAt = null,}) {
   return _then(_Availability(
 drawerId: null == drawerId ? _self.drawerId : drawerId // ignore: cast_nullable_to_non_nullable
 as String,itemModelId: null == itemModelId ? _self.itemModelId : itemModelId // ignore: cast_nullable_to_non_nullable
@@ -2325,12 +2361,303 @@ as int,minDurationMin: null == minDurationMin ? _self.minDurationMin : minDurati
 as int,maxDurationMin: null == maxDurationMin ? _self.maxDurationMin : maxDurationMin // ignore: cast_nullable_to_non_nullable
 as int,bufferMin: null == bufferMin ? _self.bufferMin : bufferMin // ignore: cast_nullable_to_non_nullable
 as int,pricePerSlotPaise: null == pricePerSlotPaise ? _self.pricePerSlotPaise : pricePerSlotPaise // ignore: cast_nullable_to_non_nullable
-as int,opensAt: freezed == opensAt ? _self.opensAt : opensAt // ignore: cast_nullable_to_non_nullable
+as int,originalPricePerSlotPaise: null == originalPricePerSlotPaise ? _self.originalPricePerSlotPaise : originalPricePerSlotPaise // ignore: cast_nullable_to_non_nullable
+as int,discountPercent: freezed == discountPercent ? _self.discountPercent : discountPercent // ignore: cast_nullable_to_non_nullable
+as int?,opensAt: freezed == opensAt ? _self.opensAt : opensAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,closesAt: freezed == closesAt ? _self.closesAt : closesAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,slots: null == slots ? _self._slots : slots // ignore: cast_nullable_to_non_nullable
 as List<AvailabilitySlot>,snapshot: null == snapshot ? _self.snapshot : snapshot // ignore: cast_nullable_to_non_nullable
 as bool,generatedAt: null == generatedAt ? _self.generatedAt : generatedAt // ignore: cast_nullable_to_non_nullable
 as DateTime,
+  ));
+}
+
+
+}
+
+
+/// @nodoc
+mixin _$PublicPromotion {
+
+@JsonKey(required: true) String get id;@JsonKey(required: true) String get title;@JsonKey(required: true) String? get subtitle;/// Label of the banner's button, e.g. "Shop now".
+@JsonKey(required: true) String? get ctaLabel;/// `orange`, `ink`, `teal` or `plum`: the colour when there is no picture.
+@JsonKey(required: true) String get theme;/// A `/v1/media/<id>` path on the API, or `null`.
+@JsonKey(required: true) String? get imageUrl;/// The product the banner opens, or `null` for a plain announcement.
+@JsonKey(required: true) String? get itemModelId;
+/// Create a copy of PublicPromotion
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$PublicPromotionCopyWith<PublicPromotion> get copyWith => _$PublicPromotionCopyWithImpl<PublicPromotion>(this as PublicPromotion, _$identity);
+
+  /// Serializes this PublicPromotion to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PublicPromotion&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.subtitle, subtitle) || other.subtitle == subtitle)&&(identical(other.ctaLabel, ctaLabel) || other.ctaLabel == ctaLabel)&&(identical(other.theme, theme) || other.theme == theme)&&(identical(other.imageUrl, imageUrl) || other.imageUrl == imageUrl)&&(identical(other.itemModelId, itemModelId) || other.itemModelId == itemModelId));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,id,title,subtitle,ctaLabel,theme,imageUrl,itemModelId);
+
+@override
+String toString() {
+  return 'PublicPromotion(id: $id, title: $title, subtitle: $subtitle, ctaLabel: $ctaLabel, theme: $theme, imageUrl: $imageUrl, itemModelId: $itemModelId)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $PublicPromotionCopyWith<$Res>  {
+  factory $PublicPromotionCopyWith(PublicPromotion value, $Res Function(PublicPromotion) _then) = _$PublicPromotionCopyWithImpl;
+@useResult
+$Res call({
+@JsonKey(required: true) String id,@JsonKey(required: true) String title,@JsonKey(required: true) String? subtitle,@JsonKey(required: true) String? ctaLabel,@JsonKey(required: true) String theme,@JsonKey(required: true) String? imageUrl,@JsonKey(required: true) String? itemModelId
+});
+
+
+
+
+}
+/// @nodoc
+class _$PublicPromotionCopyWithImpl<$Res>
+    implements $PublicPromotionCopyWith<$Res> {
+  _$PublicPromotionCopyWithImpl(this._self, this._then);
+
+  final PublicPromotion _self;
+  final $Res Function(PublicPromotion) _then;
+
+/// Create a copy of PublicPromotion
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? title = null,Object? subtitle = freezed,Object? ctaLabel = freezed,Object? theme = null,Object? imageUrl = freezed,Object? itemModelId = freezed,}) {
+  return _then(_self.copyWith(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
+as String,subtitle: freezed == subtitle ? _self.subtitle : subtitle // ignore: cast_nullable_to_non_nullable
+as String?,ctaLabel: freezed == ctaLabel ? _self.ctaLabel : ctaLabel // ignore: cast_nullable_to_non_nullable
+as String?,theme: null == theme ? _self.theme : theme // ignore: cast_nullable_to_non_nullable
+as String,imageUrl: freezed == imageUrl ? _self.imageUrl : imageUrl // ignore: cast_nullable_to_non_nullable
+as String?,itemModelId: freezed == itemModelId ? _self.itemModelId : itemModelId // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [PublicPromotion].
+extension PublicPromotionPatterns on PublicPromotion {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _PublicPromotion value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _PublicPromotion() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _PublicPromotion value)  $default,){
+final _that = this;
+switch (_that) {
+case _PublicPromotion():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _PublicPromotion value)?  $default,){
+final _that = this;
+switch (_that) {
+case _PublicPromotion() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(required: true)  String id, @JsonKey(required: true)  String title, @JsonKey(required: true)  String? subtitle, @JsonKey(required: true)  String? ctaLabel, @JsonKey(required: true)  String theme, @JsonKey(required: true)  String? imageUrl, @JsonKey(required: true)  String? itemModelId)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _PublicPromotion() when $default != null:
+return $default(_that.id,_that.title,_that.subtitle,_that.ctaLabel,_that.theme,_that.imageUrl,_that.itemModelId);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(required: true)  String id, @JsonKey(required: true)  String title, @JsonKey(required: true)  String? subtitle, @JsonKey(required: true)  String? ctaLabel, @JsonKey(required: true)  String theme, @JsonKey(required: true)  String? imageUrl, @JsonKey(required: true)  String? itemModelId)  $default,) {final _that = this;
+switch (_that) {
+case _PublicPromotion():
+return $default(_that.id,_that.title,_that.subtitle,_that.ctaLabel,_that.theme,_that.imageUrl,_that.itemModelId);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(required: true)  String id, @JsonKey(required: true)  String title, @JsonKey(required: true)  String? subtitle, @JsonKey(required: true)  String? ctaLabel, @JsonKey(required: true)  String theme, @JsonKey(required: true)  String? imageUrl, @JsonKey(required: true)  String? itemModelId)?  $default,) {final _that = this;
+switch (_that) {
+case _PublicPromotion() when $default != null:
+return $default(_that.id,_that.title,_that.subtitle,_that.ctaLabel,_that.theme,_that.imageUrl,_that.itemModelId);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _PublicPromotion implements PublicPromotion {
+  const _PublicPromotion({@JsonKey(required: true) required this.id, @JsonKey(required: true) required this.title, @JsonKey(required: true) required this.subtitle, @JsonKey(required: true) required this.ctaLabel, @JsonKey(required: true) required this.theme, @JsonKey(required: true) required this.imageUrl, @JsonKey(required: true) required this.itemModelId});
+  factory _PublicPromotion.fromJson(Map<String, dynamic> json) => _$PublicPromotionFromJson(json);
+
+@override@JsonKey(required: true) final  String id;
+@override@JsonKey(required: true) final  String title;
+@override@JsonKey(required: true) final  String? subtitle;
+/// Label of the banner's button, e.g. "Shop now".
+@override@JsonKey(required: true) final  String? ctaLabel;
+/// `orange`, `ink`, `teal` or `plum`: the colour when there is no picture.
+@override@JsonKey(required: true) final  String theme;
+/// A `/v1/media/<id>` path on the API, or `null`.
+@override@JsonKey(required: true) final  String? imageUrl;
+/// The product the banner opens, or `null` for a plain announcement.
+@override@JsonKey(required: true) final  String? itemModelId;
+
+/// Create a copy of PublicPromotion
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$PublicPromotionCopyWith<_PublicPromotion> get copyWith => __$PublicPromotionCopyWithImpl<_PublicPromotion>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$PublicPromotionToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PublicPromotion&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.subtitle, subtitle) || other.subtitle == subtitle)&&(identical(other.ctaLabel, ctaLabel) || other.ctaLabel == ctaLabel)&&(identical(other.theme, theme) || other.theme == theme)&&(identical(other.imageUrl, imageUrl) || other.imageUrl == imageUrl)&&(identical(other.itemModelId, itemModelId) || other.itemModelId == itemModelId));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,id,title,subtitle,ctaLabel,theme,imageUrl,itemModelId);
+
+@override
+String toString() {
+  return 'PublicPromotion(id: $id, title: $title, subtitle: $subtitle, ctaLabel: $ctaLabel, theme: $theme, imageUrl: $imageUrl, itemModelId: $itemModelId)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$PublicPromotionCopyWith<$Res> implements $PublicPromotionCopyWith<$Res> {
+  factory _$PublicPromotionCopyWith(_PublicPromotion value, $Res Function(_PublicPromotion) _then) = __$PublicPromotionCopyWithImpl;
+@override @useResult
+$Res call({
+@JsonKey(required: true) String id,@JsonKey(required: true) String title,@JsonKey(required: true) String? subtitle,@JsonKey(required: true) String? ctaLabel,@JsonKey(required: true) String theme,@JsonKey(required: true) String? imageUrl,@JsonKey(required: true) String? itemModelId
+});
+
+
+
+
+}
+/// @nodoc
+class __$PublicPromotionCopyWithImpl<$Res>
+    implements _$PublicPromotionCopyWith<$Res> {
+  __$PublicPromotionCopyWithImpl(this._self, this._then);
+
+  final _PublicPromotion _self;
+  final $Res Function(_PublicPromotion) _then;
+
+/// Create a copy of PublicPromotion
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? title = null,Object? subtitle = freezed,Object? ctaLabel = freezed,Object? theme = null,Object? imageUrl = freezed,Object? itemModelId = freezed,}) {
+  return _then(_PublicPromotion(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
+as String,subtitle: freezed == subtitle ? _self.subtitle : subtitle // ignore: cast_nullable_to_non_nullable
+as String?,ctaLabel: freezed == ctaLabel ? _self.ctaLabel : ctaLabel // ignore: cast_nullable_to_non_nullable
+as String?,theme: null == theme ? _self.theme : theme // ignore: cast_nullable_to_non_nullable
+as String,imageUrl: freezed == imageUrl ? _self.imageUrl : imageUrl // ignore: cast_nullable_to_non_nullable
+as String?,itemModelId: freezed == itemModelId ? _self.itemModelId : itemModelId // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 

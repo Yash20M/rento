@@ -3,14 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../app/providers.dart';
-import '../../../app/theme.dart';
 import '../../../core/api/models/models.dart';
-import '../../../core/format/money.dart';
 import '../../../core/ui/error_text.dart';
 import '../../../core/format/time.dart';
 import '../../../core/ui/brand.dart';
 import '../../../core/ui/kit.dart';
-import '../../../core/ui/product_image.dart';
+import '../../../core/ui/product_tile.dart';
 import '../../../core/ui/responsive.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../explore/application/explore_providers.dart';
@@ -80,8 +78,7 @@ class DrawerPage extends ConsumerWidget {
                                 icon: Icons.inventory_2_outlined,
                                 title: l10n.itemsEmpty,
                               )
-                              : CardGrid(
-                                minTileWidth: 300,
+                              : ProductGrid(
                                 children: [
                                   for (final item in items)
                                     _ItemTile(drawerId: drawerId, item: item),
@@ -276,59 +273,19 @@ class _ItemTile extends ConsumerWidget {
   final InventoryEntry item;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final l10n = AppLocalizations.of(context);
-    final theme = Theme.of(context);
-    final scheme = theme.colorScheme;
-    return Card(
-      key: Key('item-${item.itemModelId}'),
-      child: InkWell(
-        onTap: () => context.push('/drawer/$drawerId/item/${item.itemModelId}'),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            AspectRatio(
-              aspectRatio: 4 / 3,
-              child: ProductImage(
-                key: Key('item-photo-${item.itemModelId}'),
-                photo: item.photos.firstOrNull,
-                width: double.infinity,
-                radius: 0,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(item.name, style: theme.textTheme.titleMedium),
-                  const SizedBox(height: 4),
-                  Text(
-                    l10n.pricePerSlot(
-                      formatPaise(item.pricePerSlotPaise),
-                      item.slotMinutes,
-                    ),
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: scheme.onSurfaceVariant,
-                    ),
-                  ),
-                  if (item.availableNow > 0 &&
-                      ref
-                          .watch(servedDrawerIdsProvider)
-                          .contains(drawerId)) ...[
-                    const SizedBox(height: 10),
-                    Pill(
-                      key: const Key('available-label'),
-                      label: l10n.availableLabel,
-                      color: AppTheme.success,
-                    ),
-                  ],
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  Widget build(BuildContext context, WidgetRef ref) => ProductTile(
+    key: Key('item-${item.itemModelId}'),
+    imageKey: Key('item-photo-${item.itemModelId}'),
+    name: item.name,
+    photo: item.photos.firstOrNull,
+    pricePaise: item.pricePerSlotPaise,
+    listPricePaise: item.originalPricePerSlotPaise,
+    slotMinutes: item.slotMinutes,
+    discountPercent: item.discountPercent,
+    isNew: item.isNew,
+    available:
+        item.availableNow > 0 &&
+        ref.watch(servedDrawerIdsProvider).contains(drawerId),
+    onTap: () => context.push('/drawer/$drawerId/item/${item.itemModelId}'),
+  );
 }

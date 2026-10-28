@@ -135,6 +135,8 @@ Future<Pumped> pumpApp(
       retryDelaysProvider.overrideWithValue(retryDelays),
       // Off unless a test is about it: the person chooses a place, as before.
       autoLocateEnabledProvider.overrideWithValue(autoLocate),
+      // The banners stay on the page a test is looking at.
+      bannerAutoPlayProvider.overrideWithValue(false),
       if (picker != null) photoPickerProvider.overrideWithValue(picker),
     ],
   );

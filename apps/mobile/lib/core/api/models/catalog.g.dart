@@ -207,6 +207,12 @@ _InventoryEntry _$InventoryEntryFromJson(
       'photos',
       'description',
       'pricePerSlotPaise',
+      'originalPricePerSlotPaise',
+      'discountPercent',
+      'discountEndsAt',
+      'isNew',
+      'featured',
+      'createdAt',
       'slotMinutes',
       'minDurationMin',
       'maxDurationMin',
@@ -228,6 +234,21 @@ _InventoryEntry _$InventoryEntryFromJson(
       'pricePerSlotPaise',
       (v) => (v as num).toInt(),
     ),
+    originalPricePerSlotPaise: $checkedConvert(
+      'originalPricePerSlotPaise',
+      (v) => (v as num).toInt(),
+    ),
+    discountPercent: $checkedConvert(
+      'discountPercent',
+      (v) => (v as num?)?.toInt(),
+    ),
+    discountEndsAt: $checkedConvert(
+      'discountEndsAt',
+      (v) => v == null ? null : DateTime.parse(v as String),
+    ),
+    isNew: $checkedConvert('isNew', (v) => v as bool),
+    featured: $checkedConvert('featured', (v) => v as bool),
+    createdAt: $checkedConvert('createdAt', (v) => DateTime.parse(v as String)),
     slotMinutes: $checkedConvert('slotMinutes', (v) => (v as num).toInt()),
     minDurationMin: $checkedConvert(
       'minDurationMin',
@@ -252,6 +273,12 @@ Map<String, dynamic> _$InventoryEntryToJson(_InventoryEntry instance) =>
       'photos': instance.photos,
       'description': instance.description,
       'pricePerSlotPaise': instance.pricePerSlotPaise,
+      'originalPricePerSlotPaise': instance.originalPricePerSlotPaise,
+      'discountPercent': instance.discountPercent,
+      'discountEndsAt': instance.discountEndsAt?.toIso8601String(),
+      'isNew': instance.isNew,
+      'featured': instance.featured,
+      'createdAt': instance.createdAt.toIso8601String(),
       'slotMinutes': instance.slotMinutes,
       'minDurationMin': instance.minDurationMin,
       'maxDurationMin': instance.maxDurationMin,
@@ -301,6 +328,8 @@ _Availability _$AvailabilityFromJson(Map<String, dynamic> json) =>
           'maxDurationMin',
           'bufferMin',
           'pricePerSlotPaise',
+          'originalPricePerSlotPaise',
+          'discountPercent',
           'opensAt',
           'closesAt',
           'slots',
@@ -326,6 +355,14 @@ _Availability _$AvailabilityFromJson(Map<String, dynamic> json) =>
         pricePerSlotPaise: $checkedConvert(
           'pricePerSlotPaise',
           (v) => (v as num).toInt(),
+        ),
+        originalPricePerSlotPaise: $checkedConvert(
+          'originalPricePerSlotPaise',
+          (v) => (v as num).toInt(),
+        ),
+        discountPercent: $checkedConvert(
+          'discountPercent',
+          (v) => (v as num?)?.toInt(),
         ),
         opensAt: $checkedConvert(
           'opensAt',
@@ -364,9 +401,48 @@ Map<String, dynamic> _$AvailabilityToJson(_Availability instance) =>
       'maxDurationMin': instance.maxDurationMin,
       'bufferMin': instance.bufferMin,
       'pricePerSlotPaise': instance.pricePerSlotPaise,
+      'originalPricePerSlotPaise': instance.originalPricePerSlotPaise,
+      'discountPercent': instance.discountPercent,
       'opensAt': instance.opensAt?.toIso8601String(),
       'closesAt': instance.closesAt?.toIso8601String(),
       'slots': instance.slots.map((e) => e.toJson()).toList(),
       'snapshot': instance.snapshot,
       'generatedAt': instance.generatedAt.toIso8601String(),
+    };
+
+_PublicPromotion _$PublicPromotionFromJson(Map<String, dynamic> json) =>
+    $checkedCreate('_PublicPromotion', json, ($checkedConvert) {
+      $checkKeys(
+        json,
+        requiredKeys: const [
+          'id',
+          'title',
+          'subtitle',
+          'ctaLabel',
+          'theme',
+          'imageUrl',
+          'itemModelId',
+        ],
+      );
+      final val = _PublicPromotion(
+        id: $checkedConvert('id', (v) => v as String),
+        title: $checkedConvert('title', (v) => v as String),
+        subtitle: $checkedConvert('subtitle', (v) => v as String?),
+        ctaLabel: $checkedConvert('ctaLabel', (v) => v as String?),
+        theme: $checkedConvert('theme', (v) => v as String),
+        imageUrl: $checkedConvert('imageUrl', (v) => v as String?),
+        itemModelId: $checkedConvert('itemModelId', (v) => v as String?),
+      );
+      return val;
+    });
+
+Map<String, dynamic> _$PublicPromotionToJson(_PublicPromotion instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'title': instance.title,
+      'subtitle': instance.subtitle,
+      'ctaLabel': instance.ctaLabel,
+      'theme': instance.theme,
+      'imageUrl': instance.imageUrl,
+      'itemModelId': instance.itemModelId,
     };

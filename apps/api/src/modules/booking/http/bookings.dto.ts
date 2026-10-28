@@ -122,8 +122,14 @@ export class BookingDto {
   @ApiProperty()
   durationMinutes!: number;
 
-  @ApiProperty({ description: 'Rental price in paise.' })
+  @ApiProperty({ description: 'Rental price in paise: what is charged (after any offer).' })
   pricePaise!: number;
+
+  @ApiProperty({
+    description:
+      'What the customer saved thanks to an offer, in paise (0 without one). Price + savings = the normal price.',
+  })
+  discountPaise!: number;
 
   @ApiProperty({ description: 'Deposit in paise.' })
   depositPaise!: number;

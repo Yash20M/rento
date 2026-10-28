@@ -9,6 +9,7 @@ export type Admin = S['AdminDto'];
 export type Invitation = S['InvitationDto'];
 export type Category = S['CategoryDto'];
 export type ItemModel = S['ItemModelDto'];
+export type Promotion = S['PromotionDto'];
 export type Asset = S['AssetDto'];
 export type AssetPage = S['AssetPageDto'];
 export type Drawer = S['DrawerDto'];

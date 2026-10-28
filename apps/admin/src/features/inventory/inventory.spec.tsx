@@ -166,6 +166,10 @@ describe('item models', () => {
       maxDurationMin: 240,
       bufferMin: 0,
       depositPaise: 150000,
+      discountPercent: null,
+      discountStartsAt: null,
+      discountEndsAt: null,
+      featured: false,
     });
   });
 

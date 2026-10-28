@@ -16,6 +16,7 @@ import {
   Min,
   ValidateIf,
 } from 'class-validator';
+import { IsInstant } from './instant.decorator';
 import { IsPhotoRef } from './photo-ref.validator';
 import {
   ASSET_CODE_PATTERN,
@@ -135,6 +136,36 @@ export class ItemModelDto {
 
   @ApiProperty({ description: 'Physical assets of this model that are not retired.' })
   assetCount!: number;
+
+  @ApiProperty({
+    nullable: true,
+    type: Number,
+    minimum: 1,
+    maximum: 90,
+    description: 'Percent off the slot price (the offer), or null when the model has none.',
+  })
+  discountPercent!: number | null;
+
+  @ApiProperty({ nullable: true, type: String, format: 'date-time' })
+  discountStartsAt!: string | null;
+
+  @ApiProperty({ nullable: true, type: String, format: 'date-time' })
+  discountEndsAt!: string | null;
+
+  @ApiProperty({
+    enum: ['none', 'scheduled', 'active', 'ended'],
+    description: 'Where the offer is on the calendar right now.',
+  })
+  offerState!: string;
+
+  @ApiProperty({ description: 'Shown in the customer app under "Featured".' })
+  featured!: boolean;
+
+  @ApiProperty({ description: 'Added within the last 14 days.' })
+  isNew!: boolean;
+
+  @ApiProperty({ format: 'date-time' })
+  createdAt!: string;
 }
 
 class ItemModelFields {
@@ -200,6 +231,30 @@ class ItemModelFields {
   @Min(0)
   @Max(MAX_PRICE_PAISE)
   depositPaise?: number;
+
+  @ApiPropertyOptional({ nullable: true, type: Number, minimum: 1, maximum: 90 })
+  @ValidateIf((o: ItemModelFields) => o.discountPercent !== undefined && o.discountPercent !== null)
+  @IsInt()
+  @Min(1)
+  @Max(90)
+  discountPercent?: number | null;
+
+  @ApiPropertyOptional({ nullable: true, type: String, format: 'date-time' })
+  @ValidateIf(
+    (o: ItemModelFields) => o.discountStartsAt !== undefined && o.discountStartsAt !== null,
+  )
+  @IsInstant()
+  discountStartsAt?: string | null;
+
+  @ApiPropertyOptional({ nullable: true, type: String, format: 'date-time' })
+  @ValidateIf((o: ItemModelFields) => o.discountEndsAt !== undefined && o.discountEndsAt !== null)
+  @IsInstant()
+  discountEndsAt?: string | null;
+
+  @ApiPropertyOptional({ default: false })
+  @ValidateIf((o: ItemModelFields) => o.featured !== undefined)
+  @IsBoolean()
+  featured?: boolean;
 }
 
 export class CreateItemModelDto extends ItemModelFields {
@@ -277,6 +332,34 @@ export class UpdateItemModelDto {
   @Min(0)
   @Max(MAX_PRICE_PAISE)
   depositPaise?: number;
+
+  @ApiPropertyOptional({ nullable: true, type: Number, minimum: 1, maximum: 90 })
+  @ValidateIf(
+    (o: UpdateItemModelDto) => o.discountPercent !== undefined && o.discountPercent !== null,
+  )
+  @IsInt()
+  @Min(1)
+  @Max(90)
+  discountPercent?: number | null;
+
+  @ApiPropertyOptional({ nullable: true, type: String, format: 'date-time' })
+  @ValidateIf(
+    (o: UpdateItemModelDto) => o.discountStartsAt !== undefined && o.discountStartsAt !== null,
+  )
+  @IsInstant()
+  discountStartsAt?: string | null;
+
+  @ApiPropertyOptional({ nullable: true, type: String, format: 'date-time' })
+  @ValidateIf(
+    (o: UpdateItemModelDto) => o.discountEndsAt !== undefined && o.discountEndsAt !== null,
+  )
+  @IsInstant()
+  discountEndsAt?: string | null;
+
+  @ApiPropertyOptional()
+  @ValidateIf((o: UpdateItemModelDto) => o.featured !== undefined)
+  @IsBoolean()
+  featured?: boolean;
 
   @ApiPropertyOptional({
     enum: ['active', 'inactive'],

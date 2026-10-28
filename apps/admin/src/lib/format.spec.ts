@@ -6,9 +6,12 @@ import { meWith, superAdminMe } from '@/test/render';
 import {
   formatDuration,
   formatPaise,
+  fromLocalInput,
   humanize,
+  offerPricePaise,
   paiseToRupees,
   rupeesToPaise,
+  toLocalInput,
   zonedLocalToIso,
 } from './format';
 
@@ -153,5 +156,40 @@ describe('permission checks in the UI', () => {
     expect(canWith(staff, 'bookings:cancel', 'd-1')).toBe(true);
     expect(canWith(staff, 'bookings:cancel', 'd-9')).toBe(false);
     expect(canWith(staff, 'roles:manage')).toBe(false);
+  });
+});
+
+describe('offers and local date fields (M29)', () => {
+  it('F-offer-1 the offer price rounds the discount DOWN to whole paise, like the server', () => {
+    expect(offerPricePaise(10_000, 20)).toBe(8_000);
+    expect(offerPricePaise(9_999, 20)).toBe(8_000); // 9999 − floor(1999.8)
+    expect(offerPricePaise(1, 90)).toBe(1); // a one-paise price cannot be reduced
+    expect(offerPricePaise(0, 50)).toBe(0);
+    for (const price of [0, 1, 99, 4_900, 10_000_000]) {
+      for (const pct of [1, 33, 50, 90]) {
+        const paid = offerPricePaise(price, pct);
+        expect(paid).toBeGreaterThanOrEqual(0);
+        expect(paid).toBeLessThanOrEqual(price);
+        expect(Number.isInteger(paid)).toBe(true);
+      }
+    }
+  });
+
+  it('F-offer-2 a local date field and an instant convert both ways without drifting', () => {
+    const instant = '2030-06-15T09:30:00.000Z';
+    const field = toLocalInput(instant);
+    expect(field).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/);
+    expect(fromLocalInput(field)).toBe(instant);
+  });
+
+  it('F-offer-3 empty means no date, rubbish is refused, a missing value shows an empty field', () => {
+    expect(fromLocalInput('')).toBeNull();
+    expect(fromLocalInput('   ')).toBeNull();
+    expect(fromLocalInput('next friday')).toBeUndefined();
+    expect(fromLocalInput('2030-13-45T99:99')).toBeUndefined();
+    expect(fromLocalInput('2030-06-15')).toBeUndefined();
+    expect(toLocalInput(null)).toBe('');
+    expect(toLocalInput(undefined)).toBe('');
+    expect(toLocalInput('garbage')).toBe('');
   });
 });

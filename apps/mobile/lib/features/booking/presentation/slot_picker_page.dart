@@ -10,6 +10,7 @@ import '../../../core/format/money.dart';
 import '../../../core/format/time.dart';
 import '../../../core/ui/error_text.dart';
 import '../../../core/ui/kit.dart';
+import '../../../core/ui/price_block.dart';
 import '../../../core/ui/responsive.dart';
 import '../../../app/theme.dart';
 import '../../../core/ui/product_image.dart';
@@ -182,14 +183,13 @@ class _SlotPickerPageState extends ConsumerState<SlotPickerPage> {
             style: Theme.of(context).textTheme.headlineSmall,
           ),
           const SizedBox(height: 6),
-          Text(
-            l10n.pricePerSlot(
-              formatPaise(item.pricePerSlotPaise),
-              item.slotMinutes,
-            ),
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              color: AppTheme.brandText(Theme.of(context).brightness),
-            ),
+          PriceBlock(
+            pricePaise: item.pricePerSlotPaise,
+            listPricePaise: item.originalPricePerSlotPaise,
+            slotMinutes: item.slotMinutes,
+            discountPercent: item.discountPercent,
+            offerEndsAt: item.discountEndsAt,
+            timezone: drawer.timezone,
           ),
           const SizedBox(height: 18),
           SectionTitle(l10n.chooseDay),
@@ -321,6 +321,16 @@ class _SlotPickerPageState extends ConsumerState<SlotPickerPage> {
               slotMinutes: a.slotMinutes,
               pricePerSlotPaise: a.pricePerSlotPaise,
             );
+    // The same rental at the normal price: the difference is what the offer saves.
+    final listRental =
+        _duration == null
+            ? null
+            : rentalPaise(
+              minutes: _duration!,
+              slotMinutes: a.slotMinutes,
+              pricePerSlotPaise: a.originalPricePerSlotPaise,
+            );
+    final saved = (listRental ?? 0) - (rental ?? 0);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -395,7 +405,19 @@ class _SlotPickerPageState extends ConsumerState<SlotPickerPage> {
               padding: const EdgeInsets.all(16),
               child: Column(
                 children: [
-                  _line(l10n.summaryRental, formatPaise(rental)),
+                  _line(
+                    l10n.summaryRental,
+                    formatPaise(saved > 0 ? listRental! : rental),
+                  ),
+                  if (saved > 0)
+                    _line(
+                      a.discountPercent == null
+                          ? l10n.summaryOfferNoPercent
+                          : l10n.summaryOffer(a.discountPercent!),
+                      '-${formatPaise(saved)}',
+                      key: const Key('summary-offer'),
+                      color: AppTheme.success,
+                    ),
                   _line(l10n.summaryDeposit, formatPaise(item.depositPaise)),
                   const Divider(height: 20),
                   _line(
@@ -404,6 +426,18 @@ class _SlotPickerPageState extends ConsumerState<SlotPickerPage> {
                     bold: true,
                     key: const Key('summary-total'),
                   ),
+                  if (saved > 0)
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: Text(
+                        l10n.youSave(formatPaise(saved)),
+                        key: const Key('summary-saved'),
+                        style: TextStyle(
+                          color: AppTheme.success,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
                 ],
               ),
             ),
@@ -415,8 +449,17 @@ class _SlotPickerPageState extends ConsumerState<SlotPickerPage> {
     );
   }
 
-  Widget _line(String label, String value, {bool bold = false, Key? key}) {
-    final style = bold ? const TextStyle(fontWeight: FontWeight.w800) : null;
+  Widget _line(
+    String label,
+    String value, {
+    bool bold = false,
+    Key? key,
+    Color? color,
+  }) {
+    final style =
+        bold
+            ? const TextStyle(fontWeight: FontWeight.w800)
+            : (color == null ? null : TextStyle(color: color));
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 3),
       child: Row(

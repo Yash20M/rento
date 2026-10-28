@@ -1372,7 +1372,8 @@ as String,
 mixin _$Booking {
 
 @JsonKey(required: true) String get id;/// `held`, `confirmed`, `active`, `overdue`, `completed`, `cancelled`, `expired` or `no_show`.
-@JsonKey(required: true) String get status;@JsonKey(required: true) BookingDrawer get drawer;@JsonKey(required: true) BookingItem get itemModel;@JsonKey(required: true) String get assetCode;@JsonKey(required: true) DateTime get startsAt;@JsonKey(required: true) DateTime get endsAt;@JsonKey(required: true) int get durationMinutes;@JsonKey(required: true) int get pricePaise;@JsonKey(required: true) int get depositPaise;@JsonKey(required: true) int get totalPaise;@JsonKey(required: true) String get currency;/// While `held`: the payment must complete before this instant.
+@JsonKey(required: true) String get status;@JsonKey(required: true) BookingDrawer get drawer;@JsonKey(required: true) BookingItem get itemModel;@JsonKey(required: true) String get assetCode;@JsonKey(required: true) DateTime get startsAt;@JsonKey(required: true) DateTime get endsAt;@JsonKey(required: true) int get durationMinutes;@JsonKey(required: true) int get pricePaise;/// What the customer saved thanks to an offer, in paise (0 without one). Price + savings = the normal price.
+@JsonKey(required: true) int get discountPaise;@JsonKey(required: true) int get depositPaise;@JsonKey(required: true) int get totalPaise;@JsonKey(required: true) String get currency;/// While `held`: the payment must complete before this instant.
 @JsonKey(required: true) DateTime? get holdExpiresAt;@JsonKey(required: true) bool get cancellable;@JsonKey(required: true) String? get cancelReason;@JsonKey(required: true) BookingPayment? get payment;@JsonKey(required: true) BookingRefund? get refund;@JsonKey(required: true) DateTime get createdAt;
 /// Create a copy of Booking
 /// with the given fields replaced by the non-null parameter values.
@@ -1386,16 +1387,16 @@ $BookingCopyWith<Booking> get copyWith => _$BookingCopyWithImpl<Booking>(this as
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Booking&&(identical(other.id, id) || other.id == id)&&(identical(other.status, status) || other.status == status)&&(identical(other.drawer, drawer) || other.drawer == drawer)&&(identical(other.itemModel, itemModel) || other.itemModel == itemModel)&&(identical(other.assetCode, assetCode) || other.assetCode == assetCode)&&(identical(other.startsAt, startsAt) || other.startsAt == startsAt)&&(identical(other.endsAt, endsAt) || other.endsAt == endsAt)&&(identical(other.durationMinutes, durationMinutes) || other.durationMinutes == durationMinutes)&&(identical(other.pricePaise, pricePaise) || other.pricePaise == pricePaise)&&(identical(other.depositPaise, depositPaise) || other.depositPaise == depositPaise)&&(identical(other.totalPaise, totalPaise) || other.totalPaise == totalPaise)&&(identical(other.currency, currency) || other.currency == currency)&&(identical(other.holdExpiresAt, holdExpiresAt) || other.holdExpiresAt == holdExpiresAt)&&(identical(other.cancellable, cancellable) || other.cancellable == cancellable)&&(identical(other.cancelReason, cancelReason) || other.cancelReason == cancelReason)&&(identical(other.payment, payment) || other.payment == payment)&&(identical(other.refund, refund) || other.refund == refund)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Booking&&(identical(other.id, id) || other.id == id)&&(identical(other.status, status) || other.status == status)&&(identical(other.drawer, drawer) || other.drawer == drawer)&&(identical(other.itemModel, itemModel) || other.itemModel == itemModel)&&(identical(other.assetCode, assetCode) || other.assetCode == assetCode)&&(identical(other.startsAt, startsAt) || other.startsAt == startsAt)&&(identical(other.endsAt, endsAt) || other.endsAt == endsAt)&&(identical(other.durationMinutes, durationMinutes) || other.durationMinutes == durationMinutes)&&(identical(other.pricePaise, pricePaise) || other.pricePaise == pricePaise)&&(identical(other.discountPaise, discountPaise) || other.discountPaise == discountPaise)&&(identical(other.depositPaise, depositPaise) || other.depositPaise == depositPaise)&&(identical(other.totalPaise, totalPaise) || other.totalPaise == totalPaise)&&(identical(other.currency, currency) || other.currency == currency)&&(identical(other.holdExpiresAt, holdExpiresAt) || other.holdExpiresAt == holdExpiresAt)&&(identical(other.cancellable, cancellable) || other.cancellable == cancellable)&&(identical(other.cancelReason, cancelReason) || other.cancelReason == cancelReason)&&(identical(other.payment, payment) || other.payment == payment)&&(identical(other.refund, refund) || other.refund == refund)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,status,drawer,itemModel,assetCode,startsAt,endsAt,durationMinutes,pricePaise,depositPaise,totalPaise,currency,holdExpiresAt,cancellable,cancelReason,payment,refund,createdAt);
+int get hashCode => Object.hashAll([runtimeType,id,status,drawer,itemModel,assetCode,startsAt,endsAt,durationMinutes,pricePaise,discountPaise,depositPaise,totalPaise,currency,holdExpiresAt,cancellable,cancelReason,payment,refund,createdAt]);
 
 @override
 String toString() {
-  return 'Booking(id: $id, status: $status, drawer: $drawer, itemModel: $itemModel, assetCode: $assetCode, startsAt: $startsAt, endsAt: $endsAt, durationMinutes: $durationMinutes, pricePaise: $pricePaise, depositPaise: $depositPaise, totalPaise: $totalPaise, currency: $currency, holdExpiresAt: $holdExpiresAt, cancellable: $cancellable, cancelReason: $cancelReason, payment: $payment, refund: $refund, createdAt: $createdAt)';
+  return 'Booking(id: $id, status: $status, drawer: $drawer, itemModel: $itemModel, assetCode: $assetCode, startsAt: $startsAt, endsAt: $endsAt, durationMinutes: $durationMinutes, pricePaise: $pricePaise, discountPaise: $discountPaise, depositPaise: $depositPaise, totalPaise: $totalPaise, currency: $currency, holdExpiresAt: $holdExpiresAt, cancellable: $cancellable, cancelReason: $cancelReason, payment: $payment, refund: $refund, createdAt: $createdAt)';
 }
 
 
@@ -1406,7 +1407,7 @@ abstract mixin class $BookingCopyWith<$Res>  {
   factory $BookingCopyWith(Booking value, $Res Function(Booking) _then) = _$BookingCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(required: true) String id,@JsonKey(required: true) String status,@JsonKey(required: true) BookingDrawer drawer,@JsonKey(required: true) BookingItem itemModel,@JsonKey(required: true) String assetCode,@JsonKey(required: true) DateTime startsAt,@JsonKey(required: true) DateTime endsAt,@JsonKey(required: true) int durationMinutes,@JsonKey(required: true) int pricePaise,@JsonKey(required: true) int depositPaise,@JsonKey(required: true) int totalPaise,@JsonKey(required: true) String currency,@JsonKey(required: true) DateTime? holdExpiresAt,@JsonKey(required: true) bool cancellable,@JsonKey(required: true) String? cancelReason,@JsonKey(required: true) BookingPayment? payment,@JsonKey(required: true) BookingRefund? refund,@JsonKey(required: true) DateTime createdAt
+@JsonKey(required: true) String id,@JsonKey(required: true) String status,@JsonKey(required: true) BookingDrawer drawer,@JsonKey(required: true) BookingItem itemModel,@JsonKey(required: true) String assetCode,@JsonKey(required: true) DateTime startsAt,@JsonKey(required: true) DateTime endsAt,@JsonKey(required: true) int durationMinutes,@JsonKey(required: true) int pricePaise,@JsonKey(required: true) int discountPaise,@JsonKey(required: true) int depositPaise,@JsonKey(required: true) int totalPaise,@JsonKey(required: true) String currency,@JsonKey(required: true) DateTime? holdExpiresAt,@JsonKey(required: true) bool cancellable,@JsonKey(required: true) String? cancelReason,@JsonKey(required: true) BookingPayment? payment,@JsonKey(required: true) BookingRefund? refund,@JsonKey(required: true) DateTime createdAt
 });
 
 
@@ -1423,7 +1424,7 @@ class _$BookingCopyWithImpl<$Res>
 
 /// Create a copy of Booking
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? status = null,Object? drawer = null,Object? itemModel = null,Object? assetCode = null,Object? startsAt = null,Object? endsAt = null,Object? durationMinutes = null,Object? pricePaise = null,Object? depositPaise = null,Object? totalPaise = null,Object? currency = null,Object? holdExpiresAt = freezed,Object? cancellable = null,Object? cancelReason = freezed,Object? payment = freezed,Object? refund = freezed,Object? createdAt = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? status = null,Object? drawer = null,Object? itemModel = null,Object? assetCode = null,Object? startsAt = null,Object? endsAt = null,Object? durationMinutes = null,Object? pricePaise = null,Object? discountPaise = null,Object? depositPaise = null,Object? totalPaise = null,Object? currency = null,Object? holdExpiresAt = freezed,Object? cancellable = null,Object? cancelReason = freezed,Object? payment = freezed,Object? refund = freezed,Object? createdAt = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
@@ -1434,6 +1435,7 @@ as String,startsAt: null == startsAt ? _self.startsAt : startsAt // ignore: cast
 as DateTime,endsAt: null == endsAt ? _self.endsAt : endsAt // ignore: cast_nullable_to_non_nullable
 as DateTime,durationMinutes: null == durationMinutes ? _self.durationMinutes : durationMinutes // ignore: cast_nullable_to_non_nullable
 as int,pricePaise: null == pricePaise ? _self.pricePaise : pricePaise // ignore: cast_nullable_to_non_nullable
+as int,discountPaise: null == discountPaise ? _self.discountPaise : discountPaise // ignore: cast_nullable_to_non_nullable
 as int,depositPaise: null == depositPaise ? _self.depositPaise : depositPaise // ignore: cast_nullable_to_non_nullable
 as int,totalPaise: null == totalPaise ? _self.totalPaise : totalPaise // ignore: cast_nullable_to_non_nullable
 as int,currency: null == currency ? _self.currency : currency // ignore: cast_nullable_to_non_nullable
@@ -1570,10 +1572,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(required: true)  String id, @JsonKey(required: true)  String status, @JsonKey(required: true)  BookingDrawer drawer, @JsonKey(required: true)  BookingItem itemModel, @JsonKey(required: true)  String assetCode, @JsonKey(required: true)  DateTime startsAt, @JsonKey(required: true)  DateTime endsAt, @JsonKey(required: true)  int durationMinutes, @JsonKey(required: true)  int pricePaise, @JsonKey(required: true)  int depositPaise, @JsonKey(required: true)  int totalPaise, @JsonKey(required: true)  String currency, @JsonKey(required: true)  DateTime? holdExpiresAt, @JsonKey(required: true)  bool cancellable, @JsonKey(required: true)  String? cancelReason, @JsonKey(required: true)  BookingPayment? payment, @JsonKey(required: true)  BookingRefund? refund, @JsonKey(required: true)  DateTime createdAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(required: true)  String id, @JsonKey(required: true)  String status, @JsonKey(required: true)  BookingDrawer drawer, @JsonKey(required: true)  BookingItem itemModel, @JsonKey(required: true)  String assetCode, @JsonKey(required: true)  DateTime startsAt, @JsonKey(required: true)  DateTime endsAt, @JsonKey(required: true)  int durationMinutes, @JsonKey(required: true)  int pricePaise, @JsonKey(required: true)  int discountPaise, @JsonKey(required: true)  int depositPaise, @JsonKey(required: true)  int totalPaise, @JsonKey(required: true)  String currency, @JsonKey(required: true)  DateTime? holdExpiresAt, @JsonKey(required: true)  bool cancellable, @JsonKey(required: true)  String? cancelReason, @JsonKey(required: true)  BookingPayment? payment, @JsonKey(required: true)  BookingRefund? refund, @JsonKey(required: true)  DateTime createdAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Booking() when $default != null:
-return $default(_that.id,_that.status,_that.drawer,_that.itemModel,_that.assetCode,_that.startsAt,_that.endsAt,_that.durationMinutes,_that.pricePaise,_that.depositPaise,_that.totalPaise,_that.currency,_that.holdExpiresAt,_that.cancellable,_that.cancelReason,_that.payment,_that.refund,_that.createdAt);case _:
+return $default(_that.id,_that.status,_that.drawer,_that.itemModel,_that.assetCode,_that.startsAt,_that.endsAt,_that.durationMinutes,_that.pricePaise,_that.discountPaise,_that.depositPaise,_that.totalPaise,_that.currency,_that.holdExpiresAt,_that.cancellable,_that.cancelReason,_that.payment,_that.refund,_that.createdAt);case _:
   return orElse();
 
 }
@@ -1591,10 +1593,10 @@ return $default(_that.id,_that.status,_that.drawer,_that.itemModel,_that.assetCo
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(required: true)  String id, @JsonKey(required: true)  String status, @JsonKey(required: true)  BookingDrawer drawer, @JsonKey(required: true)  BookingItem itemModel, @JsonKey(required: true)  String assetCode, @JsonKey(required: true)  DateTime startsAt, @JsonKey(required: true)  DateTime endsAt, @JsonKey(required: true)  int durationMinutes, @JsonKey(required: true)  int pricePaise, @JsonKey(required: true)  int depositPaise, @JsonKey(required: true)  int totalPaise, @JsonKey(required: true)  String currency, @JsonKey(required: true)  DateTime? holdExpiresAt, @JsonKey(required: true)  bool cancellable, @JsonKey(required: true)  String? cancelReason, @JsonKey(required: true)  BookingPayment? payment, @JsonKey(required: true)  BookingRefund? refund, @JsonKey(required: true)  DateTime createdAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(required: true)  String id, @JsonKey(required: true)  String status, @JsonKey(required: true)  BookingDrawer drawer, @JsonKey(required: true)  BookingItem itemModel, @JsonKey(required: true)  String assetCode, @JsonKey(required: true)  DateTime startsAt, @JsonKey(required: true)  DateTime endsAt, @JsonKey(required: true)  int durationMinutes, @JsonKey(required: true)  int pricePaise, @JsonKey(required: true)  int discountPaise, @JsonKey(required: true)  int depositPaise, @JsonKey(required: true)  int totalPaise, @JsonKey(required: true)  String currency, @JsonKey(required: true)  DateTime? holdExpiresAt, @JsonKey(required: true)  bool cancellable, @JsonKey(required: true)  String? cancelReason, @JsonKey(required: true)  BookingPayment? payment, @JsonKey(required: true)  BookingRefund? refund, @JsonKey(required: true)  DateTime createdAt)  $default,) {final _that = this;
 switch (_that) {
 case _Booking():
-return $default(_that.id,_that.status,_that.drawer,_that.itemModel,_that.assetCode,_that.startsAt,_that.endsAt,_that.durationMinutes,_that.pricePaise,_that.depositPaise,_that.totalPaise,_that.currency,_that.holdExpiresAt,_that.cancellable,_that.cancelReason,_that.payment,_that.refund,_that.createdAt);case _:
+return $default(_that.id,_that.status,_that.drawer,_that.itemModel,_that.assetCode,_that.startsAt,_that.endsAt,_that.durationMinutes,_that.pricePaise,_that.discountPaise,_that.depositPaise,_that.totalPaise,_that.currency,_that.holdExpiresAt,_that.cancellable,_that.cancelReason,_that.payment,_that.refund,_that.createdAt);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -1611,10 +1613,10 @@ return $default(_that.id,_that.status,_that.drawer,_that.itemModel,_that.assetCo
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(required: true)  String id, @JsonKey(required: true)  String status, @JsonKey(required: true)  BookingDrawer drawer, @JsonKey(required: true)  BookingItem itemModel, @JsonKey(required: true)  String assetCode, @JsonKey(required: true)  DateTime startsAt, @JsonKey(required: true)  DateTime endsAt, @JsonKey(required: true)  int durationMinutes, @JsonKey(required: true)  int pricePaise, @JsonKey(required: true)  int depositPaise, @JsonKey(required: true)  int totalPaise, @JsonKey(required: true)  String currency, @JsonKey(required: true)  DateTime? holdExpiresAt, @JsonKey(required: true)  bool cancellable, @JsonKey(required: true)  String? cancelReason, @JsonKey(required: true)  BookingPayment? payment, @JsonKey(required: true)  BookingRefund? refund, @JsonKey(required: true)  DateTime createdAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(required: true)  String id, @JsonKey(required: true)  String status, @JsonKey(required: true)  BookingDrawer drawer, @JsonKey(required: true)  BookingItem itemModel, @JsonKey(required: true)  String assetCode, @JsonKey(required: true)  DateTime startsAt, @JsonKey(required: true)  DateTime endsAt, @JsonKey(required: true)  int durationMinutes, @JsonKey(required: true)  int pricePaise, @JsonKey(required: true)  int discountPaise, @JsonKey(required: true)  int depositPaise, @JsonKey(required: true)  int totalPaise, @JsonKey(required: true)  String currency, @JsonKey(required: true)  DateTime? holdExpiresAt, @JsonKey(required: true)  bool cancellable, @JsonKey(required: true)  String? cancelReason, @JsonKey(required: true)  BookingPayment? payment, @JsonKey(required: true)  BookingRefund? refund, @JsonKey(required: true)  DateTime createdAt)?  $default,) {final _that = this;
 switch (_that) {
 case _Booking() when $default != null:
-return $default(_that.id,_that.status,_that.drawer,_that.itemModel,_that.assetCode,_that.startsAt,_that.endsAt,_that.durationMinutes,_that.pricePaise,_that.depositPaise,_that.totalPaise,_that.currency,_that.holdExpiresAt,_that.cancellable,_that.cancelReason,_that.payment,_that.refund,_that.createdAt);case _:
+return $default(_that.id,_that.status,_that.drawer,_that.itemModel,_that.assetCode,_that.startsAt,_that.endsAt,_that.durationMinutes,_that.pricePaise,_that.discountPaise,_that.depositPaise,_that.totalPaise,_that.currency,_that.holdExpiresAt,_that.cancellable,_that.cancelReason,_that.payment,_that.refund,_that.createdAt);case _:
   return null;
 
 }
@@ -1626,7 +1628,7 @@ return $default(_that.id,_that.status,_that.drawer,_that.itemModel,_that.assetCo
 @JsonSerializable()
 
 class _Booking implements Booking {
-  const _Booking({@JsonKey(required: true) required this.id, @JsonKey(required: true) required this.status, @JsonKey(required: true) required this.drawer, @JsonKey(required: true) required this.itemModel, @JsonKey(required: true) required this.assetCode, @JsonKey(required: true) required this.startsAt, @JsonKey(required: true) required this.endsAt, @JsonKey(required: true) required this.durationMinutes, @JsonKey(required: true) required this.pricePaise, @JsonKey(required: true) required this.depositPaise, @JsonKey(required: true) required this.totalPaise, @JsonKey(required: true) required this.currency, @JsonKey(required: true) required this.holdExpiresAt, @JsonKey(required: true) required this.cancellable, @JsonKey(required: true) required this.cancelReason, @JsonKey(required: true) required this.payment, @JsonKey(required: true) required this.refund, @JsonKey(required: true) required this.createdAt});
+  const _Booking({@JsonKey(required: true) required this.id, @JsonKey(required: true) required this.status, @JsonKey(required: true) required this.drawer, @JsonKey(required: true) required this.itemModel, @JsonKey(required: true) required this.assetCode, @JsonKey(required: true) required this.startsAt, @JsonKey(required: true) required this.endsAt, @JsonKey(required: true) required this.durationMinutes, @JsonKey(required: true) required this.pricePaise, @JsonKey(required: true) required this.discountPaise, @JsonKey(required: true) required this.depositPaise, @JsonKey(required: true) required this.totalPaise, @JsonKey(required: true) required this.currency, @JsonKey(required: true) required this.holdExpiresAt, @JsonKey(required: true) required this.cancellable, @JsonKey(required: true) required this.cancelReason, @JsonKey(required: true) required this.payment, @JsonKey(required: true) required this.refund, @JsonKey(required: true) required this.createdAt});
   factory _Booking.fromJson(Map<String, dynamic> json) => _$BookingFromJson(json);
 
 @override@JsonKey(required: true) final  String id;
@@ -1639,6 +1641,8 @@ class _Booking implements Booking {
 @override@JsonKey(required: true) final  DateTime endsAt;
 @override@JsonKey(required: true) final  int durationMinutes;
 @override@JsonKey(required: true) final  int pricePaise;
+/// What the customer saved thanks to an offer, in paise (0 without one). Price + savings = the normal price.
+@override@JsonKey(required: true) final  int discountPaise;
 @override@JsonKey(required: true) final  int depositPaise;
 @override@JsonKey(required: true) final  int totalPaise;
 @override@JsonKey(required: true) final  String currency;
@@ -1663,16 +1667,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Booking&&(identical(other.id, id) || other.id == id)&&(identical(other.status, status) || other.status == status)&&(identical(other.drawer, drawer) || other.drawer == drawer)&&(identical(other.itemModel, itemModel) || other.itemModel == itemModel)&&(identical(other.assetCode, assetCode) || other.assetCode == assetCode)&&(identical(other.startsAt, startsAt) || other.startsAt == startsAt)&&(identical(other.endsAt, endsAt) || other.endsAt == endsAt)&&(identical(other.durationMinutes, durationMinutes) || other.durationMinutes == durationMinutes)&&(identical(other.pricePaise, pricePaise) || other.pricePaise == pricePaise)&&(identical(other.depositPaise, depositPaise) || other.depositPaise == depositPaise)&&(identical(other.totalPaise, totalPaise) || other.totalPaise == totalPaise)&&(identical(other.currency, currency) || other.currency == currency)&&(identical(other.holdExpiresAt, holdExpiresAt) || other.holdExpiresAt == holdExpiresAt)&&(identical(other.cancellable, cancellable) || other.cancellable == cancellable)&&(identical(other.cancelReason, cancelReason) || other.cancelReason == cancelReason)&&(identical(other.payment, payment) || other.payment == payment)&&(identical(other.refund, refund) || other.refund == refund)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Booking&&(identical(other.id, id) || other.id == id)&&(identical(other.status, status) || other.status == status)&&(identical(other.drawer, drawer) || other.drawer == drawer)&&(identical(other.itemModel, itemModel) || other.itemModel == itemModel)&&(identical(other.assetCode, assetCode) || other.assetCode == assetCode)&&(identical(other.startsAt, startsAt) || other.startsAt == startsAt)&&(identical(other.endsAt, endsAt) || other.endsAt == endsAt)&&(identical(other.durationMinutes, durationMinutes) || other.durationMinutes == durationMinutes)&&(identical(other.pricePaise, pricePaise) || other.pricePaise == pricePaise)&&(identical(other.discountPaise, discountPaise) || other.discountPaise == discountPaise)&&(identical(other.depositPaise, depositPaise) || other.depositPaise == depositPaise)&&(identical(other.totalPaise, totalPaise) || other.totalPaise == totalPaise)&&(identical(other.currency, currency) || other.currency == currency)&&(identical(other.holdExpiresAt, holdExpiresAt) || other.holdExpiresAt == holdExpiresAt)&&(identical(other.cancellable, cancellable) || other.cancellable == cancellable)&&(identical(other.cancelReason, cancelReason) || other.cancelReason == cancelReason)&&(identical(other.payment, payment) || other.payment == payment)&&(identical(other.refund, refund) || other.refund == refund)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,status,drawer,itemModel,assetCode,startsAt,endsAt,durationMinutes,pricePaise,depositPaise,totalPaise,currency,holdExpiresAt,cancellable,cancelReason,payment,refund,createdAt);
+int get hashCode => Object.hashAll([runtimeType,id,status,drawer,itemModel,assetCode,startsAt,endsAt,durationMinutes,pricePaise,discountPaise,depositPaise,totalPaise,currency,holdExpiresAt,cancellable,cancelReason,payment,refund,createdAt]);
 
 @override
 String toString() {
-  return 'Booking(id: $id, status: $status, drawer: $drawer, itemModel: $itemModel, assetCode: $assetCode, startsAt: $startsAt, endsAt: $endsAt, durationMinutes: $durationMinutes, pricePaise: $pricePaise, depositPaise: $depositPaise, totalPaise: $totalPaise, currency: $currency, holdExpiresAt: $holdExpiresAt, cancellable: $cancellable, cancelReason: $cancelReason, payment: $payment, refund: $refund, createdAt: $createdAt)';
+  return 'Booking(id: $id, status: $status, drawer: $drawer, itemModel: $itemModel, assetCode: $assetCode, startsAt: $startsAt, endsAt: $endsAt, durationMinutes: $durationMinutes, pricePaise: $pricePaise, discountPaise: $discountPaise, depositPaise: $depositPaise, totalPaise: $totalPaise, currency: $currency, holdExpiresAt: $holdExpiresAt, cancellable: $cancellable, cancelReason: $cancelReason, payment: $payment, refund: $refund, createdAt: $createdAt)';
 }
 
 
@@ -1683,7 +1687,7 @@ abstract mixin class _$BookingCopyWith<$Res> implements $BookingCopyWith<$Res> {
   factory _$BookingCopyWith(_Booking value, $Res Function(_Booking) _then) = __$BookingCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(required: true) String id,@JsonKey(required: true) String status,@JsonKey(required: true) BookingDrawer drawer,@JsonKey(required: true) BookingItem itemModel,@JsonKey(required: true) String assetCode,@JsonKey(required: true) DateTime startsAt,@JsonKey(required: true) DateTime endsAt,@JsonKey(required: true) int durationMinutes,@JsonKey(required: true) int pricePaise,@JsonKey(required: true) int depositPaise,@JsonKey(required: true) int totalPaise,@JsonKey(required: true) String currency,@JsonKey(required: true) DateTime? holdExpiresAt,@JsonKey(required: true) bool cancellable,@JsonKey(required: true) String? cancelReason,@JsonKey(required: true) BookingPayment? payment,@JsonKey(required: true) BookingRefund? refund,@JsonKey(required: true) DateTime createdAt
+@JsonKey(required: true) String id,@JsonKey(required: true) String status,@JsonKey(required: true) BookingDrawer drawer,@JsonKey(required: true) BookingItem itemModel,@JsonKey(required: true) String assetCode,@JsonKey(required: true) DateTime startsAt,@JsonKey(required: true) DateTime endsAt,@JsonKey(required: true) int durationMinutes,@JsonKey(required: true) int pricePaise,@JsonKey(required: true) int discountPaise,@JsonKey(required: true) int depositPaise,@JsonKey(required: true) int totalPaise,@JsonKey(required: true) String currency,@JsonKey(required: true) DateTime? holdExpiresAt,@JsonKey(required: true) bool cancellable,@JsonKey(required: true) String? cancelReason,@JsonKey(required: true) BookingPayment? payment,@JsonKey(required: true) BookingRefund? refund,@JsonKey(required: true) DateTime createdAt
 });
 
 
@@ -1700,7 +1704,7 @@ class __$BookingCopyWithImpl<$Res>
 
 /// Create a copy of Booking
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? status = null,Object? drawer = null,Object? itemModel = null,Object? assetCode = null,Object? startsAt = null,Object? endsAt = null,Object? durationMinutes = null,Object? pricePaise = null,Object? depositPaise = null,Object? totalPaise = null,Object? currency = null,Object? holdExpiresAt = freezed,Object? cancellable = null,Object? cancelReason = freezed,Object? payment = freezed,Object? refund = freezed,Object? createdAt = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? status = null,Object? drawer = null,Object? itemModel = null,Object? assetCode = null,Object? startsAt = null,Object? endsAt = null,Object? durationMinutes = null,Object? pricePaise = null,Object? discountPaise = null,Object? depositPaise = null,Object? totalPaise = null,Object? currency = null,Object? holdExpiresAt = freezed,Object? cancellable = null,Object? cancelReason = freezed,Object? payment = freezed,Object? refund = freezed,Object? createdAt = null,}) {
   return _then(_Booking(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
@@ -1711,6 +1715,7 @@ as String,startsAt: null == startsAt ? _self.startsAt : startsAt // ignore: cast
 as DateTime,endsAt: null == endsAt ? _self.endsAt : endsAt // ignore: cast_nullable_to_non_nullable
 as DateTime,durationMinutes: null == durationMinutes ? _self.durationMinutes : durationMinutes // ignore: cast_nullable_to_non_nullable
 as int,pricePaise: null == pricePaise ? _self.pricePaise : pricePaise // ignore: cast_nullable_to_non_nullable
+as int,discountPaise: null == discountPaise ? _self.discountPaise : discountPaise // ignore: cast_nullable_to_non_nullable
 as int,depositPaise: null == depositPaise ? _self.depositPaise : depositPaise // ignore: cast_nullable_to_non_nullable
 as int,totalPaise: null == totalPaise ? _self.totalPaise : totalPaise // ignore: cast_nullable_to_non_nullable
 as int,currency: null == currency ? _self.currency : currency // ignore: cast_nullable_to_non_nullable

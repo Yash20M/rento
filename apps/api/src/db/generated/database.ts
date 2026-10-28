@@ -126,6 +126,7 @@ export interface BookingExtensions {
   applied_at: Timestamp | null;
   booking_id: string;
   created_at: Generated<Timestamp>;
+  extra_discount_paise: Generated<number>;
   extra_minutes: number;
   extra_price_paise: number;
   id: Generated<string>;
@@ -140,6 +141,7 @@ export interface Bookings {
   created_at: Generated<Timestamp>;
   currency: Generated<string>;
   deposit_paise: Generated<number>;
+  discount_paise: Generated<number>;
   drawer_id: string;
   ends_at: Timestamp;
   hold_expires_at: Timestamp | null;
@@ -209,6 +211,10 @@ export interface ItemModels {
   created_at: Generated<Timestamp>;
   deposit_paise: Generated<number>;
   description: string | null;
+  discount_ends_at: Timestamp | null;
+  discount_percent: number | null;
+  discount_starts_at: Timestamp | null;
+  featured: Generated<boolean>;
   id: Generated<string>;
   max_duration_min: number;
   min_duration_min: number;
@@ -273,6 +279,23 @@ export interface Permissions {
   description: string;
   group_name: string;
   key: string;
+}
+
+export interface Promotions {
+  active: Generated<boolean>;
+  created_at: Generated<Timestamp>;
+  created_by: string | null;
+  cta_label: string | null;
+  ends_at: Timestamp | null;
+  id: Generated<string>;
+  image_media_id: string | null;
+  item_model_id: string | null;
+  sort_order: Generated<number>;
+  starts_at: Timestamp | null;
+  subtitle: string | null;
+  theme: Generated<string>;
+  title: string;
+  updated_at: Generated<Timestamp>;
 }
 
 export interface RefreshTokens {
@@ -410,6 +433,7 @@ export interface DB {
   outbox_events: OutboxEvents;
   payments: Payments;
   permissions: Permissions;
+  promotions: Promotions;
   refresh_tokens: RefreshTokens;
   refunds: Refunds;
   role_permissions: RolePermissions;

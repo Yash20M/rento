@@ -64,6 +64,7 @@ const ROLES: Role[] = [
       'Categories',
       'Item models',
       'Assets',
+      'Offers & banners',
       'Drawers',
       'Staff',
       'Roles',
@@ -90,6 +91,7 @@ const ROLES: Role[] = [
       'Categories',
       'Item models',
       'Assets',
+      'Offers & banners',
       'Drawers',
       'Reports',
       'Payments',
@@ -148,6 +150,7 @@ const ROLES: Role[] = [
       'Categories',
       'Item models',
       'Assets',
+      'Offers & banners',
       'Drawers',
       'Reports',
       'Payments',
@@ -192,6 +195,22 @@ const model = {
   status: 'active',
   assetCount: 1,
 };
+const banner = {
+  id: 'p-1',
+  title: 'Weekend offer',
+  subtitle: null,
+  ctaLabel: null,
+  theme: 'orange',
+  imageUrl: null,
+  itemModelId: null,
+  itemModelName: null,
+  startsAt: null,
+  endsAt: null,
+  active: true,
+  sortOrder: 0,
+  state: 'live',
+  createdAt: '2030-01-01T00:00:00.000Z',
+};
 const customer = {
   id: 'c-1',
   email: 'asha@example.com',
@@ -225,6 +244,7 @@ const api = () =>
     'GET /v1/admin/drawers': [drawerA],
     'GET /v1/admin/assets': { data: [asset], nextCursor: null },
     'GET /v1/admin/item-models': [model],
+    'GET /v1/admin/promotions': [banner],
     'GET /v1/admin/categories': [
       { id: 'cat-1', name: 'Consoles', slug: 'consoles', parentId: null, itemModelCount: 1 },
     ],
@@ -316,6 +336,21 @@ describe.each(ROLES)('screens for $name', (role) => {
     );
     expect(screen.queryByRole('button', { name: 'Transfer…' }) !== null, 'transfer').toBe(
       role.assetActions.transfer,
+    );
+  });
+
+  it('R-offers: banners need inventory:read to be seen and inventory:write to be changed', async () => {
+    if (!role.menu.includes('Offers & banners')) return expectDenied(role, '/offers');
+    renderApp('/offers', { me: role.me, api: api() });
+    await screen.findByRole('table', { name: 'Banners' });
+    expect(screen.queryByRole('button', { name: 'New banner' }) !== null, 'new').toBe(
+      role.catalogueEdit,
+    );
+    expect(screen.queryByRole('button', { name: 'Edit' }) !== null, 'edit').toBe(
+      role.catalogueEdit,
+    );
+    expect(screen.queryByRole('button', { name: /turn off/i }) !== null, 'switch').toBe(
+      role.catalogueEdit,
     );
   });
 

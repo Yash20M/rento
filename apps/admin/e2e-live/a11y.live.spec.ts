@@ -19,6 +19,7 @@ const PAGES = [
   '/inventory/categories',
   '/inventory/models',
   '/inventory/assets',
+  '/offers',
   '/drawers',
   '/staff',
   '/roles',

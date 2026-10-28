@@ -913,4 +913,60 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get availableLabel => 'Available';
+
+  @override
+  String get offersForYou => 'Offers for you';
+
+  @override
+  String get newArrivals => 'New arrivals';
+
+  @override
+  String get featuredHeading => 'Featured';
+
+  @override
+  String get allProducts => 'All products';
+
+  @override
+  String discountBadge(int percent) {
+    return '-$percent%';
+  }
+
+  @override
+  String get newBadge => 'NEW';
+
+  @override
+  String perSlotShort(int minutes) {
+    return 'per $minutes min';
+  }
+
+  @override
+  String wasPrice(String price) {
+    return 'was $price';
+  }
+
+  @override
+  String offerEndsOn(String when) {
+    return 'Offer ends $when';
+  }
+
+  @override
+  String summaryOffer(int percent) {
+    return 'Offer -$percent%';
+  }
+
+  @override
+  String get summaryOfferNoPercent => 'Offer saving';
+
+  @override
+  String youSave(String amount) {
+    return 'You save $amount';
+  }
+
+  @override
+  String get promoNotAvailable => 'That item is not available near you right now.';
+
+  @override
+  String bannerCountLabel(int index, int total) {
+    return 'Offer $index of $total';
+  }
 }

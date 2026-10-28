@@ -29,6 +29,9 @@ const CustomersPage = lazy(() =>
 const DrawersPage = lazy(() =>
   import('@/features/drawers/DrawersPage').then((m) => ({ default: m.DrawersPage })),
 );
+const PromotionsPage = lazy(() =>
+  import('@/features/inventory/PromotionsPage').then((m) => ({ default: m.PromotionsPage })),
+);
 const ItemModelsPage = lazy(() =>
   import('@/features/inventory/ItemModelsPage').then((m) => ({ default: m.ItemModelsPage })),
 );
@@ -100,6 +103,14 @@ export const routes: RouteObject[] = [
             element: (
               <RequirePermission permission="inventory:read">
                 <ItemModelsPage />
+              </RequirePermission>
+            ),
+          },
+          {
+            path: 'offers',
+            element: (
+              <RequirePermission permission="inventory:read">
+                <PromotionsPage />
               </RequirePermission>
             ),
           },

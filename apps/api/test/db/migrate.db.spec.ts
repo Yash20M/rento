@@ -59,6 +59,8 @@ describe('migrations', () => {
       '0016_app_settings',
       '0017_profile_and_drawer_photos',
       '0018_mfa',
+      '0019_merchandising',
+      '0020_extension_discount',
     ]);
   });
 

@@ -164,3 +164,17 @@ final servedDrawerIdsProvider = Provider.autoDispose<Set<String>>((ref) {
   if (result == null) return const {};
   return {for (final d in result.drawers) d.id};
 });
+
+/// Whether the banners move on by themselves. Tests switch it off.
+final bannerAutoPlayProvider = Provider<bool>((_) => true);
+
+/// The banners staff have switched on for the home screen. A failure here never blocks the home screen: no banners.
+final promotionsProvider = FutureProvider.autoDispose<List<PublicPromotion>>((
+  ref,
+) async {
+  try {
+    return await ref.watch(catalogApiProvider).promotions();
+  } catch (_) {
+    return const [];
+  }
+});

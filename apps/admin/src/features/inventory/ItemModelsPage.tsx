@@ -7,11 +7,20 @@ import { useAuth } from '@/auth/auth-context';
 import { EmptyState, ErrorNote, Loading, PageHeader } from '@/components/page';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Field, Select, Textarea, TextField } from '@/components/ui/controls';
+import { Checkbox, Field, Select, Textarea, TextField } from '@/components/ui/controls';
 import { Modal } from '@/components/ui/modal';
 import { PendingPhotos, PhotoGallery, uploadPhoto } from './PhotoGallery';
 import { Table, TBody, Td, Th, THead, Tr } from '@/components/ui/table';
-import { formatDuration, formatPaise, paiseToRupees, rupeesToPaise } from '@/lib/format';
+import {
+  formatDuration,
+  formatPaise,
+  formatWhen,
+  fromLocalInput,
+  offerPricePaise,
+  paiseToRupees,
+  rupeesToPaise,
+  toLocalInput,
+} from '@/lib/format';
 import { useCategories } from './CategoriesPage';
 
 export function useItemModels() {
@@ -69,9 +78,25 @@ export function ItemModelsPage() {
           <TBody>
             {models.data.map((m) => (
               <Tr key={m.id}>
-                <Td className="font-medium">{m.name}</Td>
+                <Td className="font-medium">
+                  {m.name}
+                  <OfferBadges model={m} />
+                </Td>
                 <Td>{categoryName.get(m.categoryId) ?? '—'}</Td>
-                <Td className="text-right tabular-nums">{formatPaise(m.pricePerSlotPaise)}</Td>
+                <Td className="text-right tabular-nums">
+                  {m.offerState === 'active' && m.discountPercent !== null ? (
+                    <>
+                      <span className="font-medium">
+                        {formatPaise(offerPricePaise(m.pricePerSlotPaise, m.discountPercent))}
+                      </span>
+                      <div className="text-xs text-muted-foreground line-through">
+                        {formatPaise(m.pricePerSlotPaise)}
+                      </div>
+                    </>
+                  ) : (
+                    formatPaise(m.pricePerSlotPaise)
+                  )}
+                </Td>
                 <Td className="text-sm">
                   {m.slotMinutes} min slots
                   <div className="text-xs text-muted-foreground">
@@ -108,6 +133,23 @@ export function ItemModelsPage() {
   );
 }
 
+/** What a model is up to on the customer app: offer (live, coming, over), new, featured. */
+export function OfferBadges({ model: m }: { model: ItemModel }) {
+  return (
+    <div className="mt-1 flex flex-wrap gap-1">
+      {m.offerState === 'active' && <Badge tone="success">−{m.discountPercent}% offer</Badge>}
+      {m.offerState === 'scheduled' && m.discountStartsAt && (
+        <Badge tone="info">
+          −{m.discountPercent}% from {formatWhen(m.discountStartsAt)}
+        </Badge>
+      )}
+      {m.offerState === 'ended' && <Badge>Offer ended</Badge>}
+      {m.isNew && <Badge tone="info">New</Badge>}
+      {m.featured && <Badge tone="warning">Featured</Badge>}
+    </div>
+  );
+}
+
 const whole = (text: string): number | undefined =>
   /^\d{1,7}$/.test(text.trim()) ? Number(text.trim()) : undefined;
 
@@ -125,6 +167,12 @@ function ItemModelForm({ model, onClose }: { model: ItemModel | undefined; onClo
   const [buffer, setBuffer] = useState(String(model?.bufferMin ?? 0));
   const [deposit, setDeposit] = useState(model ? paiseToRupees(model.depositPaise) : '0');
   const [status, setStatus] = useState<string>(model?.status ?? 'active');
+  const [discount, setDiscount] = useState(
+    model?.discountPercent != null ? String(model.discountPercent) : '',
+  );
+  const [offerStart, setOfferStart] = useState(toLocalInput(model?.discountStartsAt));
+  const [offerEnd, setOfferEnd] = useState(toLocalInput(model?.discountEndsAt));
+  const [featured, setFeatured] = useState(model?.featured ?? false);
   const [localErrors, setLocalErrors] = useState<Record<string, string>>({});
   // Pictures chosen for a NEW product; they are uploaded right after it is saved.
   const [pending, setPending] = useState<File[]>([]);
@@ -208,6 +256,32 @@ function ItemModelForm({ model, onClose }: { model: ItemModel | undefined; onClo
       errors['maxDurationMin'] === undefined
     )
       errors['maxDurationMin'] = 'Must not be shorter than the shortest rental.';
+    // The offer: a percent, and optionally when it runs.
+    let discountPercent: number | null = null;
+    if (discount.trim() !== '') {
+      const n = whole(discount);
+      if (n === undefined || n < 1 || n > 90)
+        errors['discountPercent'] =
+          'Enter a whole number from 1 to 90, or leave it empty for no offer.';
+      else discountPercent = n;
+    }
+    // A date field holds minutes only: a date the person did not touch is sent back exactly as it was stored.
+    const startChanged = offerStart !== toLocalInput(current?.discountStartsAt);
+    const endChanged = offerEnd !== toLocalInput(current?.discountEndsAt);
+    const startsAt = startChanged
+      ? fromLocalInput(offerStart)
+      : (current?.discountStartsAt ?? null);
+    const endsAt = endChanged ? fromLocalInput(offerEnd) : (current?.discountEndsAt ?? null);
+    if (startsAt === undefined) errors['discountStartsAt'] = 'Enter a valid date and time.';
+    if (endsAt === undefined) errors['discountEndsAt'] = 'Enter a valid date and time.';
+    if (discountPercent === null && discount.trim() === '') {
+      if (startsAt) errors['discountStartsAt'] = 'Add a discount percent, or clear this date.';
+      if (endsAt) errors['discountEndsAt'] = 'Add a discount percent, or clear this date.';
+    }
+    if (startsAt && endsAt && endsAt <= startsAt)
+      errors['discountEndsAt'] = 'Must be after the start.';
+    else if (endsAt && endChanged && new Date(endsAt).getTime() <= Date.now())
+      errors['discountEndsAt'] = 'Must be in the future.';
     setLocalErrors(errors);
     if (Object.keys(errors).length > 0) return;
 
@@ -221,8 +295,15 @@ function ItemModelForm({ model, onClose }: { model: ItemModel | undefined; onClo
       maxDurationMin,
       bufferMin,
       depositPaise,
+      discountPercent,
+      discountStartsAt: discountPercent === null ? null : (startsAt ?? null),
+      discountEndsAt: discountPercent === null ? null : (endsAt ?? null),
+      featured,
     });
   }
+
+  const previewPercent = whole(discount);
+  const previewPrice = rupeesToPaise(price);
 
   return (
     <Modal
@@ -328,6 +409,61 @@ function ItemModelForm({ model, onClose }: { model: ItemModel | undefined; onClo
             />
           )}
         </Field>
+        <fieldset className="grid gap-4 rounded-xl border p-4 sm:col-span-2 sm:grid-cols-2">
+          <legend className="px-1 text-sm font-semibold">Offer and spotlight</legend>
+          <TextField
+            label="Discount (%)"
+            inputMode="numeric"
+            hint="Leave empty for no offer. 1 to 90."
+            value={discount}
+            onChange={(e) => setDiscount(e.target.value)}
+            error={problems['discountPercent']}
+          />
+          <div className="grid content-center gap-1 text-sm" aria-live="polite">
+            {previewPercent !== undefined &&
+            previewPercent >= 1 &&
+            previewPercent <= 90 &&
+            previewPrice !== undefined ? (
+              <>
+                <span className="text-xs text-muted-foreground">Customers will pay</span>
+                <span className="text-base font-semibold">
+                  {formatPaise(offerPricePaise(previewPrice, previewPercent))}{' '}
+                  <span className="text-xs font-normal text-muted-foreground line-through">
+                    {formatPaise(previewPrice)}
+                  </span>{' '}
+                  per slot
+                </span>
+              </>
+            ) : (
+              <span className="text-xs text-muted-foreground">
+                The deposit is never discounted.
+              </span>
+            )}
+          </div>
+          <TextField
+            label="Offer starts"
+            type="datetime-local"
+            hint="Empty: starts at once. Your local time."
+            value={offerStart}
+            onChange={(e) => setOfferStart(e.target.value)}
+            error={problems['discountStartsAt']}
+          />
+          <TextField
+            label="Offer ends"
+            type="datetime-local"
+            hint="Empty: runs until you remove it."
+            value={offerEnd}
+            onChange={(e) => setOfferEnd(e.target.value)}
+            error={problems['discountEndsAt']}
+          />
+          <div className="sm:col-span-2">
+            <Checkbox
+              label="Feature this product on the home screen"
+              checked={featured}
+              onChange={(e) => setFeatured(e.target.checked)}
+            />
+          </div>
+        </fieldset>
         {current ? (
           <PhotoGallery model={current} />
         ) : (

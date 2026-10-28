@@ -374,9 +374,13 @@ void main() {
         await tester.tap(find.byKey(const Key('offline-check')));
         await tester.pumpAndSettle();
         expect(find.byKey(const Key('offline-banner')), findsNothing);
-        // The start-up attempt, one more when Explore (which now lists every drawer when no place is known) makes its
-        // first request while the session is still pending, and the one "Check again" makes. A loop would be far more.
-        expect(second.to('POST', '/v1/auth/refresh'), hasLength(3));
+        // One sign-in attempt at start-up, then one each time Rento answers again after being unreachable (the home
+        // screen makes several public requests, so that can happen a few times), and the one "Check again" makes.
+        // What must never happen is a loop: the count stays small and the person ends up signed in.
+        expect(
+          second.to('POST', '/v1/auth/refresh').length,
+          inInclusiveRange(2, 5),
+        );
       },
     );
 

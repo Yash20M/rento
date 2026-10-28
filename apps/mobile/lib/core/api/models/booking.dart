@@ -87,6 +87,9 @@ abstract class Booking with _$Booking {
     @JsonKey(required: true) required DateTime endsAt,
     @JsonKey(required: true) required int durationMinutes,
     @JsonKey(required: true) required int pricePaise,
+
+    /// What the customer saved thanks to an offer, in paise (0 without one). Price + savings = the normal price.
+    @JsonKey(required: true) required int discountPaise,
     @JsonKey(required: true) required int depositPaise,
     @JsonKey(required: true) required int totalPaise,
     @JsonKey(required: true) required String currency,

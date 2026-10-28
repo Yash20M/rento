@@ -38,6 +38,7 @@ describe('layout and navigation', () => {
       'Categories',
       'Item models',
       'Assets',
+      'Offers & banners',
       'Drawers',
       'Staff',
       'Roles',

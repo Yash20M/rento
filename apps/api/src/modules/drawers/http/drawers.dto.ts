@@ -336,8 +336,39 @@ export class InventoryEntryDto {
   @ApiProperty({ nullable: true, type: String })
   description!: string | null;
 
-  @ApiProperty({ example: 9900 })
+  @ApiProperty({
+    example: 7900,
+    description:
+      'What one slot costs right now: the offer price while an offer is active, else the normal price.',
+  })
   pricePerSlotPaise!: number;
+
+  @ApiProperty({ example: 9900, description: 'The normal price of one slot (before any offer).' })
+  originalPricePerSlotPaise!: number;
+
+  @ApiProperty({
+    nullable: true,
+    type: Number,
+    description: 'Percent off while an offer is active, else null.',
+  })
+  discountPercent!: number | null;
+
+  @ApiProperty({
+    nullable: true,
+    type: String,
+    format: 'date-time',
+    description: 'When the active offer ends; null when there is no offer or it has no end.',
+  })
+  discountEndsAt!: string | null;
+
+  @ApiProperty({ description: 'Added within the last 14 days.' })
+  isNew!: boolean;
+
+  @ApiProperty({ description: 'Marked by the staff to be featured on the home screen.' })
+  featured!: boolean;
+
+  @ApiProperty({ format: 'date-time', description: 'When the product was added.' })
+  createdAt!: string;
 
   @ApiProperty({ example: 60 })
   slotMinutes!: number;
@@ -399,8 +430,17 @@ export class AvailabilityDto {
   @ApiProperty({ example: 15 })
   bufferMin!: number;
 
-  @ApiProperty({ example: 9900 })
+  @ApiProperty({
+    example: 7900,
+    description: 'What one slot costs right now (the offer price while an offer is active).',
+  })
   pricePerSlotPaise!: number;
+
+  @ApiProperty({ example: 9900, description: 'The normal price of one slot.' })
+  originalPricePerSlotPaise!: number;
+
+  @ApiProperty({ nullable: true, type: Number })
+  discountPercent!: number | null;
 
   @ApiProperty({ format: 'date-time', nullable: true, type: String })
   opensAt!: string | null;

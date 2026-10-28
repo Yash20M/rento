@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../app/theme.dart';
 import '../../../core/api/models/models.dart';
 import '../../../core/format/money.dart';
 import '../../../core/format/time.dart';
@@ -211,7 +212,35 @@ class BookingSummary extends StatelessWidget {
                   ),
                   child: Column(
                     children: [
-                      money(l10n.summaryRental, booking.pricePaise),
+                      // With an offer: the normal rental price, then what the offer took off, as it was when booked.
+                      money(
+                        l10n.summaryRental,
+                        booking.pricePaise + booking.discountPaise,
+                      ),
+                      if (booking.discountPaise > 0)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 3),
+                          child: Row(
+                            key: const Key('booking-offer'),
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  l10n.summaryOfferNoPercent,
+                                  style: theme.textTheme.bodyMedium?.copyWith(
+                                    color: AppTheme.success,
+                                  ),
+                                ),
+                              ),
+                              Text(
+                                '-${formatPaise(booking.discountPaise)}',
+                                style: theme.textTheme.bodyMedium?.copyWith(
+                                  color: AppTheme.success,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       money(l10n.summaryDeposit, booking.depositPaise),
                       const Divider(height: 18),
                       money(
@@ -219,6 +248,18 @@ class BookingSummary extends StatelessWidget {
                         booking.totalPaise,
                         strong: true,
                       ),
+                      if (booking.discountPaise > 0)
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: Text(
+                            l10n.youSave(formatPaise(booking.discountPaise)),
+                            key: const Key('booking-saved'),
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              color: AppTheme.success,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
                     ],
                   ),
                 ),
